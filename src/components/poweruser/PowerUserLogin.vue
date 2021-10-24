@@ -68,7 +68,7 @@ export default {
                         .signInWithEmailAndPassword(this.email, this.password)
                         .then(() => {
                             alert('Successfully logged in');
-                            this.$router.push({ path: '/poweruserwip'});
+                            this.$router.push({ path: '/poweruserdashboard'});
                         })
                         .catch(error => {
                             alert(error.message);
