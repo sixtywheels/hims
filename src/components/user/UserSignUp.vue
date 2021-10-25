@@ -50,59 +50,59 @@
 
 <script>
 
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import db from "../../firebase.js";
+// import firebase from 'firebase/compat/app';
+// import 'firebase/compat/auth';
+// import 'firebase/compat/firestore';
+// import db from "../../firebase.js";
 
-export default {
-    data() {
-        return {
-            email: '',
-            password: '',
-            staffID:'',
-            value:String,
-        };
-    },
-    methods: {
-        register: async function()  {
+// export default {
+//     data() {
+//         return {
+//             email: '',
+//             password: '',
+//             staffID:'',
+//             value:String,
+//         };
+//     },
+//     methods: {
+//         register: async function()  {
 
-            if (this.email == null || this.password == null || this.staffID == null) {
-                alert("Please fill up the fields!")
-            } else {
-                await firebase
-                    .auth()
-                    .createUserWithEmailAndPassword(this.email, this.password)
-                    .then( async () => {
-                        const user = firebase.auth().currentUser;
-                        user.updateProfile({
-                            displayName: this.fullName
-                        }).then( async () => {
-                            await db.collection('users').doc(user.uid).set({
-                                email: this.email,
-                                staffID: this.staffID,
-                            });
-                            await firebase.auth().signOut().then(function() {
-                                console.log("Signed Up and Signed Out!");
-                            }, function(error) {
-                                console.log(error);
-                            })
-                            .then(() => {
-                                alert("Account Created Successfully!");
-                                this.$router.push("userwip");
-                            })  
-                        }).catch(error => {
-                            alert(error.message);
-                        });
-                    })
-                    .catch(error => {
-                        alert(error.message);
-                    });
-            }
+//             if (this.email == null || this.password == null || this.staffID == null) {
+//                 alert("Please fill up the fields!")
+//             } else {
+//                 await firebase
+//                     .auth()
+//                     .createUserWithEmailAndPassword(this.email, this.password)
+//                     .then( async () => {
+//                         const user = firebase.auth().currentUser;
+//                         user.updateProfile({
+//                             displayName: this.fullName
+//                         }).then( async () => {
+//                             await db.collection('users').doc(user.uid).set({
+//                                 email: this.email,
+//                                 staffID: this.staffID,
+//                             });
+//                             await firebase.auth().signOut().then(function() {
+//                                 console.log("Signed Up and Signed Out!");
+//                             }, function(error) {
+//                                 console.log(error);
+//                             })
+//                             .then(() => {
+//                                 alert("Account Created Successfully!");
+//                                 this.$router.push("userwip");
+//                             })  
+//                         }).catch(error => {
+//                             alert(error.message);
+//                         });
+//                     })
+//                     .catch(error => {
+//                         alert(error.message);
+//                     });
+//             }
       
-        },
-    },
-};
+//         },
+//     },
+// };
 
 </script>
 

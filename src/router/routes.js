@@ -16,7 +16,6 @@ import UserWIP from '../components/user/UserWIP';
 import UserLogin from '../components/user/UserLogin';
 import UserSignUp from '../components/user/UserSignUp';
 
-
 Vue.use(VueRouter);
 
 const routes = [
@@ -26,7 +25,7 @@ const routes = [
     { path: '/poweruserwip', component: PowerUserWIP}, 
     { path: '/poweruserlogin', component: PowerUserLogin },
     { path: '/powerusersignup', component: PowerUserSignUp },
-    { path: '/poweruserdashboard', component: PowerUserDashboard},
+    { path: '/poweruserdashboard', component: PowerUserDashboard },
 
     { path: '/userwip', component: UserWIP}, 
     { path: '/userlogin', component: UserLogin },
