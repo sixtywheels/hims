@@ -24,39 +24,39 @@
 
 <script>
 
-import firebase from 'firebase/compat/app';
+// import firebase from 'firebase/compat/app';
 
-export default {
-  data: function() {
-    return {
-      email: "",
-    };
-  },
-  methods: {
-    reset: async function() {
-      var auth = firebase.auth();
+// export default {
+//   data: function() {
+//     return {
+//       email: "",
+//     };
+//   },
+//   methods: {
+//     reset: async function() {
+//       var auth = firebase.auth();
 
-      if (this.email != "") {
-        //The email takes awhile
-        await auth
-          .sendPasswordResetEmail(this.email)
-          .then(function() {
-            // Email sent.
-            console.log("Sent Successfully")
-            alert("Your password has been reset. Check your email for instructions.")
-          })
-          .catch(function(error) {
-            alert(error);
-          });
+//       if (this.email != "") {
+//         //The email takes awhile
+//         await auth
+//           .sendPasswordResetEmail(this.email)
+//           .then(function() {
+//             // Email sent.
+//             console.log("Sent Successfully")
+//             alert("Your password has been reset. Check your email for instructions.")
+//           })
+//           .catch(function(error) {
+//             alert(error);
+//           });
         
-        this.$router.push({path: "/"});
-      } else {
-        alert("Please fill in your email");
-        console.log(this.$router)
-      }
-    },
-  },
-};
+//         this.$router.push({path: "/"});
+//       } else {
+//         alert("Please fill in your email");
+//         console.log(this.$router)
+//       }
+//     },
+//   },
+// };
 
 </script>
 

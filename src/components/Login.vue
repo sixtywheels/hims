@@ -3,7 +3,6 @@
         <h1>Hospital Inventory Management System (HIMS)</h1>
         <h2>Empower People to<br>Improve Other's Lives</h2>
         <h3>Account Type</h3>
-        <!-- <div style="margin-left: 0px; margin-top:75px; position: aboslute;right:150px;"> -->
         <div style="text-align: center">
             <ul>
                 <li>

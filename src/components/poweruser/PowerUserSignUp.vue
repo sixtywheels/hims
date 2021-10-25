@@ -50,10 +50,20 @@
 
 <script>
 
-import firebase from 'firebase/compat/app';
+// import firebase from 'firebase/compat/app';
+// import 'firebase/compat/auth';
+// import 'firebase/compat/firestore';
+// import db from "../../firebase.js";
+
+import firebase from '@/uifire.js'
 import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import db from "../../firebase.js";
+
+import { getFirestore } from "firebase/firestore";
+import firebaseApp from '../../firebase.js';
+const db = getFirestore(firebaseApp);
+
+// import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 export default {
     data() {
@@ -65,20 +75,19 @@ export default {
         };
     },
     methods: {
-        register: async function()  {
-
+        register: async function() {
             if (this.email == null || this.password == null || this.staffID == null) {
                 alert("Please fill up the fields!")
             } else {
                 await firebase
                     .auth()
                     .createUserWithEmailAndPassword(this.email, this.password)
-                    .then( async () => {
+                    .then(async () => {
                         const user = firebase.auth().currentUser;
                         user.updateProfile({
                             displayName: this.fullName
-                        }).then( async () => {
-                            await db.collection('powerusers').doc(user.uid).set({
+                        }).then(async () => {
+                            await setDoc(doc(db, "powerusers", this.staffID), {
                                 email: this.email,
                                 staffID: this.staffID,
                             });
@@ -89,20 +98,65 @@ export default {
                             })
                             .then(() => {
                                 alert("Account Created Successfully!");
-                                this.$router.push("poweruserwip");
+                                this.$router.push("poweruserlogin");
                             })  
                         }).catch(error => {
                             alert(error.message);
                         });
                     })
-                    .catch(error => {
-                        alert(error.message);
-                    });
             }
-      
         },
     },
 };
+
+// export default {
+//     data() {
+//         return {
+//             email: '',
+//             password: '',
+//             staffID:'',
+//             value:String,
+//         };
+//     },
+//     methods: {
+//         register: async function()  {
+
+//             if (this.email == null || this.password == null || this.staffID == null) {
+//                 alert("Please fill up the fields!")
+//             } else {
+//                 await firebase
+//                     .auth()
+//                     .createUserWithEmailAndPassword(this.email, this.password)
+//                     .then( async () => {
+//                         const user = firebase.auth().currentUser;
+//                         user.updateProfile({
+//                             displayName: this.fullName
+//                         }).then( async () => {
+//                             await db.collection('powerusers').doc(user.uid).set({
+//                                 email: this.email,
+//                                 staffID: this.staffID,
+//                             });
+//                             await firebase.auth().signOut().then(function() {
+//                                 console.log("Signed Up and Signed Out!");
+//                             }, function(error) {
+//                                 console.log(error);
+//                             })
+//                             .then(() => {
+//                                 alert("Account Created Successfully!");
+//                                 this.$router.push("poweruserwip");
+//                             })  
+//                         }).catch(error => {
+//                             alert(error.message);
+//                         });
+//                     })
+//                     .catch(error => {
+//                         alert(error.message);
+//                     });
+//             }
+      
+//         },
+//     },
+// };
 
 </script>
 

@@ -34,50 +34,50 @@
 
 <script>
 
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import db from "../../firebase.js";
+// import firebase from 'firebase/compat/app';
+// import 'firebase/compat/auth';
+// import 'firebase/compat/firestore';
+// import db from "../../firebase.js";
 
-export default {
-    data() {
-        return {
-            email: null,
-            password: null,
-            value:String,
-            myPass: String
-        };
-    },
-    methods: {
-        resetValidation: function() {
-            this.$router.push({path: '/resetpassword'});
-        },
-        signuppage: function() {
-            this.$router.push({path: '/usersignup'});
-        },
-        login: async function() {
-            if (this.email == null|| this.password==null  ){
-                alert("Please fill in your email and password!")
-            } else {
-                var data = await db.collection("users").where("email","==",this.email).get()
-                if(data.empty) {
-                    alert("No such company email exist in the database. If you are a shopper, please proceed to the shopper login page!")
-                } else {
-                    await firebase
-                        .auth()
-                        .signInWithEmailAndPassword(this.email, this.password)
-                        .then(() => {
-                            alert('Successfully logged in');
-                            this.$router.push({ path: '/userwip'});
-                        })
-                        .catch(error => {
-                            alert(error.message);
-                        });
-                }
-            }
-        },
-    },
-};
+// export default {
+//     data() {
+//         return {
+//             email: null,
+//             password: null,
+//             value:String,
+//             myPass: String
+//         };
+//     },
+//     methods: {
+//         resetValidation: function() {
+//             this.$router.push({path: '/resetpassword'});
+//         },
+//         signuppage: function() {
+//             this.$router.push({path: '/usersignup'});
+//         },
+//         login: async function() {
+//             if (this.email == null|| this.password==null  ){
+//                 alert("Please fill in your email and password!")
+//             } else {
+//                 var data = await db.collection("users").where("email","==",this.email).get()
+//                 if(data.empty) {
+//                     alert("No such company email exist in the database. If you are a shopper, please proceed to the shopper login page!")
+//                 } else {
+//                     await firebase
+//                         .auth()
+//                         .signInWithEmailAndPassword(this.email, this.password)
+//                         .then(() => {
+//                             alert('Successfully logged in');
+//                             this.$router.push({ path: '/userwip'});
+//                         })
+//                         .catch(error => {
+//                             alert(error.message);
+//                         });
+//                 }
+//             }
+//         },
+//     },
+// };
 
 
 </script>
