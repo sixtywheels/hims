@@ -11,6 +11,7 @@ import PowerUserLogin from '../components/poweruser/PowerUserLogin';
 import PowerUserSignUp from '../components/poweruser/PowerUserSignUp';
 import PowerUserDashboard from '../components/poweruser/PowerUserDashboard';
 import PowerUserDME from '../components/poweruser/PowerUserDME'
+import ManageItemSupplies from '../components/poweruser/ManageItemSupplies';
 
 // User pages
 import UserWIP from '../components/user/UserWIP';
@@ -19,7 +20,7 @@ import UserSignUp from '../components/user/UserSignUp';
 
 Vue.use(VueRouter);
 
-const routes = [
+const routes = [ 
     { path: '/', component: Login },
     { path: '/resetpassword', component: ResetPassword },
     
@@ -28,6 +29,7 @@ const routes = [
     { path: '/powerusersignup', component: PowerUserSignUp },
     { path: '/poweruserdashboard', component: PowerUserDashboard},
     { path: '/poweruserdme', component: PowerUserDME},
+    { path: '/manageitemsupplies', component: ManageItemSupplies },
 
     { path: '/userwip', component: UserWIP}, 
     { path: '/userlogin', component: UserLogin },
