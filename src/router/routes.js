@@ -10,6 +10,7 @@ import PowerUserWIP from '../components/poweruser/PowerUserWIP';
 import PowerUserLogin from '../components/poweruser/PowerUserLogin';
 import PowerUserSignUp from '../components/poweruser/PowerUserSignUp';
 import PowerUserDashboard from '../components/poweruser/PowerUserDashboard';
+import PowerUserDME from '../components/poweruser/PowerUserDME'
 import ManageItemSupplies from '../components/poweruser/ManageItemSupplies';
 
 // User pages
@@ -26,7 +27,8 @@ const routes = [
     { path: '/poweruserwip', component: PowerUserWIP}, 
     { path: '/poweruserlogin', component: PowerUserLogin },
     { path: '/powerusersignup', component: PowerUserSignUp },
-    { path: '/poweruserdashboard', component: PowerUserDashboard },
+    { path: '/poweruserdashboard', component: PowerUserDashboard},
+    { path: '/poweruserdme', component: PowerUserDME},
     { path: '/manageitemsupplies', component: ManageItemSupplies },
 
     { path: '/userwip', component: UserWIP}, 
