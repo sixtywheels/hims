@@ -28,6 +28,7 @@ const routes = [
     { path: '/poweruserlogin', component: PowerUserLogin },
     { path: '/powerusersignup', component: PowerUserSignUp },
     { path: '/poweruserdashboard', component: PowerUserDashboard},
+    //{ path: '/poweruserdashboard/poweruserdme', component: PowerUserDME},
     { path: '/poweruserdme', component: PowerUserDME},
     { path: '/manageitemsupplies', component: ManageItemSupplies },
 
