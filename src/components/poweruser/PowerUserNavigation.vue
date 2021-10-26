@@ -1,7 +1,10 @@
 <template>
     <div id='navigation'>
-        <v-btn v-on:click = "$router.push({ path:'/PowerUserDME' })">
-            <div>click here</div>
+        <v-btn v-on:click = "$router.push({ path:'/PowerUserDashboard' })">
+            <div>Dashboard</div>
+        </v-btn>
+        <v-btn v-on:click = "$router.push({ path:'/ManageItemSupplies' })">
+            <div>Manage Item Supplies</div>
         </v-btn>
     </div>
 </template>
@@ -14,19 +17,3 @@ export default{
 }
 </script>
 
-<style scoped>
-
-#navigation {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 9999;
-  display: flex;
-  color:white;
-  background-color:#079C72;
-  height:80px;
-  font-size:35px;
-  font-family: "Sanchez";
-  min-width:1400px;
-}
-</style>

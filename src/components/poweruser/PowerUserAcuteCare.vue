@@ -146,7 +146,7 @@ const db = getFirestore(firebaseApp);
                     var name = yy.name
                     var category = yy.category
 
-                    if (category == "DME"){
+                    if (category == "acute care"){
                         x.name = name
                         x.quantity = yy.quantity
                         x.id = yy.id

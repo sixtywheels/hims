@@ -5,24 +5,16 @@
     :items="items"
     :items-per-page="5"
     class="elevation-1">
-        <template v-slot:item.quantity = "props">
-            {{props.item.quantity}}
-            <div>
-                <b-progress
-                :max = "props.item.threshold2">
-                    <b-progress-bar variant="primary" :value = "props.item.quantity"></b-progress-bar>
-                </b-progress>
-            </div>
-
-                <!-- <v-progress-linear :return-value.sync="quant.item.quantity">
-                </v-progress-linear>
-                <p> {{quant.item.quantity}}</p> -->
-        </template>
-    
         <template v-slot:item.options="{}">
             <v-btn>Order</v-btn>
             <v-btn>Request</v-btn>
-        </template >
+        </template>
+        <template v-slot:item.quantity="props">
+            <v-edit-dialog
+            :return-value.sync="props.item.quantity">
+                <v-progress-linear value=props.item.quantity></v-progress-linear>
+            </v-edit-dialog>
+        </template>
         <template v-slot:item.threshold1="props">
             <v-edit-dialog
             :return-value.sync="props.item.threshold1"
@@ -47,31 +39,7 @@
                 </template>
             </v-edit-dialog>
         </template>
-                <template v-slot:item.threshold2="props">
-            <v-edit-dialog
-            :return-value.sync="props.item.threshold2"
-            large
-            persistent
-            @save = "save(props)"
-            @cancel = "cancel"
-            @open = "open"
-            @close = "close">
-            {{props.item.threshold2}}
-                <template v-slot:input>
-                    <div class = "mt-4 text-h6">
-                        Update Threshold
-                    </div>
-                    <v-text-field
-                    v-model.number = "props.item.threshold2"
-                    :rules = "[isInt]"
-                    label = "Edit"
-                    single-line
-                    autofocus>
-                    </v-text-field>
-                </template>
-            </v-edit-dialog>
-        </template>
-     
+       
     </v-data-table>
     <v-snackbar
     v-model="snack"
@@ -146,7 +114,7 @@ const db = getFirestore(firebaseApp);
                     var name = yy.name
                     var category = yy.category
 
-                    if (category == "DME"){
+                    if (category == "acute care"){
                         x.name = name
                         x.quantity = yy.quantity
                         x.id = yy.id
@@ -221,7 +189,6 @@ const db = getFirestore(firebaseApp);
                 this.snackColor = 'success'
                 this.snackText = 'Data saved'
             },
-
             cancel () {
                 this.snack = true
                 this.snackColor = 'error'
