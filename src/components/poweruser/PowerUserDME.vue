@@ -6,11 +6,11 @@
     :items-per-page="5"
     class="elevation-1">
         <template v-slot:item.quantity = "props">
-            {{props.item.quantity}}
             <div>
                 <b-progress
                 :max = "props.item.threshold2">
                     <b-progress-bar variant="primary" :value = "props.item.quantity"></b-progress-bar>
+                    <b-progress-bar variant="warning" :value = "props.item.pendingArrival"></b-progress-bar>
                 </b-progress>
             </div>
 
@@ -128,6 +128,8 @@ const db = getFirestore(firebaseApp);
                 items: [],
                 newthreshold1:0,
                 newthreshold2:0,
+                pending: [],
+                pending2: [],
             }
         },
 
@@ -138,6 +140,8 @@ const db = getFirestore(firebaseApp);
         methods: {
             async display(){
                 let z  = await getDocs(collection(db, "ItemSupplies"));
+
+                await this.getPending()
 
                 z.forEach((docs) => {
                     let yy = docs.data()
@@ -154,6 +158,7 @@ const db = getFirestore(firebaseApp);
                         x.threshold2 = yy.threshold2
                         x.imgLink = yy.imgLink
                         x.category = yy.category
+                        x.pendingArrival = this.findTotalPending(yy.id)
 
                         this.items = this.items.concat(x)
                     }
@@ -236,10 +241,42 @@ const db = getFirestore(firebaseApp);
                 console.log('Dialog closed')
             },
 
-            // submit2(item, threshold){
-            //     this.appendinstrument2(item, threshold);
-            //     this.deleteinstrument(item)
-            // }
+            async getPending() {
+                var z  = await getDocs(collection(db, "PendingArrival"));
+                
+                z.forEach((docs) => {
+                    let yy = docs.data()
+                    let a = {}
+                    
+                    a.id = yy.Item_Id
+                    a.quant = yy.Order_Quantity
+                    
+                    this.pending = this.pending.concat(a)
+                })
+                this.pending2 = this.getPendingReduced(this.pending)
+                return this.pending2;
+            },
+
+            getPendingReduced(array) {
+                var reduced_array = array.reduce( (final,data) => {
+                    let isAlready = final.find( ( value ) => { 
+                        value.id == data.id;
+                    });
+                    if(!isAlready){
+                        final.push( data );
+                    } 
+                    else {
+                        var index = final.indexOf(isAlready);
+                        final[index].quant = parseFloat(final[index].quant) + parseFloat(data.quant);
+                    } return final; 
+                }, [] )
+                return reduced_array;
+            },
+
+            findTotalPending(id2) {
+                var item = this.pending2.find(x => x.id === id2).quant  
+                return item
+            }
         }
     }
     
