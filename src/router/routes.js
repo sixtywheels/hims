@@ -29,11 +29,6 @@ const routes = [
     { path: '/poweruserwip', component: PowerUserWIP}, 
     { path: '/poweruserlogin', component: PowerUserLogin },
     { path: '/powerusersignup', component: PowerUserSignUp },
-<<<<<<< HEAD
-    { path: '/poweruserdashboard', component: PowerUserDashboard},
-    //{ path: '/poweruserdashboard/poweruserdme', component: PowerUserDME},
-    { path: '/poweruserdme', component: PowerUserDME},
-=======
     { path: '/poweruserdashboard', component: PowerUserDashboard, 
     children: [
         {
@@ -49,7 +44,6 @@ const routes = [
             component: PowerUserSurgical,
         }
     ]},
->>>>>>> 5932b6c84829b100351a7f8c30b1c31308aa07c8
     { path: '/manageitemsupplies', component: ManageItemSupplies },
 
     { path: '/userwip', component: UserWIP}, 
