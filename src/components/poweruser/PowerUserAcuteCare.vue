@@ -47,7 +47,7 @@
                 </template>
             </v-edit-dialog>
         </template>
-        <template v-slot:item.threshold2="props">
+                <template v-slot:item.threshold2="props">
             <v-edit-dialog
             :return-value.sync="props.item.threshold2"
             large
@@ -71,7 +71,7 @@
                 </template>
             </v-edit-dialog>
         </template>
-       
+     
     </v-data-table>
     <v-snackbar
     v-model="snack"

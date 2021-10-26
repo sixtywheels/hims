@@ -1,194 +1,225 @@
 <template>
 <div>
+    <v-data-table
+    :headers="headers"
+    :items="items"
+    :items-per-page="5"
+    class="elevation-1">
+        <template v-slot:item.quantity = "props">
+            {{props.item.quantity}}
+            <div>
+                <b-progress
+                :max = "props.item.threshold2">
+                    <b-progress-bar variant="primary" :value = "props.item.quantity"></b-progress-bar>
+                </b-progress>
+            </div>
 
-<h1> Inventory Table DME </h1>
+                <!-- <v-progress-linear :return-value.sync="quant.item.quantity">
+                </v-progress-linear>
+                <p> {{quant.item.quantity}}</p> -->
+        </template>
+    
+        <template v-slot:item.options="{}">
+            <v-btn>Order</v-btn>
+            <v-btn>Request</v-btn>
+        </template >
+        <template v-slot:item.threshold1="props">
+            <v-edit-dialog
+            :return-value.sync="props.item.threshold1"
+            large
+            persistent
+            @save = "save(props)"
+            @cancel = "cancel"
+            @open = "open"
+            @close = "close">
+            {{props.item.threshold1}}
+                <template v-slot:input>
+                    <div class = "mt-4 text-h6">
+                        Update Threshold
+                    </div>
+                    <v-text-field
+                    v-model.number = "props.item.threshold1"
+                    :rules = "[isInt]"
+                    label = "Edit"
+                    single-line
+                    autofocus>
+                    </v-text-field>
+                </template>
+            </v-edit-dialog>
+        </template>
+     
+    </v-data-table>
+    <v-snackbar
+    v-model="snack"
+    :timeout="3000"
+    :color="snackColor"
+    >
+        {{ snackText }}
 
-<v-progress-linear value="15"></v-progress-linear>
-
-<table id= "table">
-    <tr>
-    <th>S.No</th>
-    <th>Name</th>
-    <th>Inventory Level</th>
-    <th>Options</th>
-    <th>Edit Threshold</th>
-    </tr>
-</table><br><br>
-
+        <template v-slot:action="{ attrs }">
+            <v-btn
+            v-bind="attrs"
+            text
+            @click="snack = false"
+            >
+                Close
+            </v-btn>
+        </template>
+    </v-snackbar>
 </div>
 </template>
 
 <script>
-
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, doc, deleteDoc, setDoc} from "firebase/firestore"
+import { collection, getDocs , doc, setDoc, deleteDoc} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
 
-export default {
-    mounted(){
-    async function display(){
-        let z = await getDocs(collection(db,"ItemSupplies"))
-        let ind = 1
+// const itemsRef =  collection(db, "ItemSupplies")
 
-        z.forEach((docs) => {
-            let yy = docs.data()
-            var table = document.getElementById("table")
-            var row = table.insertRow(ind)
-
-            var name = (yy.name)
-            var inventory_lvl = (yy.quantity)
-            var category = (yy.category)
-            
-            //pop-up-form div
-            var pop_up = document.createElement('div')
-            pop_up.class = "form-popup"
-            pop_up.id = "threshold_pop"
-            
-            pop_up.style.display = "none"
-            pop_up.style.position = "relative"
-
-            var form_pop_up = document.createElement('form')
-            form_pop_up.class = "form-container"
-            pop_up.appendChild(form_pop_up)
-
-            var pop_up_button_close = document.createElement("button")
-            pop_up_button_close.class = "btn cancel"
-            pop_up_button_close.innerHTML = "close-form"
-            pop_up_button_close.type = "button"
-            pop_up_button_close.onclick = function closeForm() {
-                pop_up.style.display = "none";
-                pop_up_button_open.style.display = "block"
+    export default {
+        data () {
+            return {
+                snack: false,
+                snackColor: '',
+                snackText: '',
+                isInt: v  => {
+                    if (!isNaN(parseFloat(v)) && v >= 0) return true;
+                    return 'Input has to be a Number!';
+                },
+                
+                headers: [
+                    {
+                        text: 'S/N',
+                        align: 'start',
+                        sortable: false,
+                        value: 'id',
+                    },
+                    { text: 'Item Name', value: 'name' },
+                    { text: 'Inventory Level', value: 'quantity' },
+                    { text: 'Options', value: 'options' },
+                    { text: 'Threshold1', value: 'threshold1' },
+                    { text: 'Threshold2', value: 'threshold2' },
+                ],
+                items: [],
+                newthreshold1:0,
+                newthreshold2:0,
             }
+        },
 
-            //button to open the pop-up
-            var pop_up_button_open = document.createElement("button")
-            pop_up_button_open.class = "open-button"
-            pop_up_button_open.innerHTML = "Open Form"
-            pop_up_button_open.style.display = "block"
-            pop_up_button_open.onclick = function openForm() {
-                pop_up.style.display = "block";
-                pop_up_button_open.style.display = "none"
-            }
+        mounted(){
+            this.display()
+        },
 
-            if (category == "DME") {
+        methods: {
+            async display(){
+                let z  = await getDocs(collection(db, "ItemSupplies"));
 
-            var cell1 = row.insertCell(0); var cell2 = row.insertCell(1); var cell3 = row.insertCell(2);
-            var cell4 = row.insertCell(3); var cell5 = row.insertCell(4);
+                z.forEach((docs) => {
+                    let yy = docs.data()
+                    let x = {}
+
+                    var name = yy.name
+                    var category = yy.category
+
+                    if (category == "DME"){
+                        x.name = name
+                        x.quantity = yy.quantity
+                        x.id = yy.id
+                        x.threshold1 = yy.threshold1
+                        x.threshold2 = yy.threshold2
+                        x.imgLink = yy.imgLink
+                        x.category = yy.category
+
+                        this.items = this.items.concat(x)
+                    }
+                })
+                return this.items
+            },
+
+            // submit1(){
+            //     var item = this.item;
+            //     var threshold = this.threshold1
+            //     console.log(item, threshold) 
+            //     this.appendinstrument1(item, threshold);
+            //     this.deleteinstrument(item)
+            // },
+
+            deleteinstrument(name){
+                var x = name
+                deleteDoc(doc(db, "ItemSupplies", x))
+
+                let tb = document.getElementById("table")
+                while(tb.rows.length > 1){
+                    tb.deleteRow(1)
+                }
+                console.log("Document successfully deleted!", x);
+            },
     
-            cell1.innerHTML = ind; cell2.innerHTML = name; cell3.innerHTML = inventory_lvl;
-            
-            var bu_request = document.createElement("button")
-            bu_request.className = "Request"
-            bu_request.innerHTML = "Request"
-            bu_request.onclick = function(){
-            }
-            cell4.appendChild(bu_request)
+            async appendinstrument2(item, threshold){
+                var a = (item.id)
+                var b = (item.imgLink)
+                var c = (item.name)
+                var d = (item.threshold1)
+                var e = (item.category)
+                var f = (item.quantity)
+                console.log(b)
+                await setDoc(doc(db, "ItemSupplies", a), {id: a, imgLink: b, name: c, threshold1: d, threshold2: threshold, category: e, quantity: f})
+            },
+    
+            async appendinstrument1(item, threshold){
+                var a = (item.id)
+                var b = (item.imgLink)
+                var c = (item.name)
+                var d = (item.threshold2)
+                var e = (item.category)
+                var f = (item.quantity)
+                await setDoc(doc(db, "ItemSupplies", a), {id: a, imgLink: b, name: c, threshold1: threshold, threshold2: d, category: e, quantity: f})
+            },
 
-            // Start of Inventory bar using v-progress
+            save (props) {
+                this.snack = true
+                var a = (props.item.id)
+                var b = (props.item.imgLink)
+                var c = (props.item.name)
+                var d = (props.item.threshold2)
+                var e = (props.item.category)
+                var f = (props.item.quantity)
+                var g = (props.item.threshold1)
+                setDoc(doc(db, "ItemSupplies", a), {id: a, imgLink: b, name: c, threshold1: g, threshold2: d, category: e, quantity: f})
+                // this.$firestoreRefs.user
+                //     .update({ lastName: newLastName })
+                //     .then(() => {
+                //         console.log('user updated!')
+                //     })
+                // this.appendinstrument1(props.item, newthreshold1)
+                // this.deleteinstrument(props.item.name)
+                this.snackColor = 'success'
+                this.snackText = 'Data saved'
+            },
 
-            var bu_order = document.createElement("button")
-            bu_order.className = "Order"
-            bu_order.innerHTML = "Order"
-            bu_order.onclick = function(){
-            }
-            cell4.appendChild(bu_order)
+            cancel () {
+                this.snack = true
+                this.snackColor = 'error'
+                this.snackText = 'Canceled'
+            },
+            open () {
+                this.snack = true
+                this.snackColor = 'info'
+                this.snackText = 'Dialog opened'
+            },
+            close () {
+                console.log('Dialog closed')
+            },
 
-            //Start of pop-up
-            //Creating an input field for each pop-up form
-
-            var input_field = document.createElement("input")
-            input_field.id = "Threshold_input"
-            input_field.type = "number"
-            input_field.min = "0"
-            input_field.placeholder = "Enter Threshold"
-            input_field.required = true
-            form_pop_up.appendChild(input_field)
-            
-            var bu_edit_low = document.createElement("button")
-            bu_edit_low.className = "Edit_low"
-            bu_edit_low.innerHTML = "Edit_low"
-            bu_edit_low.type = "submit"
-            bu_edit_low.onclick = function(){
-                var threshold_input_1 = parseInt(input_field.value);
-                appendinstrument1(yy, threshold_input_1);
-                deleteinstrument(name);
-            }
-            form_pop_up.appendChild(bu_edit_low)
-
-            var bu_edit_high = document.createElement("button")
-            bu_edit_high.className = "Edit_high"
-            bu_edit_high.innerHTML = "Edit_high"
-            bu_edit_high.type = "submit"
-            bu_edit_high.onclick = function(){
-                var threshold_input_2 = parseInt(input_field.value);
-                appendinstrument2(yy, threshold_input_2)
-                deleteinstrument(name);
-            }
-            form_pop_up.appendChild(bu_edit_high)
-            form_pop_up.appendChild(pop_up_button_close)
-
-            //pop-up Appened into cell 6
-            cell5.appendChild(pop_up_button_open)
-            cell5.appendChild(pop_up)
-            ind += 1
+            // submit2(item, threshold){
+            //     this.appendinstrument2(item, threshold);
+            //     this.deleteinstrument(item)
+            // }
         }
-
-        })
-
     }
     
-    display()
-
-    function deleteinstrument(name){
-            var x = name
-            deleteDoc(doc(db, "ItemSupplies", x))
-
-            let tb = document.getElementById("table")
-            while(tb.rows.length > 1){
-                tb.deleteRow(1)
-            }
-            console.log("Document successfully deleted!", x);
-            display()
-        }
     
-    async function appendinstrument2(item, threshold){
-            var a = (item.id)
-            var b = (item.imgLink)
-            var c = (item.name)
-            var d = (item.threshold1)
-            var e = (item.category)
-            var f = (item.quantity)
-            console.log(b)
-            await setDoc(doc(db, "ItemSupplies", a), {id: a, imgLink: b, name: c, threshold1: d, threshold2: threshold, category: e, quantity: f})
-        }
-    
-    async function appendinstrument1(item, threshold){
-            var a = (item.id)
-            var b = (item.imgLink)
-            var c = (item.name)
-            var d = (item.threshold2)
-            var e = (item.category)
-            var f = (item.quantity)
-            await setDoc(doc(db, "ItemSupplies", a), {id: a, imgLink: b, name: c, threshold1: threshold, threshold2: d, category: e, quantity: f})
-        }
-    
-    /*function getClass(a, threshold1, threshold2) {
-        if (a < threshold1) {
-            this.class = "first"
-            return this.class
-        }
-        if (a > threshold2) {
-            this.class = "third"
-            return this.class
-        }
-        else {
-            this.class = "second"
-            return this.class
-        }
-    }*/   
-    }
-};
 </script>
 
 <style>
