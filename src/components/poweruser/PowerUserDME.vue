@@ -47,6 +47,30 @@
                 </template>
             </v-edit-dialog>
         </template>
+                <template v-slot:item.threshold2="props">
+            <v-edit-dialog
+            :return-value.sync="props.item.threshold2"
+            large
+            persistent
+            @save = "save(props)"
+            @cancel = "cancel"
+            @open = "open"
+            @close = "close">
+            {{props.item.threshold2}}
+                <template v-slot:input>
+                    <div class = "mt-4 text-h6">
+                        Update Threshold
+                    </div>
+                    <v-text-field
+                    v-model.number = "props.item.threshold2"
+                    :rules = "[isInt]"
+                    label = "Edit"
+                    single-line
+                    autofocus>
+                    </v-text-field>
+                </template>
+            </v-edit-dialog>
+        </template>
      
     </v-data-table>
     <v-snackbar
