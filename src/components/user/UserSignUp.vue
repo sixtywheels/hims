@@ -26,14 +26,62 @@
                                 label="Staff ID"
                                 v-model="staffID" append-icon="mdi-account">
                             </v-text-field>
-                            <!-- <v-textarea
-                                    label="Company Description"
-                                    v-model="description" append-icon="mdi-image-text">
-                            </v-textarea> -->
-                            <!-- <v-text-field
-                                label="Company Website"
-                                v-model="companyWebsite" append-icon="mdi-web">
-                            </v-text-field> -->
+
+                           <v-select
+                                v-model="select"
+                                :items="items"
+                                :error-messages="selectErrors"
+                                label="Item"
+                                required
+                                @change="$v.select.$touch()"
+                                @blur="$v.select.$touch()"
+                            ></v-select>
+
+                            <v-expansion-panels>
+                                <v-expansion-panel>
+                                <v-expansion-panel-header v-slot="{ open }">
+                                    <v-row no-gutters>
+                                    <v-col cols="4">
+                                        Department
+                                    </v-col>
+                                    <v-col
+                                        cols="8"
+                                        class="text--secondary"
+                                    >
+                                        <v-fade-transition leave-absolute>
+                                        <span
+                                            v-if="open"
+                                            key="0"
+                                        >
+                                            Select department
+                                        </span>
+                                        <span
+                                            v-else
+                                            key="1"
+                                        >
+                                            {{ department }}
+                                        </span>
+                                        </v-fade-transition>
+                                    </v-col>
+                                    </v-row>
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <v-row no-gutters>
+                                    <v-spacer></v-spacer>
+                                    <v-col cols="5">
+                                        <v-select
+                                        v-model="department"
+                                        :items="departments"
+                                        chips
+                                        flat
+                                        solo
+                                        ></v-select>
+                                    </v-col>
+                                    </v-row>
+                                </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+                            <br>
                             <v-btn color="#B3E5FC" class="mr-4" type="submit">Register</v-btn>
                         </v-form>
                     </v-card-text>
@@ -55,54 +103,72 @@
 // import 'firebase/compat/firestore';
 // import db from "../../firebase.js";
 
-// export default {
-//     data() {
-//         return {
-//             email: '',
-//             password: '',
-//             staffID:'',
-//             value:String,
-//         };
-//     },
-//     methods: {
-//         register: async function()  {
+import firebase from '@/uifire.js'
+import 'firebase/compat/auth';
+import { getFirestore } from "firebase/firestore";
+import firebaseApp from '../../firebase.js';
+const db = getFirestore(firebaseApp);
+import { setDoc, doc, getDocs, query, collection, where } from "firebase/firestore";
 
-//             if (this.email == null || this.password == null || this.staffID == null) {
-//                 alert("Please fill up the fields!")
-//             } else {
-//                 await firebase
-//                     .auth()
-//                     .createUserWithEmailAndPassword(this.email, this.password)
-//                     .then( async () => {
-//                         const user = firebase.auth().currentUser;
-//                         user.updateProfile({
-//                             displayName: this.fullName
-//                         }).then( async () => {
-//                             await db.collection('users').doc(user.uid).set({
-//                                 email: this.email,
-//                                 staffID: this.staffID,
-//                             });
-//                             await firebase.auth().signOut().then(function() {
-//                                 console.log("Signed Up and Signed Out!");
-//                             }, function(error) {
-//                                 console.log(error);
-//                             })
-//                             .then(() => {
-//                                 alert("Account Created Successfully!");
-//                                 this.$router.push("userwip");
-//                             })  
-//                         }).catch(error => {
-//                             alert(error.message);
-//                         });
-//                     })
-//                     .catch(error => {
-//                         alert(error.message);
-//                     });
-//             }
-      
-//         },
-//     },
-// };
+export default {
+    data() {
+        return {
+            email: '',
+            password: '',
+            staffID:'',
+            value:String,            
+            items: [
+                'Item 1',
+                'Item 2',
+                'Item 3',
+                'Item 4',
+            ],
+            departments: ['Australia', 'Barbados', 'Chile', 'Denmark', 'Ecuador', 'France'],
+        };
+    },
+    methods: {
+        register: async function() {
+            if (this.email == null || this.password == null || this.staffID == null) {
+                alert("Please fill up the fields!")
+            } else { 
+                var currentUser = await getDocs(query(collection(db, "users"), where("staffID", "==", this.staffID)));
+                var currentPowerUser = await getDocs(query(collection(db, "powerusers"), where("staffID", "==", this.staffID)));
+                if (currentUser.empty && currentPowerUser.empty){
+                    await firebase
+                        .auth()
+                        .createUserWithEmailAndPassword(this.email, this.password)
+                        .then(async () => {
+                            const user = firebase.auth().currentUser;
+                            user.updateProfile({
+                                displayName: this.fullName
+                            }).then(async () => {
+                                await setDoc(doc(db, "users", this.staffID), {
+                                    email: this.email,
+                                    staffID: this.staffID,
+                                    // department: this.department,
+                                });
+                                await firebase.auth().signOut().then(function() {
+                                    console.log("Signed Up and Signed Out!");
+                                }, function(error) {
+                                    console.log(error);
+                                })
+                                .then(() => {
+                                    alert("Account Created Successfully!");
+                                    this.$router.push("userlogin");
+                                })  
+                            }).catch(error => {
+                                alert(error.message);
+                            });
+                        }).catch(error => {
+                                    alert(error.message);
+                        });
+                } else {
+                    alert("An account has already been created for staff ID: " + this.staffID)
+                }
+            }
+        },
+    },
+};
 
 </script>
 

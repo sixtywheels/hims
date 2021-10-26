@@ -26,14 +26,13 @@
                                 label="Staff ID"
                                 v-model="staffID" append-icon="mdi-account">
                             </v-text-field>
-                            <!-- <v-textarea
-                                    label="Company Description"
-                                    v-model="description" append-icon="mdi-image-text">
-                            </v-textarea> -->
-                            <!-- <v-text-field
-                                label="Company Website"
-                                v-model="companyWebsite" append-icon="mdi-web">
-                            </v-text-field> -->
+
+                            <v-text-field
+                                value="Logistics & Procurement"
+                                label="Department"
+                                readonly
+                                append-icon="mdi-account-group"
+                            ></v-text-field>
                             <v-btn color="#B3E5FC" class="mr-4" type="submit">Register</v-btn>
                         </v-form>
                     </v-card-text>
@@ -49,7 +48,6 @@
 </template>
 
 <script>
-
 // import firebase from 'firebase/compat/app';
 // import 'firebase/compat/auth';
 // import 'firebase/compat/firestore';
@@ -57,13 +55,10 @@
 
 import firebase from '@/uifire.js'
 import 'firebase/compat/auth';
-
 import { getFirestore } from "firebase/firestore";
 import firebaseApp from '../../firebase.js';
 const db = getFirestore(firebaseApp);
-
-// import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
-import { doc, setDoc } from "firebase/firestore";
+import { setDoc, doc, getDocs, query, collection, where } from "firebase/firestore";
 
 export default {
     data() {
@@ -71,6 +66,7 @@ export default {
             email: '',
             password: '',
             staffID:'',
+            department: 'Logistics & Procurement',
             value:String,
         };
     },
@@ -78,37 +74,46 @@ export default {
         register: async function() {
             if (this.email == null || this.password == null || this.staffID == null) {
                 alert("Please fill up the fields!")
-            } else {
-                await firebase
-                    .auth()
-                    .createUserWithEmailAndPassword(this.email, this.password)
-                    .then(async () => {
-                        const user = firebase.auth().currentUser;
-                        user.updateProfile({
-                            displayName: this.fullName
-                        }).then(async () => {
-                            await setDoc(doc(db, "powerusers", this.staffID), {
-                                email: this.email,
-                                staffID: this.staffID,
+            } else { 
+                var currentUser = await getDocs(query(collection(db, "users"), where("staffID", "==", this.staffID)));
+                var currentPowerUser = await getDocs(query(collection(db, "powerusers"), where("staffID", "==", this.staffID)));
+                if (currentUser.empty && currentPowerUser.empty){
+                    await firebase
+                        .auth()
+                        .createUserWithEmailAndPassword(this.email, this.password)
+                        .then(async () => {
+                            const user = firebase.auth().currentUser;
+                            user.updateProfile({
+                                displayName: this.fullName
+                            }).then(async () => {
+                                await setDoc(doc(db, "powerusers", this.staffID), {
+                                    email: this.email,
+                                    staffID: this.staffID,
+                                    department: this.department,
+                                });
+                                await firebase.auth().signOut().then(function() {
+                                    console.log("Signed Up and Signed Out!");
+                                }, function(error) {
+                                    console.log(error);
+                                })
+                                .then(() => {
+                                    alert("Account Created Successfully!");
+                                    this.$router.push("poweruserlogin");
+                                })  
+                            }).catch(error => {
+                                alert(error.message);
                             });
-                            await firebase.auth().signOut().then(function() {
-                                console.log("Signed Up and Signed Out!");
-                            }, function(error) {
-                                console.log(error);
-                            })
-                            .then(() => {
-                                alert("Account Created Successfully!");
-                                this.$router.push("poweruserlogin");
-                            })  
                         }).catch(error => {
-                            alert(error.message);
+                                    alert(error.message);
                         });
-                    })
+                } else {
+                    alert("An account has already been created for staff ID: " + this.staffID)
+                }
             }
         },
     },
+    
 };
-
 // export default {
 //     data() {
 //         return {
@@ -120,7 +125,6 @@ export default {
 //     },
 //     methods: {
 //         register: async function()  {
-
 //             if (this.email == null || this.password == null || this.staffID == null) {
 //                 alert("Please fill up the fields!")
 //             } else {
@@ -157,7 +161,6 @@ export default {
 //         },
 //     },
 // };
-
 </script>
 
 <style scoped>

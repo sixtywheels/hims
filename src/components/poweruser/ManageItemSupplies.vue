@@ -1,5 +1,7 @@
 <template>
-    <!-- <div id = "container"> -->
+  <div>
+    <power-user-navigation></power-user-navigation>
+    <div id = "container">
         <form id = "myform">
             <h2>Add Items </h2>
             
@@ -41,19 +43,24 @@
                 </div>
             </div>
         </form>
-    <!-- </div> -->
+    </div>
+  </div>
 </template>
 
 <script>
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, doc , setDoc} from "firebase/firestore"
+import { collection, getDocs, doc , setDoc} from "firebase/firestore";
+import PowerUserNavigation from './PowerUserNavigation.vue';
 const db = getFirestore(firebaseApp);
 
 export default {
 
-
     name:"ManageItemSupplies",
+
+    components: {
+        PowerUserNavigation: PowerUserNavigation,
+    },
 
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
