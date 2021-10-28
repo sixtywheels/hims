@@ -2,19 +2,19 @@
   <div>
   <h3>User Request Form for Yap Kai</h3>
 
-
+  <div id="app">
     <div class = "containerOrderItems">
     <UserRequestComponent  @added="change"/>
     </div>
 
     <h2> Your Transactions </h2>
 
-    <!-- 
+    
     <div class = "containerOrderDisplay">
-        <OrderDisplay :key="refreshComp"/>
+        <UserRequestDisplayComponent :key="refreshComp"/>
     </div>
-    -->
-  
+    
+  </div>
   </div>
 
 </template>
@@ -22,11 +22,11 @@
 <script>
 
 import UserRequestComponent from './UserRequestComponent.vue'
-//import OrderDisplay from '@/components/OrderDisplay.vue'
+import UserRequestDisplayComponent from './UserRequestDisplayComponent.vue'
 
   export default {  
     name:"UserRequestView",
-    components:{ UserRequestComponent }, // , OrderDisplay },
+    components:{ UserRequestComponent, UserRequestDisplayComponent }, // , OrderDisplay },
 
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
@@ -44,6 +44,24 @@ import UserRequestComponent from './UserRequestComponent.vue'
 </script>
 
 <style scoped>
+
+    #app{
+      font-family: Avenir, Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-align: center;
+      color: #2c3e50;
+      margin-top:60px
+
+    }
+
+    #bg{
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 60%;
+    }
+
     .containerOrderItems{
       height:450px ;
     }
@@ -51,5 +69,7 @@ import UserRequestComponent from './UserRequestComponent.vue'
     .containerOrderDisplay{
         float: bottom;
     }
+
+    
 
 </style>
