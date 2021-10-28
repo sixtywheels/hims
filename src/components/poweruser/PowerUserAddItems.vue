@@ -1,6 +1,4 @@
 <template>
-  <div>
-    <power-user-navigation></power-user-navigation>
     <div id = "container">
         <form id = "myform">
             <h2>Add Items </h2>
@@ -44,23 +42,17 @@
             </div>
         </form>
     </div>
-  </div>
 </template>
 
 <script>
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, doc , setDoc} from "firebase/firestore";
-import PowerUserNavigation from './PowerUserNavigation.vue';
+import { collection, getDocs, doc , setDoc} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
 
 export default {
-
-    name:"ManageItemSupplies",
-
-    components: {
-        PowerUserNavigation: PowerUserNavigation,
-    },
+  
+    name:"PowerUserAddItems",
 
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
@@ -82,6 +74,10 @@ export default {
     methods: {
 
         async fetchItemsCategories () {
+        
+        this.itemCategory = []
+        this.originalitemList = []
+
         console.log("FetchItemCategories")
         const query = getDocs(collection(db,"ItemSupplies"))
   
@@ -94,7 +90,7 @@ export default {
               })
 
               //Add Item Categories
-              this.itemCategory = [...new Set(this.originalitemList.map( x => x['category']))];
+              this.itemCategory = [...new Set(this.originalitemList.map( x => x['Category']))];
               console.log('Loaded Categories', this.itemCategory)
  
 
@@ -144,7 +140,7 @@ export default {
               
               //console.log("whats my latest itemList: ")
               //console.log(this.itemIds);
-              console.log("whats my latest itemid: " + this.idLoop.toString())
+              console.log("whats my saving itemid: " + this.idLoop.toString())
 
           } catch (error) {
             console.error("Error adding document: ", error)
@@ -164,7 +160,11 @@ export default {
         console.log(a)
         console.log(b)
 
+        //Error new category is null
         var c = document.getElementById("newCategoryInput").value;
+        if (c == null) {
+          c = ""
+        }
         console.log(c)
 
         var d = document.getElementById("newImageLink").value;
@@ -184,11 +184,11 @@ export default {
         try{
 
             var catConfirm = b
-            if (c != "" ){
+            if (c != "" || c != null ){
                 catConfirm = c
             } 
 
-            const docRef = await setDoc(doc(db, "ItemSupplies", h), {category: catConfirm, id: h, imgLink: d, name: a, quantity: parseInt(e),threshold1: f, threshold2: g})
+            const docRef = await setDoc(doc(db, "ItemSupplies", h), {Category: catConfirm, Item_Id: parseInt(h), ImgLink: d, Item_Name: a, Order_Quantity: parseInt(e), Threshold1: parseInt(f), Threshold2: parseInt(g)})
             console.log(docRef)
             document.getElementById('myform').reset();
             this.$emit("added")
