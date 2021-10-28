@@ -19,6 +19,7 @@ import PowerUserSurgical from '../components/poweruser/PowerUserSurgical';
 import UserWIP from '../components/user/UserWIP';
 import UserLogin from '../components/user/UserLogin';
 import UserSignUp from '../components/user/UserSignUp';
+import UserRequestView from '../components/user/UserRequestView';
 
 Vue.use(VueRouter);
 
@@ -49,6 +50,8 @@ const routes = [
     { path: '/userwip', component: UserWIP}, 
     { path: '/userlogin', component: UserLogin },
     { path: '/usersignup', component: UserSignUp },
+    { path: '/userrequestview', component: UserRequestView }
+
 ];
 
 const router = new VueRouter({
