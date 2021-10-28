@@ -270,6 +270,24 @@ export default {
 
 <style scoped>
 
+    #app{
+        font-family: Avenir, Arial, Helvetica, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: center;
+        color: #2c3e50;
+        margin-top:60px
+
+    }
+
+    #bg{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 60%;
+    }
+    
+
     h2{
         background-color: aqua;
         margin-left: 1050px;
@@ -344,8 +362,6 @@ export default {
       border-radius: 5px;
 
     }
-
-
     #remarkschoosen{
       padding:50px;
       margin-left: 15px;
@@ -354,8 +370,6 @@ export default {
       border-radius: 5px;
 
     }
-
-
 
     #savebutton{ 
       padding: 5px 20px;
