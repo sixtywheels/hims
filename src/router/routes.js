@@ -10,11 +10,14 @@ import ResetPassword from '../components/ResetPassword';
 import PowerUserWIP from '../components/poweruser/PowerUserWIP';
 import PowerUserLogin from '../components/poweruser/PowerUserLogin';
 import PowerUserSignUp from '../components/poweruser/PowerUserSignUp';
+import PowerUserApprovalSystem from '../components/poweruser/PowerUserApprovalSystem';
+
 import PowerUserDashboard from '../components/poweruser/PowerUserDashboard';
 import PowerUserDME from '../components/poweruser/PowerUserDME';
 import PowerUserAddItems from '../components/poweruser/PowerUserAddItems';
 import PowerUserAcuteCare from '../components/poweruser/PowerUserAcuteCare';
 import PowerUserSurgical from '../components/poweruser/PowerUserSurgical';
+
 
 // User pages
 import UserWIP from '../components/user/UserWIP';
@@ -28,9 +31,11 @@ const routes = [
     { path: '/', component: Login },
     { path: '/resetpassword', component: ResetPassword },
     
+    
     { path: '/poweruserwip', component: PowerUserWIP}, 
     { path: '/poweruserlogin', component: PowerUserLogin },
     { path: '/powerusersignup', component: PowerUserSignUp },
+    { path: '/poweruserapprovalsystem', component: PowerUserApprovalSystem}, 
     { path: '/poweruserdashboard', component: PowerUserDashboard, meta: {requiresAuth: true},
         children: [
             { path: '/poweruserdme', component: PowerUserDME, meta: {requiresAuth: true} }, 
