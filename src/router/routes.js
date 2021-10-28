@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import firebase from '@/uifire.js'
 
 // Common pages
 import Login from '../components/Login';
@@ -35,25 +36,16 @@ const routes = [
     { path: '/poweruserlogin', component: PowerUserLogin },
     { path: '/powerusersignup', component: PowerUserSignUp },
     { path: '/poweruserapprovalsystem', component: PowerUserApprovalSystem}, 
-    { path: '/poweruserdashboard', component: PowerUserDashboard, 
-    children: [
-        {
-            path: '/poweruserdme',
-            component: PowerUserDME,
-        },
-        {
-            path: '/poweruseracutecare',
-            component: PowerUserAcuteCare,
-        },
-        {
-            path: '/powerusersurgical',
-            component: PowerUserSurgical,
-        }
-    ]},
-    { path: '/poweruseradditems', component: PowerUserAddItems },
+    { path: '/poweruserdashboard', component: PowerUserDashboard, meta: {requiresAuth: true},
+        children: [
+            { path: '/poweruserdme', component: PowerUserDME, meta: {requiresAuth: true} }, 
+            { path: '/poweruseracutecare', component: PowerUserAcuteCare, meta: {requiresAuth: true} },
+            { path: '/powerusersurgical', component: PowerUserSurgical, meta: {requiresAuth: true} }
+        ]
+    },
+    { path: '/poweruseradditems', component: PowerUserAddItems, meta: {requiresAuth: true} },
 
-
-    { path: '/userwip', component: UserWIP}, 
+    { path: '/userwip', component: UserWIP, meta: {requiresAuth: true} }, 
     { path: '/userlogin', component: UserLogin },
     { path: '/usersignup', component: UserSignUp },
     { path: '/userrequestview', component: UserRequestView }
@@ -62,8 +54,19 @@ const routes = [
 
 const router = new VueRouter({
     mode: 'history',
-    // base: 'localhost:8080',
     routes
+});
+
+router.beforeEach((to, from, next) => {
+    // https://www.freecodecamp.org/news/authentication-with-vue-js-firebase-5c3a82149f66/
+    const currentUser = firebase.auth().currentUser;
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+    if (requiresAuth && !currentUser) {
+        alert("You are not logged in! Bringing you back to your main page")
+        next('/');
+    } else {
+        next();
+    }
 });
 
 export default router;
