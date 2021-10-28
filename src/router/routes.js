@@ -11,7 +11,7 @@ import PowerUserLogin from '../components/poweruser/PowerUserLogin';
 import PowerUserSignUp from '../components/poweruser/PowerUserSignUp';
 import PowerUserDashboard from '../components/poweruser/PowerUserDashboard';
 import PowerUserDME from '../components/poweruser/PowerUserDME';
-import ManageItemSupplies from '../components/poweruser/ManageItemSupplies';
+import PowerUserAddItems from '../components/poweruser/PowerUserAddItems';
 import PowerUserAcuteCare from '../components/poweruser/PowerUserAcuteCare';
 import PowerUserSurgical from '../components/poweruser/PowerUserSurgical';
 
@@ -44,7 +44,7 @@ const routes = [
             component: PowerUserSurgical,
         }
     ]},
-    { path: '/manageitemsupplies', component: ManageItemSupplies },
+    { path: '/poweruseradditems', component: PowerUserAddItems },
 
     { path: '/userwip', component: UserWIP}, 
     { path: '/userlogin', component: UserLogin },
