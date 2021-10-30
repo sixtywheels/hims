@@ -21,7 +21,7 @@
                                 <v-expansion-panel-header v-slot="{ open }">
                                     <v-row no-gutters>
                                     <v-col cols="4">
-                                        Department
+                                        
                                     </v-col>
                                     <v-col
                                         cols="8"
