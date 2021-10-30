@@ -38,9 +38,9 @@ const routes = [
     { path: '/powerusersignup', component: PowerUserSignUp },
     { path: '/poweruserapprovalsystem', component: PowerUserApprovalSystem}, 
     { path: '/poweruserall', component: PowerUserALL, meta: {requiresAuth: true} },
-    { path: '/poweruserdashboard', component: PowerUserDashboard, meta: {requiresAuth: true},
+    { path: '/poweruserdashboard', component: PowerUserDashboard,
         children: [
-            { path: '/poweruserdme', component: PowerUserDME, meta: {requiresAuth: true} }, 
+            { path: '/poweruserdme', component: PowerUserDME }, 
             { path: '/poweruseracutecare', component: PowerUserAcuteCare, meta: {requiresAuth: true} },
             { path: '/powerusersurgical', component: PowerUserSurgical, meta: {requiresAuth: true} }
         ]
