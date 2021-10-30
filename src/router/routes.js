@@ -39,6 +39,7 @@ const routes = [
     { path: '/poweruserlogin', component: PowerUserLogin },
     { path: '/powerusersignup', component: PowerUserSignUp },
     { path: '/poweruserapprovalsystem', component: PowerUserApprovalSystem}, 
+    { path: '/poweruserall', component: PowerUserALL, meta: {requiresAuth: true} },
     { path: '/poweruserdashboard', component: PowerUserDashboard,
         children: [
             { path: '/poweruserdme', component: PowerUserDME }, 

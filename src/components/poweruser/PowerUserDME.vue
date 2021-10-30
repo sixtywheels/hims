@@ -144,7 +144,7 @@ import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs , doc, setDoc} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
-
+const delay = ms => new Promise(res => setTimeout(res, ms));
 // const itemsRef =  collection(db, "ItemSupplies")
 
     export default {
@@ -213,6 +213,10 @@ const db = getFirestore(firebaseApp);
                             x.pendingArrival = 0
                         }
 
+                        if (x.pendingArrival + x.Order_Quantity < x.Threshold1) {
+                            console.log("TOO LOW")
+                        }
+
                         this.items = this.items.concat(x)
                     }
                 })
@@ -266,7 +270,7 @@ const db = getFirestore(firebaseApp);
             //    await setDoc(doc(db, "ItemSupplies", a), {id: a, imgLink: b, name: c, threshold1: threshold, threshold2: d, category: e, quantity: f})
             //},                      x.Item_Name = name
 
-            save (props) {
+            async save (props) {
                 this.snack = true
                 var a = (props.item.Item_Id).toString()
                 var b = (props.item.ImgLink)
@@ -285,6 +289,15 @@ const db = getFirestore(firebaseApp);
                 // this.deleteinstrument(props.item.name)
                 this.snackColor = 'success'
                 this.snackText = 'Data saved'
+
+                var h = (props.item.pendingArrival)
+                var current_quant = f + h
+                var Trans_Id = await this.fetchTransId("PendingArrival")
+                if (current_quant < g) {
+                    console.log("LOOOOW")
+                    var Topupper = d - current_quant
+                    setDoc(doc(db, "PendingArrival", a), {Item_Id: parseInt(a), Item_Name: c, Category: e, Topup_Quantity: Topupper, Trans_id: Trans_Id})
+                }
             },
 
             cancel () {
@@ -297,8 +310,57 @@ const db = getFirestore(firebaseApp);
                 this.snackColor = 'info'
                 this.snackText = 'Dialog opened'
             },
-            close () {
+
+            async close () {
                 console.log('Dialog closed')
+                await delay(1000);
+                location.reload()
+            },
+
+            async fetchTransId(nameDB) {
+            var transidList = []
+            var transloop = 1
+
+            console.log("FetchingId...")
+            const query = getDocs(collection(db, nameDB))
+                try {
+                    const { docs } = await query
+                    transidList = docs.map(doc => {
+                        const { id } = doc
+                        const data = doc.data()[0]
+                        return { id, ...data }
+                    })
+
+                    console.log('Loaded Ids', transidList)
+                    if (transidList.length == 0) {
+                        transloop = 1
+                    } else {
+                        //Literally Sort out 10 and 1
+                        var transIdsSorted = []
+                        for (let k = 0; k < transidList.length; k++) {
+                        transIdsSorted.push(parseInt(transidList[k]['id']))
+                        }
+                        transIdsSorted.sort(function(a, b){return a-b})
+                        console.log("TransId Sorted List")
+
+                        var checking = transIdsSorted[transIdsSorted.length - 1]
+                        console.log(checking)
+
+                        if ( isNaN(checking) ) {
+                        transloop = 1
+                        console.log(transloop)
+                        } else {
+                        transloop = parseInt(checking)+1
+                        console.log(transloop)
+                        }
+                    }
+                    
+                    console.log("whats my Item Disburse id: " + transloop.toString())
+                    return transloop
+
+                } catch (error) {
+                    console.error("Error adding document: ", error)
+                }
             },
 
             async getPending() {
