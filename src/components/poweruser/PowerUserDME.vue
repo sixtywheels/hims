@@ -234,7 +234,7 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
                 var h = (props.item.pendingArrival)
                 var current_quant = f + h
                 var Trans_Id = await this.fetchTransId("PendingArrival")
-                if (current_quant > g) {
+                if (current_quant < g) {
                     console.log("LOOOOW")
                     var Topupper = d - current_quant
                     setDoc(doc(db, "PendingArrival", a), {Item_Id: parseInt(a), Item_Name: c, Category: e, Topup_Quantity: Topupper, Trans_id: Trans_Id})
