@@ -1,5 +1,6 @@
 <template>
-  
+<div>
+  <div><power-user-navigation></power-user-navigation></div>
    <div id="vcard">
             <v-card id="mycard" width="700">
                 <div id="content">
@@ -26,7 +27,7 @@
                             <!-- <br v-if = "this.SelectedCategory == 'None of these'"> -->
 
                             <span>
-                              <span v-if="this.SelectedCategory == 'None of these'">
+                              <span v-if="this.SelectedCategory == 'Add new Category'">
                                 <v-text-field label="New Category" v-model="InputNewCategory"></v-text-field>
                               </span>
                             </span>
@@ -43,10 +44,11 @@
                 </div>
             </v-card>
   </div>
-    
+    </div>
 </template>
 
 <script>
+import PowerUserNavigation from './PowerUserNavigation'
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, doc , setDoc} from "firebase/firestore"
@@ -77,6 +79,10 @@ export default {
       }
     },
 
+      components: {
+        PowerUserNavigation: PowerUserNavigation,
+    },
+
     mounted: function() {
       this.fetchItemsCategories()
       console.info('mounted, itemListCategories:', this.itemCategory)
@@ -103,7 +109,7 @@ export default {
 
               //Add Item Categories
               this.itemCategory = [...new Set(this.originalitemList.map( x => x['Category']))];
-              this.itemCategory.push("None of these")
+              this.itemCategory.push("Add new Category")
               console.log('Loaded Categories', this.itemCategory)
  
 

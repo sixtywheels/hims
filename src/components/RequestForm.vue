@@ -1,6 +1,7 @@
 <template>
 
 <div>
+  <div><power-user-navigation></power-user-navigation></div>
   <!-- <h2>Order Items </h2> -->
 
   <div id="itemImg"  @change="changeItems($event)" class = "containerLeft"  >
@@ -86,6 +87,7 @@
 
 
 <script>
+import PowerUserNavigation from '../components/poweruser/PowerUserNavigation'
 import firebaseApp from '../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, doc , setDoc, query, where } from "firebase/firestore"
@@ -115,6 +117,10 @@ export default {
       item_Name: '',
       itemselector: [],
       }
+    },
+
+    components: {
+        PowerUserNavigation: PowerUserNavigation,
     },
 
     mounted: function() {
