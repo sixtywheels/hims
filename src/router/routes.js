@@ -18,6 +18,7 @@ import PowerUserAddItems from '../components/poweruser/PowerUserAddItems';
 import PowerUserAcuteCare from '../components/poweruser/PowerUserAcuteCare';
 import PowerUserSurgical from '../components/poweruser/PowerUserSurgical';
 import PowerUserALL from '../components/poweruser/PowerUserALL';
+import RequestForm from '../components/RequestForm';
 
 
 // User pages
@@ -31,6 +32,7 @@ Vue.use(VueRouter);
 const routes = [ 
     { path: '/', component: Login },
     { path: '/resetpassword', component: ResetPassword },
+    { path: '/requestform', component: RequestForm},  
     
     
     { path: '/poweruserwip', component: PowerUserWIP}, 
@@ -42,7 +44,8 @@ const routes = [
         children: [
             { path: '/poweruserdme', component: PowerUserDME }, 
             { path: '/poweruseracutecare', component: PowerUserAcuteCare, meta: {requiresAuth: true} },
-            { path: '/powerusersurgical', component: PowerUserSurgical, meta: {requiresAuth: true} }
+            { path: '/powerusersurgical', component: PowerUserSurgical, meta: {requiresAuth: true} },
+            { path: '/poweruserall', component: PowerUserALL, meta: {requiresAuth: true} }
         ]
     },
     { path: '/poweruseradditems', component: PowerUserAddItems, meta: {requiresAuth: true} },
