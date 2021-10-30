@@ -3,7 +3,7 @@
         <v-btn v-on:click = "$router.push({ path:'/PowerUserDashboard' })">
             <div>Dashboard</div>
         </v-btn>
-        <v-btn v-on:click = "$router.push({ path:'/ManageItemSupplies' })">
+        <v-btn v-on:click = "$router.push({ path:'/PowerUserAddItems' })">
             <div>Manage Item Supplies</div>
         </v-btn>
     </div>

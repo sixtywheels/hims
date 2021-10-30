@@ -10,7 +10,7 @@
                 
                 <label for="itemName"> Item Name </label>
                 <input type="text" id="itemName" required="" placeholder = "Enter Item Name"> <br><br>
-        
+                <br>
                 <label> Category </label>
                 <select id="categorychoosenmain" class="form-control" v-model="categorySelection" required @change="fetchItemsCategories($event)">
                     <option value="" selected disabled>Choose</option>
@@ -21,7 +21,7 @@
                 <!--https://stackoverflow.com/questions/34621142/vuejs-display-other-input-fields-based-on-selected-value-from-dropdown -->
                 <br v-if = "categorySelection == 'None of these'">
                 <label v-if = "categorySelection == 'None of these'" for="newCategoryInput">New Category </label>
-                <input v-if = "categorySelection == 'None of these'"  type="text" id="newCategoryInput" required="" placeholder = "Enter New Category"> <br><br>
+                <input v-if = "categorySelection == 'None of these'"  type="text" id="newCategoryInput" required="" value = "NIL" placeholder = "Enter New Category"> <br><br>
 
                 <label for="newImageLink"> Image Link: </label>
                 <input type="text" id="newImageLink" required="" placeholder = "Enter Imgage Link"> <br><br>
@@ -162,9 +162,9 @@ export default {
 
         //Error new category is null
         var c = document.getElementById("newCategoryInput").value;
-        if (c == null) {
-          c = ""
-        }
+       // if (c == null || c == "") {
+        //  c = ""
+        //}
         console.log(c)
 
         var d = document.getElementById("newImageLink").value;
@@ -183,9 +183,9 @@ export default {
 
         try{
 
-            var catConfirm = b
-            if (c != "" || c != null ){
-                catConfirm = c
+            var catConfirm = c
+            if (c != "NIL" ){
+                catConfirm = b
             } 
 
             const docRef = await setDoc(doc(db, "ItemSupplies", h), {Category: catConfirm, Item_Id: parseInt(h), ImgLink: d, Item_Name: a, Order_Quantity: parseInt(e), Threshold1: parseInt(f), Threshold2: parseInt(g)})
@@ -211,6 +211,11 @@ export default {
         background-color:yellow;
     }
 
+    label{
+      text-align: right;
+      padding-right: 50px ; 
+    }
+
     .formli{
         display: inline-block;
         text-align: right;
@@ -218,7 +223,6 @@ export default {
 
     form{
         text-align: center;
-        align-items: center;
         margin: auto;
     }
 
@@ -226,6 +230,11 @@ export default {
         box-shadow: 3px 3px purple;
         border-radius: 2px;
     }
+
+    #id{
+      text-align: right;
+    }
+
 
     .save{
         text-align: center;
