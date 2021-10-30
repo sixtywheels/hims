@@ -1,47 +1,49 @@
 <template>
-    <div id = "container">
-        <form id = "myform">
-            <h2>Add Items </h2>
-            
-            <div class = "formli">
+  
+   <div id="vcard">
+            <v-card id="mycard" width="700">
+                <div id="content">
+                    <v-card-title>Add New Items to Inventory</v-card-title>
+                    <v-card-text>
 
-                <label for="id"> Item S/N: </label>
-                <h3 id = "id"> {{ this.idLoop}} </h3> <br>
-                
-                <label for="itemName"> Item Name </label>
-                <input type="text" id="itemName" required="" placeholder = "Enter Item Name"> <br><br>
-                <br>
-                <label> Category </label>
-                <select id="categorychoosenmain" class="form-control" v-model="categorySelection" required @change="fetchItemsCategories($event)">
-                    <option value="" selected disabled>Choose</option>
-                    <option value="None of these"  >None of these</option>
-                    <option id="categorychoosen" v-for="cat in itemCategory" :value="cat" :key="cat"> {{ cat }}</option> 
-                </select> <br>
+                      <v-form ref="myform">
+                            
+                            <v-text-field
+                                v-model="this.idLoop"
+                                label="Serial Number"
+                                readonly
+                            ></v-text-field>
+                            <v-text-field label="Item Name" v-model="InputItemName"></v-text-field>
+                            <v-select
+                                v-model="SelectedCategory"
+                                :items="itemCategory"
+                                
+                                label="Category"
+                                required
 
-                <!--https://stackoverflow.com/questions/34621142/vuejs-display-other-input-fields-based-on-selected-value-from-dropdown -->
-                <br v-if = "categorySelection == 'None of these'">
-                <label v-if = "categorySelection == 'None of these'" for="newCategoryInput">New Category </label>
-                <input v-if = "categorySelection == 'None of these'"  type="text" id="newCategoryInput" required="" value = "NIL" placeholder = "Enter New Category"> <br><br>
+                            ></v-select>
 
-                <label for="newImageLink"> Image Link: </label>
-                <input type="text" id="newImageLink" required="" placeholder = "Enter Imgage Link"> <br><br>
-                
-                <label for="quant1"> Buy Quantity: </label>
-                <input type="number" id="quant1" required="" placeholder = "Quantity"> <br><br>
+                            <!-- <br v-if = "this.SelectedCategory == 'None of these'"> -->
 
-                <label for="thresh1"> Threshold 1 (Low Stock Level): </label>
-                <input type="number" id="thresh1" min=0 max =1 required="" placeholder = "Enter restock alert"> <br><br>
+                            <span>
+                              <span v-if="this.SelectedCategory == 'None of these'">
+                                <v-text-field label="New Category" v-model="InputNewCategory"></v-text-field>
+                              </span>
+                            </span>
 
-                <label for="thresh2"> Threshold 2 (Healthy Limit): </label>
-                <input type="number" id="thresh2" min=0 max =1  required="" placeholder = "Enter healthy limit"> <br><br>
-
-
-                <div class = "save">
-                    <button id = "savebutton" type = "button" v-on:click = "savetofs()"> Save </button>
+                            <v-text-field label="Image Link" v-model="InputImageLink"></v-text-field>
+                            <v-text-field label="Quantity of New Stock" v-model="InputQuantity"></v-text-field>
+                            <v-text-field label="Min. Stock Level" v-model="InputThreshold1"></v-text-field>
+                            <v-text-field label="Restock Level" v-model="InputThreshold2"></v-text-field>
+                        </v-form>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn color="#B2DFDB" class="mr-4" v-on:click="savetofs()">Add Items</v-btn>
+                    </v-card-actions>
                 </div>
-            </div>
-        </form>
-    </div>
+            </v-card>
+  </div>
+    
 </template>
 
 <script>
@@ -57,9 +59,19 @@ export default {
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
       categorySelection: '',
-      originalitemList: [],
+
+      SelectedCategory: '',
       itemCategory: [],
-      selectedCategory: null,
+      InputItemName: '',
+      InputNewCategory: '',
+      InputImageLink: '',
+      InputQuantity: null,
+      InputThreshold1: null,
+      InputThreshold2: null,
+
+
+      originalitemList: [],
+      //selectedCategory: null,
       itemIds: [],
       idLoop: null,
       }
@@ -91,6 +103,7 @@ export default {
 
               //Add Item Categories
               this.itemCategory = [...new Set(this.originalitemList.map( x => x['Category']))];
+              this.itemCategory.push("None of these")
               console.log('Loaded Categories', this.itemCategory)
  
 
@@ -149,48 +162,44 @@ export default {
 
 
 
-        
-
         async savetofs(){
         console.log("Saving")
         var h = this.idLoop.toString();
-        var a = document.getElementById("itemName").value;
-        var b = document.getElementById("categorychoosen").value;
+        var a = this.InputItemName;
+        var b = this.SelectedCategory;
         console.log(h)
         console.log(a)
         console.log(b)
 
-        //Error new category is null
-        var c = document.getElementById("newCategoryInput").value;
-       // if (c == null || c == "") {
-        //  c = ""
-        //}
+
+        var c = this.InputNewCategory
         console.log(c)
 
-        var d = document.getElementById("newImageLink").value;
-        var e = document.getElementById("quant1").value;
-        var f = document.getElementById("thresh1").value;
-        var g = document.getElementById("thresh2").value;
+        var d = this.InputImageLink;
+        var e = this.InputQuantity;
+        var f = this.InputThreshold1;
+        var g = this.InputThreshold2;
       
         console.log(d)
         console.log(e)
         console.log(f)
         console.log(g)
 
+        //Empty Image Link
         if (d == ""){
           d = "-"
         }
 
         try{
-
             var catConfirm = c
-            if (c != "NIL" ){
+            if (c == '' ){
                 catConfirm = b
-            } 
+        } 
+        console.log(catConfirm)
 
             const docRef = await setDoc(doc(db, "ItemSupplies", h), {Category: catConfirm, Item_Id: parseInt(h), ImgLink: d, Item_Name: a, Order_Quantity: parseInt(e), Threshold1: parseInt(f), Threshold2: parseInt(g)})
             console.log(docRef)
-            document.getElementById('myform').reset();
+            this.$refs.myform.reset()
             this.$emit("added")
             this.fetchItemsCategories()
             this.fetchLastItemId ()

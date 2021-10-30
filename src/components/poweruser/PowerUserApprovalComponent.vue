@@ -187,8 +187,6 @@ export default {
                 //upperthresholdqty += itemSupply[0]['Threshold2']
                 lowerthresholdqty += itemSupply[0]['Threshold1']
 
-
-
                 const findPendingOrders = await pendingArrivalgetter;
                 findPendingOrders.forEach((doc) => {
                 pendingArrivalList.push(doc.data())
@@ -313,7 +311,7 @@ export default {
                         console.log("PLEASE RESTOCK! Automation on Construction", x1);
                         nameDB = "ItemDisbursed"
                         transloop = await fetchTransId(nameDB )
-                        await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id: transloop, Item_Id: parseInt(x3), Category: quantityStatus[1],  Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
+                        await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id: parseInt(transloop), Item_Id: parseInt(x3), Category: quantityStatus[1],  Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
                         
                         //RESTOCKING//
                         //Check for current supplies + pending arrival if exceed threshold2 if not, order ele dont order (IN CONSTRCUTION)
@@ -321,7 +319,7 @@ export default {
                         transloop = await fetchTransId(nameDB )
                         var pendingOrderCheck = await checkAutoOrderMechanism( parseInt(x3), x5)
                         if( pendingOrderCheck[0] == "Proceed Auto Order"){
-                            await setDoc(doc(db, "PendingArrival", transloop.toString()), {Trans_id: transloop, Item_Id: parseInt(x3), Topup_Quantity: quantityStatus[10], Item_Name: x5, Category: quantityStatus[1]})
+                            await setDoc(doc(db, "PendingArrival", transloop.toString()), {Trans_id: parseInt(transloop), Item_Id: parseInt(x3), Topup_Quantity: quantityStatus[10], Item_Name: x5, Category: quantityStatus[1]})
                             console.log("Pending Order is created");
                         } else {
                             console.log("Adequate Pending Orders Incoming!");

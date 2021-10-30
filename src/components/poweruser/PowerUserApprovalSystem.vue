@@ -9,6 +9,10 @@
     <UserRequestComponent  @added="change"/>
     </div>
 
+    <br>
+    <br>
+    <br>
+    <br>
     
     <div class = "containerOrderDisplay">
         <h2> Your Transactions </h2>

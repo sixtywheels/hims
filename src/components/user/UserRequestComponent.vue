@@ -1,6 +1,6 @@
 <template>
 
-<div>
+<div id = "overarch">
   <h2>Order Items </h2>
 
   <div id="itemImg"  @change="changeItems($event)" class = "containerLeft"  >
@@ -270,7 +270,7 @@ export default {
 
 <style scoped>
 
-    #app{
+    #overarch{
         font-family: Avenir, Arial, Helvetica, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -345,11 +345,12 @@ export default {
       text-align: center;
     }
 
-    #categorychoosenmain{
+    .categorychoosenmain{
       margin-left: 20px;
+      width: 30%;
     }
     
-    #itemchoosenmain{
+    .itemchoosenmain{
       margin-left: 50px;
     }
     
@@ -360,8 +361,8 @@ export default {
       border: 2px solid #ccc;
       -webkit-border-radius: 5px;
       border-radius: 5px;
-
     }
+
     #remarkschoosen{
       padding:50px;
       margin-left: 15px;
@@ -378,6 +379,7 @@ export default {
       -webkit-border-radius: 5px;
       cursor: pointer;
       text-align: center;
+      align-items: center;
     }
 
 </style>
