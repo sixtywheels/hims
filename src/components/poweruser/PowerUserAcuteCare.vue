@@ -137,6 +137,7 @@ const db = getFirestore(firebaseApp);
 
         methods: {
             async display(){
+                console.log("displaying")
                 let z  = await getDocs(collection(db, "ItemSupplies"));
 
                 z.forEach((docs) => {
