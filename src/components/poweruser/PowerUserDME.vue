@@ -8,16 +8,66 @@
         <template v-slot:item.Order_Quantity = "props">
             <div>
                 <b-progress
-                :max = "props.item.Threshold2">
+                :max = "props.item.Threshold2" show-value>
                     <b-progress-bar variant="primary" :value = "props.item.Order_Quantity"></b-progress-bar>
                     <b-progress-bar variant="warning" :value = "props.item.pendingArrival"></b-progress-bar>
                 </b-progress>
             </div>
         </template>
     
+        <template v-slot:item.trend="{}">
+            <v-expansion-panels>
+                                <v-expansion-panel>
+                                <v-expansion-panel-header v-slot="{ open }">
+                                    <v-row no-gutters>
+                                    <v-col cols="4">
+                                        Department
+                                    </v-col>
+                                    <v-col
+                                        cols="8"
+                                        class="text--secondary"
+                                    >
+                                        <v-fade-transition leave-absolute>
+                                        <span
+                                            v-if="open"
+                                            key="0"
+                                        >
+                                            
+                                        </span>
+                                        <!-- <span
+                                            v-else
+                                            key="1"
+                                        >
+                                            {{ department }}
+                                        </span> -->
+                                        </v-fade-transition>
+                                    </v-col>
+                                    </v-row>
+                                </v-expansion-panel-header>
+                                <!-- <v-expansion-panel-content>
+                                    <v-row no-gutters>
+                                    <v-spacer></v-spacer>
+                                    <v-col cols="5">
+                                        <v-select
+                                        v-model="department"
+                                        :items="departments"
+                                        chips
+                                        flat
+                                        solo
+                                        ></v-select>
+                                    </v-col>
+                                    </v-row>
+                                </v-expansion-panel-content> -->
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+
+        </template >
+
         <template v-slot:item.options="{}">
             <v-btn>Order</v-btn>
             <v-btn>Request</v-btn>
+            <!-- <v-btn v-model="tryvariable" v-on:click="display2()">Display</v-btn> -->
+
         </template >
         <template v-slot:item.Threshold1="props">
             <v-edit-dialog
@@ -117,6 +167,7 @@ const db = getFirestore(firebaseApp);
                     },
                     { text: 'Item Name', value: 'Item_Name' },
                     { text: 'Inventory Level', value: 'Order_Quantity' },
+                    { text: 'View trend', value:'trend' },
                     { text: 'Options', value: 'options' },
                     { text: 'Threshold1', value: 'Threshold1' },
                     { text: 'Threshold2', value: 'Threshold2' },
@@ -126,6 +177,7 @@ const db = getFirestore(firebaseApp);
                 newthreshold2:0,
                 pending: [],
                 pending2: [],
+                // tryvariable: 0,
             }
         },
 
@@ -165,6 +217,13 @@ const db = getFirestore(firebaseApp);
                     }
                 })
                 return this.items
+            },
+
+            async display2() {
+                console.log("before i change", this.tryvariable)
+                this.tryvariable = 1
+                console.log("Run this function")
+                console.log(this.tryvariable)
             },
 
             // submit1(){
@@ -292,7 +351,7 @@ const db = getFirestore(firebaseApp);
     
 </script>
 
-<style>
+<style scoped>
 
 table {
     font-family: arial, sans-serif;

@@ -22,6 +22,7 @@
         <template v-slot:item.options="{}">
             <v-btn>Order</v-btn>
             <v-btn>Request</v-btn>
+            <v-btn>Display</v-btn>
         </template >
         <template v-slot:item.threshold1="props">
             <v-edit-dialog
@@ -247,7 +248,7 @@ const db = getFirestore(firebaseApp);
     
 </script>
 
-<style>
+<style scoped>
 
 table {
     font-family: arial, sans-serif;

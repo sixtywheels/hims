@@ -288,7 +288,7 @@ const db = getFirestore(firebaseApp);
     
 </script>
 
-<style>
+<style scoped>
 
 table {
     font-family: arial, sans-serif;
