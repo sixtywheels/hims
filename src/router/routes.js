@@ -17,6 +17,7 @@ import PowerUserDME from '../components/poweruser/PowerUserDME';
 import PowerUserAddItems from '../components/poweruser/PowerUserAddItems';
 import PowerUserAcuteCare from '../components/poweruser/PowerUserAcuteCare';
 import PowerUserSurgical from '../components/poweruser/PowerUserSurgical';
+import PowerUserALL from '../components/poweruser/PowerUserALL';
 
 
 // User pages

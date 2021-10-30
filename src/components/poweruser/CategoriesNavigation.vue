@@ -9,6 +9,9 @@
         <v-btn v-on:click = "$router.push({ path:'/powerusersurgical' })">
             <div>Surgical</div>
         </v-btn>
+        <v-btn v-on:click = "$router.push({ path:'/poweruserALL' })">
+            <div>ALL</div>
+        </v-btn>
     <router-view/>
     </div>
 </template>

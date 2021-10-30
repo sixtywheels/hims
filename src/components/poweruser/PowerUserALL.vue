@@ -147,7 +147,7 @@ const db = getFirestore(firebaseApp);
                     var category = yy.Category
                     var name = yy.Item_Name
 
-                    if (category == "DME"){
+                    //if (category == "DME"){
                         x.Item_Name = name
                         x.Order_Quantity = yy.Order_Quantity
                         x.Item_Id = yy.Item_Id
@@ -162,7 +162,7 @@ const db = getFirestore(firebaseApp);
                         }
 
                         this.items = this.items.concat(x)
-                    }
+                    //}
                 })
                 return this.items
             },
@@ -248,15 +248,11 @@ const db = getFirestore(firebaseApp);
                 z.forEach((docs) => {
                     let yy = docs.data()
                     let a = {}
-                    var category = yy.Category
-
-                    if (category == "DME") {
-                        a.Item_Id = yy.Item_Id
-                        a.Topup_Quantity = yy.Topup_Quantity
-                        
-                        this.pending = this.pending.concat(a)
-
-                    }
+                    
+                    a.Item_Id = yy.Item_Id
+                    a.Topup_Quantity = yy.Topup_Quantity
+                    
+                    this.pending = this.pending.concat(a)
                 })
                 this.pending2 = this.getPendingReduced(this.pending)
                 return this.pending2;
