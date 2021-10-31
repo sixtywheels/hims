@@ -1,20 +1,199 @@
 <template>
 
 <div>
-   <!-- <h1 id = "Current"> Orders Requested</h1> -->
-        <table id= "table2" class = "auto-index">
-            <tr>
-            <th>S/N</th>
-            <th>TransId</th>
-            <th>Item Name</th>
-            <th>Item Id </th>
-            <th>Order Quantity</th>
-            <th>Remarks</th>
-            <th>Status</th>
-            <th>Action</th>
-            
-            </tr>
-        </table><br><br>
+    <v-card>
+        <v-card-title>
+        <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+        ></v-text-field>
+        </v-card-title>
+            <v-data-table
+                :headers="headers"
+                :items="requestedrecords"
+                :search="search"
+                class="elevation-1"
+                >
+                
+                <!--
+                <template slot="table-row" slot-scope="props">
+                    <span v-if="props.headers.Action === 'Action'">
+                        <button type="button" class="btn btn-primary">Action</button>
+                    </span>
+                    <span v-else> {{ props.formattedRow[props.headers.field] }} </span>
+                </template>   
+                -->
+
+                <!--
+                <template v-slot:item.options="{}">
+                    <v-btn @click="approveOrder()" >Approve</v-btn>
+                    <v-btn @click="rejectOrder()"> Reject</v-btn>
+                </template >
+                -->
+
+                <template v-slot:top>
+                    <v-toolbar
+                        flat
+                    >
+                        <v-toolbar-title>To Approve Request</v-toolbar-title>
+                        <v-divider
+                            class="mx-4"
+                            inset
+                            vertical
+                        ></v-divider>
+                        <v-spacer></v-spacer>
+                        <v-dialog
+                            v-model="dialog"
+                            max-width="500px"
+                        >
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                color="primary"
+                                dark
+                                class="mb-2"
+                                v-bind="attrs"
+                                v-on="on"
+                            >
+                            New Item
+                            </v-btn>
+                        </template>
+
+                        <v-card>
+                            <v-card-title>
+                            <span class="text-h5">{{ formTitle }}</span>
+                            </v-card-title>
+
+                            <v-card-text>
+                            <v-container>
+                                <v-row>
+                                <v-col
+                                    cols="12"
+                                    sm="6"
+                                    md="4"
+                                >
+                                    <v-text-field
+                                    v-model="editedItem.Item_Name"
+                                    label="Item Name"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    sm="6"
+                                    md="4"
+                                >
+                                    <v-text-field
+                                    v-model="editedItem.Item_Id"
+                                    label="Item Id"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    sm="6"
+                                    md="4"
+                                >
+                                    <v-text-field
+                                    v-model="editedItem.Quantity_Requested"
+                                    label="Quantity Requested"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    sm="6"
+                                    md="4"
+                                >
+                                    <v-text-field
+                                    v-model="editedItem.Remarks"
+                                    label="Remarks"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    sm="6"
+                                    md="4"
+                                >
+                                    <v-text-field
+                                    v-model="editedItem.Notes"
+                                    label="Notes"
+                                    ></v-text-field>
+                                </v-col>
+                                </v-row>
+                            </v-container>
+                            </v-card-text>
+
+                            <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="close"
+                            >
+                                Cancel
+                            </v-btn>
+                            <v-btn
+                                color="blue darken-1"
+                                text
+                                @click="save"
+                            >
+                                Save
+                            </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                        </v-dialog>
+                        <v-dialog v-model="dialogDelete" max-width="500px">
+                        <v-card>
+                            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+                            <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+                            <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                            <v-spacer></v-spacer>
+                            </v-card-actions>
+                        </v-card>
+                        </v-dialog>
+                    </v-toolbar>
+                    </template>
+                    <template v-slot:item.actions="{ item }">
+
+                    <v-icon
+                        
+                        @click="deleteItem(item)"
+                    >
+                        mdi-delete
+                    </v-icon>
+                    
+
+                    <v-icon
+                        
+                        class="mr-2"
+                        @click="editItem(item)"
+                    >
+                        mdi-pencil
+                    </v-icon>
+      
+                    <v-icon
+                        
+                        @click="approveItem(item)"
+                    >
+                        mdi-thumb-up
+                    </v-icon>
+
+
+                    </template>
+                    <template v-slot:no-data>
+                    <v-btn
+                        color="primary"
+                        @click="initialize"
+                    >
+                        Reset
+                    </v-btn>
+                    </template>
+            </v-data-table>
+
+    </v-card>
+
 </div>
 </template>
 
@@ -22,6 +201,7 @@
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, setDoc, doc, deleteDoc, query, where} from "firebase/firestore"
+//import { collection, getDocs} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
 
 export default {
@@ -30,82 +210,208 @@ export default {
 
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
+        search: '',
+        dialog: false,
+        dialogDelete: false,
+        headers: [
+          {
+            text: 'Transaction Number',
+            align: 'start',
+            filterable: false,
+            value: 'Trans_Id',
+          },
+          { text: 'Timestamp', value: 'Timestamp' },
+          { text: 'Item_Name', value: 'Item_Name' },
+          { text: 'Item_Id', value: 'Item_Id' },
+          { text: 'Quantity_Requested', value: 'Quantity_Requested' },
+          { text: 'Remarks', value: 'Remarks' },
+          { text: 'Notes', value: 'Notes' },
+          { text: 'Actions', value: 'actions', sortable: false },
+        ],
+
+
+        requestedrecords: [],
         refreshComp:0,
         transidList: [],
-        transloop: 0
+        transloop: 0,
+        itemselector: [],
+
+        editedIndex: -1,
+        editedItem: {
+            Item_Name: '',
+            Item_Id: 0,
+            Order_Quantity: 0,
+            Remarks: 0,
+            Notes: 0,
+        },
+        defaultItem: {
+            Item_Name: '',
+            Item_Id: 0,
+            Order_Quantity: 0,
+            Remarks: 0,
+            Notes: 0,
+        },
       }
      },
 
-    mounted(){
-    async function display(){
-        let z = await getDocs(collection(db,"Request"))
-        let ind = 1
+     computed: {
+      formTitle () {
+        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      },
+    },
 
+    watch: {
+      dialog (val) {
+        val || this.close()
+      },
+      dialogDelete (val) {
+        val || this.closeDelete()
+      },
+    },
+
+    created () {
+      this.initialize()
+    },
+
+
+    
+    methods:{
+
+        async initialize() {
+            this.display()
+        },
+
+        editItem (item) {
+        this.editedIndex = this.requestedrecords.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialog = true
+        },
+
+        deleteItem (item) {
+        this.editedIndex = this.requestedrecords.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialogDelete = true
+
+        },
+
+        approveItem (item) {
+        this.editedIndex = this.requestedrecords.indexOf(item)
+        this.editedItem = Object.assign({}, item)
+        this.dialogDelete = true
+
+        console.log("Approving is here")
+        console.log(this.editedItem)
+
+        var pTransId = this.editedItem['Trans_Id']
+        var pItemId = this.editedItem['Item_Id']
+        var pOrderQuantity = this.editedItem['Quantity_Requested']
+        var pItemName = this.editedItem['Item_Name']
+        var pRemarks = this.editedItem['Remarks']
+        this.approveOrder(pTransId, pItemId, pOrderQuantity, pItemName,pRemarks, "TEMPNOSHOW")
+        },
+
+
+        deleteItemConfirm () {
+            var rejectedItem = this.requestedrecords.splice(this.editedIndex, 1)
+            console.log(rejectedItem)
+            var pTransId = rejectedItem[0]['Trans_Id']
+            this.rejectOrder(pTransId)
+
+            this.requestedrecords.splice(this.requestedrecords, 1)
+
+
+            this.closeDelete()
+        },
+
+        close () {
+        this.dialog = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
+        },
+
+        closeDelete () {
+        this.dialogDelete = false
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+        })
+        },
+
+        save () {
+        if (this.editedIndex > -1) {
+          Object.assign(this.requestedrecords[this.editedIndex], this.editedItem)
+        } else {
+          this.requestedrecords.push(this.editedItem)
+        }
+
+        console.log("Saving Here")
+        console.log(this.editedItem)
+
+        var pTransId = this.editedItem['Trans_Id']
+        var pItemId = this.editedItem['Item_Id']
+        var pOrderQuantity = this.editedItem['Quantity_Requested']
+        var pItemName = this.editedItem['Item_Name']
+        var pRemarks = this.editedItem['Remarks']
+        var pTimestamp = this.editedItem['Timestamp']
+        this.updateOrder(pTransId, pItemId, pOrderQuantity, pItemName, pRemarks, pTimestamp)
+        this.close()
+        },
+
+
+
+        //##################################################//
+
+        async display(){
+            
+        this.requestedrecords = []
+        let z = await getDocs(collection(db,"Request"))
 
         z.forEach((docs) => {
             let yy = docs.data()
-            var table = document.getElementById("table2")
-            var row = table.insertRow(ind)
+            let callData = {}
+
 
             var showTransId = (yy.Trans_Id)
             var showItemName = (yy.Item_Name)
             var showItemId = (yy.Item_Id)
             var showOrderQuantity = (yy.Order_Quantity)
             var showRemarks = (yy.Remarks)
-            var showRequester = (yy.UserId)
-            console.log(showRequester)
-            //var showStatus = (yy.Status)
+            var showTimestamp = (yy.Timestamp)
 
-            var cell1 = row.insertCell(0); var cell2 = row.insertCell(1); var cell3 = row.insertCell(2);
-            var cell4 = row.insertCell(3); var cell5 = row.insertCell(4); var cell6 = row.insertCell(5);
-            var cell7 = row.insertCell(6); var cell8 = row.insertCell(7);
-    
-            cell1.innerHTML = ind; cell2.innerHTML = showTransId; cell3.innerHTML = showItemName; cell4.innerHTML = showItemId;
-            cell5.innerHTML= showOrderQuantity; cell6.innerHTML = showRemarks; cell7.innerHTML = "";
+            var showRequester = (yy.UserId) //console.log(showRequester)
+            console.log(showRequester)
+
+            callData.Trans_Id = showTransId
+            callData.Item_Name = showItemName
+            callData.Item_Id = showItemId
+            callData.Quantity_Requested = showOrderQuantity
+            callData.Remarks = showRemarks
+            callData.Timestamp = showTimestamp
             
 
+            this.requestedrecords = this.requestedrecords.concat(callData)
 
-            var txtbx = document.createElement("INPUT")
-            txtbx.className = "txt"
-            txtbx.id = String(showTransId)
-            cell7.appendChild(txtbx)
-
-
-
-            var buApprove = document.createElement("button")
-            buApprove.className = "bwtApprove"
-            buApprove.id = String(showTransId)
-            buApprove.innerHTML = "Approve"
-            buApprove.onclick =  function(){ 
-                approveOrder(showTransId, showItemId, showOrderQuantity, showItemName,showRemarks, showRequester)
-             }
-            cell8.appendChild(buApprove)
-
-            var labelSpace = document.createElement("LABEL")
-            labelSpace.id = String(showTransId)
-            labelSpace.innerHTML = "   "
-            cell8.appendChild(labelSpace)
-
-
-            var buReject = document.createElement("button")
-            buReject.className = "bwtReject"
-            buReject.id = String(showTransId)
-            buReject.innerHTML = "Reject"
-            buReject.onclick = function(){
-                rejectOrder(showTransId)
-            }
-            cell8.appendChild(buReject)
-
-
-
-
-            ind += 1
         })
-    } display()
+        return this.requestedrecords
+        },
+
+        async updateOrder(pTransId, pItemId, pOrderQuantity, pItemName, pRemarks, pTimestamp){
+            //await deleteDoc(doc(db, "Request", parseInt(pTransId.slice(8)) ))
+            console.log("Setting Updates")
+
+            try{ 
+                await setDoc(doc(db, "Request", pTransId.slice(8) ), {Trans_Id: "WD-2021-"+ pTransId.slice(8) , Timestamp: pTimestamp, UserId: "TEMP NO SHOW", Item_Id: parseInt(pItemId) , Item_Name: pItemName , Order_Quantity: parseInt(pOrderQuantity), Remarks: pRemarks, Status: "Pending Approval"})
+                console.log("Update Completed")
+            } catch (error) {
+                console.log(error)
+            }
+        },
 
         //Check Quantity
-        async function checkQuantity (showItemId, showItemName, showOrderQuantity){
-            console.log("here")
+        async checkQuantity (showItemId, showItemName, showOrderQuantity){
+            console.log("here check quantity")
             console.log(showItemName + " " + showItemId)
             const querygetter =  getDocs(query(collection(db, "ItemSupplies"), where("Item_Id", "==", showItemId), where("Item_Name", "==", showItemName) ) );
             
@@ -157,10 +463,9 @@ export default {
             } catch (error) {
                 console.error("Error checking document: ", error)
             }
-        }
+        },
 
-
-        async function checkAutoOrderMechanism (showItemId, showItemName){
+        async checkAutoOrderMechanism (showItemId, showItemName){
             console.log("here checkAutoOrderMechanism")
             console.log(showItemName + " " + showItemId)
             const pendingArrivalgetter =  getDocs(query(collection(db, "PendingArrival"), where("Item_Id", "==", showItemId), where("Item_Name", "==", showItemName) ) );
@@ -211,9 +516,10 @@ export default {
             } catch (error) {
                 console.error("Error checking document: ", error)
             }
-        }
+        },
 
-        async function fetchTransId(nameDB) {
+
+        async fetchTransId(nameDB) {
             var transidList = []
             var transloop = 1
 
@@ -257,14 +563,12 @@ export default {
                 } catch (error) {
                     console.error("Error adding document: ", error)
                 }
-        }
+        },
 
-
-
-        //----- Approve Order-----//
+         //----- Approve Order-----//
 
         //Check if Quanity in itemSupplies is Adequate to request Order
-        async function approveOrder(showTransId, showItemId, showOrderQuantity, showItemName,showRemarks, showRequester) { //, showOrderQuantity, showItemName){
+        async approveOrder(showTransId, showItemId, showOrderQuantity, showItemName,showRemarks, showRequester) { //, showOrderQuantity, showItemName){
         
             try{
                 var x1 = showTransId
@@ -291,13 +595,13 @@ export default {
                 //console.log("order Request accepted!", x1);
                 
                 //Check Quantity and Stock Availability
-                var quantityStatus = await checkQuantity (showItemId,showItemName,showOrderQuantity)
+                var quantityStatus = await this.checkQuantity (showItemId,showItemName,showOrderQuantity)
                 //console.log(quantityStatus)
 
                 if (quantityStatus[0] == "Okay" || quantityStatus[0] == "Low Stock"){
                     
                     var nameDB = "ItemDisbursed"
-                    var transloop = await fetchTransId(nameDB )
+                    var transloop = await this.fetchTransId(nameDB )
                     console.log(transloop)
                     await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id:  transloop , Item_Id: parseInt(x3), Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
                     console.log("Order Request accepted and will be disbursed!", x1);
@@ -310,14 +614,14 @@ export default {
                     if (quantityStatus[0] == "Low Stock"){
                         console.log("PLEASE RESTOCK! Automation on Construction", x1);
                         nameDB = "ItemDisbursed"
-                        transloop = await fetchTransId(nameDB )
+                        transloop = await this.fetchTransId(nameDB )
                         await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id: parseInt(transloop), Item_Id: parseInt(x3), Category: quantityStatus[1],  Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
                         
                         //RESTOCKING//
                         //Check for current supplies + pending arrival if exceed threshold2 if not, order ele dont order (IN CONSTRCUTION)
                         nameDB = "PendingArrival"
-                        transloop = await fetchTransId(nameDB )
-                        var pendingOrderCheck = await checkAutoOrderMechanism( parseInt(x3), x5)
+                        transloop = await this.fetchTransId(nameDB )
+                        var pendingOrderCheck = await this.checkAutoOrderMechanism( parseInt(x3), x5)
                         if( pendingOrderCheck[0] == "Proceed Auto Order"){
                             await setDoc(doc(db, "PendingArrival", transloop.toString()), {Trans_id: parseInt(transloop), Item_Id: parseInt(x3), Topup_Quantity: quantityStatus[10], Item_Name: x5, Category: quantityStatus[1]})
                             console.log("Pending Order is created");
@@ -335,24 +639,19 @@ export default {
                         //Email and tell the person why rejected?
                     }
                 }
-                
-                let tb = document.getElementById("table2")
-                while(tb.rows.length > 1){
-                    tb.deleteRow(1)
-                }
-                
+            
+         
                 alert("Item request has been sent to administrator. Await for Disbursement")
                 //Emit to call for table 1 to change
-                display()
+                this.display()
 
             } catch (error) {
             console.error("Error approving document: ", error)
             }
-        }
+        },
 
 
-        //----- Reject Order-----//
-        async function rejectOrder(showTransId) { //, showOrderQuantity, showItemName){
+        async rejectOrder(showTransId) { //, showOrderQuantity, showItemName){
             try{
                 var x1 = showTransId
                 var x2 = showTransId.slice(8)
@@ -363,21 +662,26 @@ export default {
                 //Add notes into reject database.
                 //Email and tell the person why rejected?
 
-                let tb = document.getElementById("table2")
-                while(tb.rows.length > 1){
-                    tb.deleteRow(1)
-                }
-                
                 alert("Successfully rejected")
                 //Emit to call for table 1 to change
-                display()
+                this.display()
 
             } catch (error) {
             console.error("Error rejecting document: ", error)
             }
         }
 
-    }, 
+
+
+
+
+
+
+    }
+
+
+
+
 }
 </script>
 

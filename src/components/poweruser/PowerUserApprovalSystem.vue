@@ -4,20 +4,26 @@
   <h3>Power User Request Approval Page  for Yap Kai</h3>
 
     <div id="app">
-
+    
     <div class = "containerOrderItems">
-    <UserRequestComponent  @added="change"/>
+    <RequestForm  @added="change"/>
     </div>
 
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
     <br>
     <br>
     <br>
     <br>
     
-    <div class = "containerOrderDisplay">
+    <!-- <div class = "containerOrderDisplay">
         <h2> Your Transactions </h2>
         <UserRequestDisplayComponent :key="refreshComp  "/>
-    </div>
+    </div> -->
     
     <div class = "containerOrderApproval">
         <h2> For Your Review </h2>
@@ -31,13 +37,13 @@
 </template>
 
 <script>
-import UserRequestComponent from '../user/UserRequestComponent.vue'
-import UserRequestDisplayComponent from '../user/UserRequestDisplayComponent.vue'
+import RequestForm from '../RequestForm.vue'
+//import UserRequestDisplayComponent from '../user/UserRequestDisplayComponent.vue'
 import PowerUserApprovalComponent from './PowerUserApprovalComponent.vue'
 
   export default {  
     name:"PowerUserApprovalSystem",
-    components:{ UserRequestComponent , UserRequestDisplayComponent, PowerUserApprovalComponent },
+    components:{ RequestForm , PowerUserApprovalComponent }, //UserRequestDisplayComponent
 
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
