@@ -24,13 +24,13 @@
                                 @blur="changeCategory($event)"
                             ></v-select>
 
-      
-
                             <v-select
-                                v-model="item_Name"
+                                v-model="selectedItem"
                                 :items="itemList"
                                 label="Items"
                                 required
+                                @click="clickItems($event)"
+                                @change="changeItems($event)"
 
                             ></v-select>
 
@@ -48,38 +48,10 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-btn color="#B2DFDB" class="mr-4" v-on:click="savetofs()">Submit Request</v-btn>
+                        <v-btn color="#B2DFDB" class="mr-4" v-on:click="resetSearch()">Reset Search</v-btn>
                     </v-card-actions>
                 </div>
             </v-card>
-<!-- 
-  <div class = "containerRight">
-    <br>
-    <form id = "myform">
-      <label> Category </label>
-      <select id="categorychoosenmain" class="form-control" @change="changeCategory($event)">
-        <option value="" selected disabled>Choose</option>
-        <option id="categorychoosen" v-for="cat in itemCategory" :value="cat" :key="cat"> {{ cat }}</option> 
-      </select> <br><br>
-
-
-      <label> Item: </label>
-      <select id="itemchoosenmain" class="form-control" @change="changeItems($event)">
-        <option id="backtodefault" value="" selected disabled>Choose</option>
-        <option id="itemchoosen" v-for="item in itemList" :value="item.Item_Id" :key="item.Item_Id"> {{ item.Item_Name }}</option>
-      </select> <br><br>
-
-      <label for="quantitychoosen"> Quantity: </label> 
-        <input type="number" id="quantitychoosen" required="" placeholder = "Qty" min="1"> <br><br>
-  
-      <label for="remarkschoosen"> Remarks: </label>
-        <input type="text" id="remarkschoosen" required="" placeholder = "Enter Remarks"> <br><br>
-      
-      <div class = "save">
-        <button id = "savebutton" type = "button" v-on:click = "savetofs()"> Request Order </button>
-      </div>
-
-    </form> 
-  </div> -->
 </div>
 
 </template>
@@ -142,6 +114,7 @@ export default {
     },
 
     methods: {
+
     async fetchItems () {
       //https://stackoverflow.com/questions/59772759/uncaught-typeerror-db-collection-is-not-a-function-for-a-real-time-database-in
       //Careful! Fire database and Firestore are different! Firestore needs collection, getDocs and does not have query.get()
@@ -218,11 +191,10 @@ export default {
           }
       },
 
+      
       changeCategory(){
         this.fetchTransId()
-        // this.selectedCategory = event.target.options[event.target.options.selectedIndex].text
         let itemListupdate = []
-
         for (let i in this.originalitemList) {
           var theItem = this.originalitemList[i]
           if ( theItem['Category'] == this.selectedCategory ) {
@@ -234,31 +206,46 @@ export default {
         console.log("Here is my Item List Updated")
         console.log(itemListupdate)
         this.itemList = itemListupdate
-
         this.weblinkhere = null;
-        //console.log(document.getElementById('itemchoosenmain'))
-        console.log("Item Changed to:")
-        //console.log(this.itemList)
-        console.log(this.itemList[0]['Item_Name']);
-        //this.changeItems(this.itemList[0]['Item_Name'])
-        // document.getElementById("itemchoosenmain").selectedIndex = 0
-   
       },
 
   
-      // changeItems(event){
-      //   this.fetchTransId()
-      //   console.log(event.target.options[event.target.options.selectedIndex].text)
+      clickItems(){
+        this.fetchTransId()
+        let itemListupdate = []
 
-      //   let idx = event.target.options.selectedIndex - 1 //console.log(event.target.options.selectedIndex)
-      //   let srcweb = this.itemList[idx].ImgLink //console.log(this.itemList[idx].imglink)
+        if (this.selectedCategory == null){
+           console.log("yes is null")
 
-      //   this.weblinkhere = srcweb 
-      //   console.log(this.weblinkhere)
+          for (let i in this.originalitemList) {
+          var theItem = this.originalitemList[i]
+          itemListupdate.push(theItem['Item_Name'])
+        }
 
-      //   this.selectedItem = event.target.options[event.target.options.selectedIndex].text
-      //   this.storeIndex = event.target.options.selectedIndex
-      // },
+        console.log("Here is my Item List Updated")
+        console.log(itemListupdate)
+        this.itemList = itemListupdate
+
+        this.weblinkhere = null;
+        }
+
+
+       },
+
+       changeItems(){
+        this.fetchTransId()
+        for (let i in this.originalitemList) {
+          var theItem = this.originalitemList[i]
+          if ( theItem['Item_Name'] == this.selectedItem ) {
+              this.selectedCategory = theItem['Category'] 
+             }
+          }
+    
+        this.weblinkhere = null;
+        console.log("Item Category changed to to:")
+        console.log(this.selectedCategory);
+
+       },
 
 
 
@@ -274,9 +261,7 @@ export default {
 
 
       async savetofs(){
-        
-
-        const querygetter =  getDocs(query(collection(db, "ItemSupplies"), where("Item_Name", "==", this.item_Name) ) );
+        const querygetter =  getDocs(query(collection(db, "ItemSupplies"), where("Item_Name", "==", this.selectedItem) ) );
         try {
                 const querySnapshot = await querygetter;
                 querySnapshot.forEach((doc) => {
@@ -289,15 +274,22 @@ export default {
         //var transactionid = "TS"+ this.transloop.toString()
         // var a = this.itemList[this.storeIndex-1]['id'].toString();
         // var a = this.item_Name
+
+        console.log( this.itemselector)
         var a = this.itemselector[0]['Item_Id']
-        //var a = this.storeIndex.toString();  //numerics from object must be casted as toString() into
-        var b = this.item_Name
+        var b = this.selectedItem
 
     
         var c = this.quantity
         var d = this.remarks
         var e = "dummyUser1"
         var f = (parseInt(this.transloop) + 1).toString()
+
+        var today = new Date();
+        var date = today.getDate() + '-' + (today.getMonth()+1)+ '-' + today.getFullYear();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dateTime = date+' '+time;
+
 
         console.log(a)
         console.log(b)
@@ -318,28 +310,28 @@ export default {
               alert("You (" + e + ") called an invalid quantity ")
             }
             else{
-              const docRef = await setDoc(doc(db, "Request", f), {Trans_Id: "WD-2021-"+f, UserId: e, Item_Id: parseInt(a) , Item_Name: b ,   Order_Quantity: parseInt(c), Remarks: d, Status: "Pending Approval"})
+              const docRef = await setDoc(doc(db, "Request", f), {Trans_Id: "WD-2021-"+f, Timestamp: dateTime, UserId: e, Item_Id: parseInt(a) , Item_Name: b ,   Order_Quantity: parseInt(c), Remarks: d, Status: "Pending Approval"})
               console.log(docRef)
-              // document.getElementById('myform').reset();
-              //document.getElementById("itemchoosen").selectedIndex = 0
               this.fetchTransId()
               this.$emit("added")
-              alert("You (" + e + ") have requested for " + c + " units of " + b)
-              
+              alert("You (" + e + ") have requested for " + c.toString() + " units of " + b)
+              this.selectedCategory == null;
               this.refreshComp +=1 //Refreshes OrderDisplay
-              // document.getElementById("itemchoosenmain").selectedIndex = 0 //Set Item to Choose
-              // document.getElementById("categorychoosenmain").selectedIndex = 0
             }
 
         } catch (error) {
             console.error("Error adding document: ", error)
         }
-
-    
+        
         this.$refs.form2.reset()
         console.log("reset works")
       
-      }
+      },
+
+      resetSearch(){
+        this.$refs.form2.reset()
+        console.log("reset works")
+      },
     
 
     }
