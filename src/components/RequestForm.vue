@@ -3,11 +3,43 @@
 <div>
   <div><power-user-navigation></power-user-navigation></div>
   <!-- <h2>Order Items </h2> -->
+  <br>
+  
 
+  <div class = "containerLeft" >
+    <v-row justify="center">
+    <v-img id="exactImg" 
+      v-model="weblinkhere"
+      :src= weblinkhere
+      max-width="500"
+      max-height="500"
+      @change="changeItems($event)"
+      
+    >
+      <template v-slot:placeholder>
+        <v-row
+          class="fill-height ma-0"
+          align="center"
+          justify="center"
+        >
+          <v-progress-circular
+            indeterminate
+            color="grey lighten-5"
+          ></v-progress-circular>
+        </v-row>
+      </template>
+    </v-img>
+  </v-row>
+  </div>
+  
+  <!-- 
   <div id="itemImg"  @change="changeItems($event)" class = "containerLeft"  >
   <br>
   <img id="exactImg" :src = this.weblinkhere alt = "No Picture Available" />
   </div>
+  -->
+
+    <div class = "containerRight">
 
             <v-card id="test" width="700">
                 <div id="content">
@@ -52,6 +84,7 @@
                     </v-card-actions>
                 </div>
             </v-card>
+  </div>
 </div>
 
 </template>
@@ -238,10 +271,11 @@ export default {
           var theItem = this.originalitemList[i]
           if ( theItem['Item_Name'] == this.selectedItem ) {
               this.selectedCategory = theItem['Category'] 
+              this.weblinkhere = theItem['ImgLink'] ;
              }
           }
     
-        this.weblinkhere = null;
+        
         console.log("Item Category changed to to:")
         console.log(this.selectedCategory);
 
@@ -375,17 +409,18 @@ export default {
     }
 
     .containerLeft{
-        width:50%;
+        width:60%;
         height:400 ;
         float: left;
-        background-color: white;
+        padding-top: 100px;
+        background-color: #ccc;
     }
 
     .containerRight{
-        width:50% ;
+        width:40% ;
         height:400px ;
-        background-color: #ccc;
         float: right;
+        padding-right: 50px;
     }
 
     .containerOrderDisplay{
