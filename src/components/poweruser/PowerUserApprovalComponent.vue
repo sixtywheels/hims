@@ -229,7 +229,6 @@ export default {
           { text: 'Actions', value: 'actions', sortable: false },
         ],
 
-
         requestedrecords: [],
         refreshComp:0,
         transidList: [],
@@ -290,14 +289,14 @@ export default {
         deleteItem (item) {
         this.editedIndex = this.requestedrecords.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        this.dialogDelete = true
+        this.dialog = true
 
         },
 
         approveItem (item) {
         this.editedIndex = this.requestedrecords.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        this.dialogDelete = true
+        //this.dialogDelete = true
 
         console.log("Approving is here")
         console.log(this.editedItem)
@@ -440,6 +439,7 @@ export default {
                 if (actualqty <= showOrderQuantity){
                     console.log("The Current Inventory has inadequate stock to fufil requestor's order")
                     var notOkay = ["Not Okay", showitemCat, showid, showimglink, showname, parseInt(actualqty), parseInt(showOrderQuantity), parseInt(lowerthresholdqty), parseInt(upperthresholdqty)]
+                    
                     //Reject Function
                     return notOkay
                 } 
@@ -581,6 +581,12 @@ export default {
                 
                 var x8 = "POWERUSERA" //this.approvingOfficer
 
+                var today = new Date();
+                var date = today.getDate() + '-' + (today.getMonth()+1)+ '-' + today.getFullYear();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                var dateTime = date+' '+time;
+                
+
                 console.log(x1)
                 console.log(x2)
                 console.log(x3)
@@ -603,7 +609,7 @@ export default {
                     var nameDB = "ItemDisbursed"
                     var transloop = await this.fetchTransId(nameDB )
                     console.log(transloop)
-                    await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id:  transloop , Item_Id: parseInt(x3), Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
+                    await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id:  transloop , Timestamp: dateTime, Item_Id: parseInt(x3), Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
                     console.log("Order Request accepted and will be disbursed!", x1);
 
                     await setDoc(doc(db, "ItemSupplies", x3), {Category: quantityStatus[1], Item_Id: parseInt(x3) , ImgLink: quantityStatus[3], Item_Name: quantityStatus[4] , Order_Quantity: quantityStatus[5] - quantityStatus[6], Threshold1: quantityStatus[7]  , Threshold2: quantityStatus[8] })
@@ -615,7 +621,7 @@ export default {
                         console.log("PLEASE RESTOCK! Automation on Construction", x1);
                         nameDB = "ItemDisbursed"
                         transloop = await this.fetchTransId(nameDB )
-                        await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id: parseInt(transloop), Item_Id: parseInt(x3), Category: quantityStatus[1],  Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
+                        await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id: parseInt(transloop),  ITimestamp: dateTime,  Item_Id: parseInt(x3), Category: quantityStatus[1],  Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
                         
                         //RESTOCKING//
                         //Check for current supplies + pending arrival if exceed threshold2 if not, order ele dont order (IN CONSTRCUTION)
@@ -623,25 +629,31 @@ export default {
                         transloop = await this.fetchTransId(nameDB )
                         var pendingOrderCheck = await this.checkAutoOrderMechanism( parseInt(x3), x5)
                         if( pendingOrderCheck[0] == "Proceed Auto Order"){
-                            await setDoc(doc(db, "PendingArrival", transloop.toString()), {Trans_id: parseInt(transloop), Item_Id: parseInt(x3), Topup_Quantity: quantityStatus[10], Item_Name: x5, Category: quantityStatus[1]})
+                            await setDoc(doc(db, "PendingArrival", transloop.toString()), {Trans_id: parseInt(transloop),  ITimestamp: dateTime,  Item_Id: parseInt(x3), Topup_Quantity: quantityStatus[10], Item_Name: x5, Category: quantityStatus[1]})
                             console.log("Pending Order is created");
                         } else {
                             console.log("Adequate Pending Orders Incoming!");
                         }
+                    alert("Item request has been approved and will be shipped to you!. Await for Disbursement")
                     }
                 }
                 else {
                     console.log("Not Okay");
 
-                    if(quantityStatus[0] == "Not Okay!") {
+                    if(quantityStatus[0] == "Not Okay") {
                         console.log("Inadequate Stock, cannot be approved");
+                        alert("Inventory cannot meet the Quantity Requested.")
+
+  
+                        //Keep in request and hold until possible to approve? To discuss
+                        
                         //Add notes into reject database.
                         //Email and tell the person why rejected?
                     }
                 }
             
          
-                alert("Item request has been sent to administrator. Await for Disbursement")
+                
                 //Emit to call for table 1 to change
                 this.display()
 
