@@ -349,7 +349,8 @@ export default {
               this.fetchTransId()
               this.$emit("added")
               alert("You (" + e + ") have requested for " + c.toString() + " units of " + b)
-              this.selectedCategory == null;
+              this.selectedCategory = null;
+              this.itemselector =[]
               this.refreshComp +=1 //Refreshes OrderDisplay
             }
 
