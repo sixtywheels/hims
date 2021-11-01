@@ -281,15 +281,17 @@ export default {
         },
 
         editItem (item) {
+        console.log("editItem")
         this.editedIndex = this.requestedrecords.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
         },
 
         deleteItem (item) {
+        console.log("deleteItem")
         this.editedIndex = this.requestedrecords.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        this.dialog = true
+        this.dialogDelete = true
 
         },
 
@@ -311,6 +313,7 @@ export default {
 
 
         deleteItemConfirm () {
+            console.log("deleteItemConfirm")
             var rejectedItem = this.requestedrecords.splice(this.editedIndex, 1)
             console.log(rejectedItem)
             var pTransId = rejectedItem[0]['Trans_Id']
@@ -565,6 +568,15 @@ export default {
                 }
         },
 
+        addZero(dtinput){
+            var result = dtinput.toString()
+            if (dtinput < 10) { 
+            result = "0" + dtinput.toString() 
+            }
+            return result
+        },
+        
+
          //----- Approve Order-----//
 
         //Check if Quanity in itemSupplies is Adequate to request Order
@@ -582,10 +594,10 @@ export default {
                 var x8 = "POWERUSERA" //this.approvingOfficer
 
                 var today = new Date();
-                var date = today.getDate() + '-' + (today.getMonth()+1)+ '-' + today.getFullYear();
-                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                var date = this.addZero(today.getDate()) + '-' + this.addZero( (today.getMonth()+1) )+ '-' + today.getFullYear();
+                var time = this.addZero(today.getHours()) + ":" + this.addZero(today.getMinutes()) + ":" + this.addZero(today.getSeconds());
                 var dateTime = date+' '+time;
-                
+                        
 
                 console.log(x1)
                 console.log(x2)
@@ -609,7 +621,7 @@ export default {
                     var nameDB = "ItemDisbursed"
                     var transloop = await this.fetchTransId(nameDB )
                     console.log(transloop)
-                    await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id:  transloop , Timestamp: dateTime, Item_Id: parseInt(x3), Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
+                    await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id: parseInt(transloop),  Timestamp: dateTime,  Item_Id: parseInt(x3), Category: quantityStatus[1],  Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
                     console.log("Order Request accepted and will be disbursed!", x1);
 
                     await setDoc(doc(db, "ItemSupplies", x3), {Category: quantityStatus[1], Item_Id: parseInt(x3) , ImgLink: quantityStatus[3], Item_Name: quantityStatus[4] , Order_Quantity: quantityStatus[5] - quantityStatus[6], Threshold1: quantityStatus[7]  , Threshold2: quantityStatus[8] })
@@ -618,10 +630,10 @@ export default {
                    
 
                     if (quantityStatus[0] == "Low Stock"){
-                        console.log("PLEASE RESTOCK! Automation on Construction", x1);
-                        nameDB = "ItemDisbursed"
-                        transloop = await this.fetchTransId(nameDB )
-                        await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id: parseInt(transloop),  ITimestamp: dateTime,  Item_Id: parseInt(x3), Category: quantityStatus[1],  Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
+                        console.log("PLEASE RESTOCK!", x1);
+                        //nameDB = "ItemDisbursed"
+                        //transloop = await this.fetchTransId(nameDB )
+                        //await setDoc(doc(db, "ItemDisbursed", transloop.toString() ), {Disbursement_id: parseInt(transloop),  Timestamp: dateTime,  Item_Id: parseInt(x3), Category: quantityStatus[1],  Order_Quantity: parseInt(x4), Item_Name: x5, Remarks: x6, Requester: x7, Approver: x8})
                         
                         //RESTOCKING//
                         //Check for current supplies + pending arrival if exceed threshold2 if not, order ele dont order (IN CONSTRCUTION)
@@ -629,13 +641,13 @@ export default {
                         transloop = await this.fetchTransId(nameDB )
                         var pendingOrderCheck = await this.checkAutoOrderMechanism( parseInt(x3), x5)
                         if( pendingOrderCheck[0] == "Proceed Auto Order"){
-                            await setDoc(doc(db, "PendingArrival", transloop.toString()), {Trans_id: parseInt(transloop),  ITimestamp: dateTime,  Item_Id: parseInt(x3), Topup_Quantity: quantityStatus[10], Item_Name: x5, Category: quantityStatus[1]})
+                            await setDoc(doc(db, "PendingArrival", transloop.toString()), {Trans_id: parseInt(transloop),  Timestamp: dateTime,  Item_Id: parseInt(x3), Topup_Quantity: quantityStatus[10], Item_Name: x5, Category: quantityStatus[1]})
                             console.log("Pending Order is created");
                         } else {
                             console.log("Adequate Pending Orders Incoming!");
                         }
-                    alert("Item request has been approved and will be shipped to you!. Await for Disbursement")
                     }
+                    alert("Item request has been approved and will be shipped to you!. Await for Disbursement")
                 }
                 else {
                     console.log("Not Okay");

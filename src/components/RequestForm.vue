@@ -293,6 +293,15 @@ export default {
         console.log(event);
       },
 
+      
+      addZero(dtinput){
+        var result = dtinput.toString()
+        if (dtinput < 10) { 
+          result = "0" + dtinput.toString() 
+        }
+        return result
+      },
+
 
       async savetofs(){
         const querygetter =  getDocs(query(collection(db, "ItemSupplies"), where("Item_Name", "==", this.selectedItem) ) );
@@ -320,8 +329,8 @@ export default {
         var f = (parseInt(this.transloop) + 1).toString()
 
         var today = new Date();
-        var date = today.getDate() + '-' + (today.getMonth()+1)+ '-' + today.getFullYear();
-        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var date = this.addZero(today.getDate()) + '-' + this.addZero( (today.getMonth()+1) )+ '-' + today.getFullYear();
+        var time = this.addZero(today.getHours()) + ":" + this.addZero(today.getMinutes()) + ":" + this.addZero(today.getSeconds());
         var dateTime = date+' '+time;
 
 
@@ -333,6 +342,11 @@ export default {
         console.log(e)
         console.log("my transactionid:")
         console.log(f)
+
+        if (d == ""){
+          d = "-"
+        }
+
 
         try{
 
@@ -359,12 +373,14 @@ export default {
         }
         
         this.$refs.form2.reset()
+        this.weblinkhere = null
         console.log("reset works")
       
       },
 
       resetSearch(){
         this.$refs.form2.reset()
+        this.weblinkhere = null
         console.log("reset works")
       },
     
