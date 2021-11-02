@@ -477,6 +477,7 @@ export default {
             
             var pendingArrivalList = []
             var itemSupply = []
+            var gotPendingArrival = false
 
 
             try {
@@ -500,20 +501,37 @@ export default {
                 pendingArrivalList.push(doc.data())
                 });
                 
-  
+
                 for (let i =0; i < pendingArrivalList.length; i++ ){
                     console.log(pendingArrivalList)
-                    console.log(pendingArrivalList[i])   
+                    console.log(pendingArrivalList[i]) 
+                    gotPendingArrival = true 
                     overallQty +=  parseInt(pendingArrivalList[i]['Topup_Quantity'])
                 }
 
-                if (overallQty >= lowerthresholdqty){
-                    console.log("There is enough pending order to cover threshold!");
-                    return ["Stop Auto Order"]
-                    
+
+                if ( gotPendingArrival == true) {
+    
+                    if (overallQty <= lowerthresholdqty){
+                        console.log("There is Pending Arrivals. Top up balance!");
+                        return ["Top up balance", lowerthresholdqty - overallQty]
+                        
+                    } else {
+                        console.log("No Action Needed!");
+                        return ["There is enough pending order to cover till lower threshold!"]
+                    }
+
                 } else {
-                    console.log("Please make the Auto Order!");
-                    return ["Proceed Auto Order"]
+
+                    //gotPendingArrival == false
+                    if (overallQty > lowerthresholdqty){
+                        console.log("There is enough pending order to cover threshold!");
+                        return ["Stop Auto Order"]
+                        
+                    } else {
+                        console.log("Please make the Auto Order!");
+                        return ["Proceed Auto Order"]
+                    }
                 }
 
             } catch (error) {
@@ -643,6 +661,11 @@ export default {
                         if( pendingOrderCheck[0] == "Proceed Auto Order"){
                             await setDoc(doc(db, "PendingArrival", transloop.toString()), {Trans_id: parseInt(transloop),  Timestamp: dateTime,  Item_Id: parseInt(x3), Topup_Quantity: quantityStatus[10], Item_Name: x5, Category: quantityStatus[1]})
                             console.log("Pending Order is created");
+
+                        } else if( pendingOrderCheck[0] == "Top up balance"){
+                            await setDoc(doc(db, "PendingArrival", transloop.toString()), {Trans_id: parseInt(transloop),  Timestamp: dateTime,  Item_Id: parseInt(x3), Topup_Quantity: pendingOrderCheck[1], Item_Name: x5, Category: quantityStatus[1]})
+                            console.log("Pending Order is created");
+
                         } else {
                             console.log("Adequate Pending Orders Incoming!");
                         }
