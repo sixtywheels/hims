@@ -34,30 +34,11 @@
                                         >
                                             
                                         </span>
-                                        <!-- <span
-                                            v-else
-                                            key="1"
-                                        >
-                                            {{ department }}
-                                        </span> -->
+                                <line-chart class = 'line' width = 500px :data = "chartdata"> </line-chart>
                                         </v-fade-transition>
                                     </v-col>
                                     </v-row>
                                 </v-expansion-panel-header>
-                                <!-- <v-expansion-panel-content>
-                                    <v-row no-gutters>
-                                    <v-spacer></v-spacer>
-                                    <v-col cols="5">
-                                        <v-select
-                                        v-model="department"
-                                        :items="departments"
-                                        chips
-                                        flat
-                                        solo
-                                        ></v-select>
-                                    </v-col>
-                                    </v-row>
-                                </v-expansion-panel-content> -->
                                 </v-expansion-panel>
                             </v-expansion-panels>
 
@@ -145,11 +126,17 @@ import { getFirestore } from "firebase/firestore";
 import { collection, getDocs , doc, setDoc} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
 const delay = ms => new Promise(res => setTimeout(res, ms));
-// const itemsRef =  collection(db, "ItemSupplies")
 
     export default {
         data () {
             return {
+                chartdata : {
+                    'Monday': 2,
+                    'Tuesday': 5,
+                    'Wednesday': 2,
+                    'Thursday': 5,
+                    'Friday': 6
+                },
                 snack: false,
                 snackColor: '',
                 snackText: '',
