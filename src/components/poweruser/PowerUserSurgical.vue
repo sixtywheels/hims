@@ -19,23 +19,19 @@
 </template>
 
 <script>
-
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, doc, deleteDoc, setDoc} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
-
 export default {
     mounted(){
     async function display(){
         let z = await getDocs(collection(db,"ItemSupplies"))
         let ind = 1
-
         z.forEach((docs) => {
             let yy = docs.data()
             var table = document.getElementById("table")
             var row = table.insertRow(ind)
-
             var name = (yy.name)
             var inventory_lvl = (yy.quantity)
             var category = (yy.category)
@@ -47,11 +43,9 @@ export default {
             
             pop_up.style.display = "none"
             pop_up.style.position = "relative"
-
             var form_pop_up = document.createElement('form')
             form_pop_up.class = "form-container"
             pop_up.appendChild(form_pop_up)
-
             var pop_up_button_close = document.createElement("button")
             pop_up_button_close.class = "btn cancel"
             pop_up_button_close.innerHTML = "close-form"
@@ -60,7 +54,6 @@ export default {
                 pop_up.style.display = "none";
                 pop_up_button_open.style.display = "block"
             }
-
             //button to open the pop-up
             var pop_up_button_open = document.createElement("button")
             pop_up_button_open.class = "open-button"
@@ -70,9 +63,7 @@ export default {
                 pop_up.style.display = "block";
                 pop_up_button_open.style.display = "none"
             }
-
             if (category == "surgical") {
-
             var cell1 = row.insertCell(0); var cell2 = row.insertCell(1); var cell3 = row.insertCell(2);
             var cell4 = row.insertCell(3); var cell5 = row.insertCell(4);
     
@@ -84,19 +75,15 @@ export default {
             bu_request.onclick = function(){
             }
             cell4.appendChild(bu_request)
-
             // Start of Inventory bar using v-progress
-
             var bu_order = document.createElement("button")
             bu_order.className = "Order"
             bu_order.innerHTML = "Order"
             bu_order.onclick = function(){
             }
             cell4.appendChild(bu_order)
-
             //Start of pop-up
             //Creating an input field for each pop-up form
-
             var input_field = document.createElement("input")
             input_field.id = "Threshold_input"
             input_field.type = "number"
@@ -115,7 +102,6 @@ export default {
                 deleteinstrument(name);
             }
             form_pop_up.appendChild(bu_edit_low)
-
             var bu_edit_high = document.createElement("button")
             bu_edit_high.className = "Edit_high"
             bu_edit_high.innerHTML = "Edit_high"
@@ -127,23 +113,18 @@ export default {
             }
             form_pop_up.appendChild(bu_edit_high)
             form_pop_up.appendChild(pop_up_button_close)
-
             //pop-up Appened into cell 6
             cell5.appendChild(pop_up_button_open)
             cell5.appendChild(pop_up)
             ind += 1
         }
-
         })
-
     }
     
     display()
-
     function deleteinstrument(name){
             var x = name
             deleteDoc(doc(db, "ItemSupplies", x))
-
             let tb = document.getElementById("table")
             while(tb.rows.length > 1){
                 tb.deleteRow(1)
@@ -192,23 +173,19 @@ export default {
 </script>
 
 <style scoped>
-
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
     background-color: yellow;
 }
-
 th,td{
     border: 1px solid #dddddd;
     text-align: center;
     padding: 8px;
 }
-
 .bwt{
     color: whitesmoke;
     background-color: black;
 }
-
 </style>
