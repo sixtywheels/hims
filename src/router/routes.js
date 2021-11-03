@@ -18,6 +18,7 @@ import PowerUserAddItems from '../components/poweruser/PowerUserAddItems';
 import PowerUserAcuteCare from '../components/poweruser/PowerUserAcuteCare';
 import PowerUserSurgical from '../components/poweruser/PowerUserSurgical';
 import PowerUserALL from '../components/poweruser/PowerUserALL';
+import PowerUserSupplyOrderForm from '../components/poweruser/PowerUserSupplyOrderForm';
 import RequestForm from '../components/RequestForm';
 
 
@@ -48,6 +49,8 @@ const routes = [
         ]
     },
     { path: '/poweruseradditems', component: PowerUserAddItems, meta: {requiresAuth: true} },
+    { path: '/powerusersupplyorder', component: PowerUserSupplyOrderForm, meta: {requiresAuth: false} },
+
 
     { path: '/userwip', component: UserWIP, meta: {requiresAuth: true} }, 
     { path: '/userlogin', component: UserLogin },
