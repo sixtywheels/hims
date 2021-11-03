@@ -716,20 +716,17 @@ export default {
             } catch (error) {
             console.error("Error rejecting document: ", error)
             }
+        },
+
+        
+
+
+
         }
-
-
-
-
-
-
 
     }
 
 
-
-
-}
 </script>
 
 <style scoped>
