@@ -4,6 +4,24 @@
   <div><power-user-navigation></power-user-navigation></div>
   <!-- <h2>Order Items </h2> -->
   <br>
+
+  <v-snackbar
+      v-model="snackbar"
+      :vertical="vertical"
+      :timeout="timeout"
+    >
+      {{ text }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="blue"
+          text
+          v-bind="attrs"
+          @click= "snackbar = false" 
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   
 
   <div class = "containerLeft" >
@@ -104,6 +122,10 @@ export default {
 
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
+      snackbar: false,
+      text: 'Empty Bar',
+      timeout: 3000,
+
       refreshComp:0,
       originalitemList: [],
       itemList: [],
@@ -118,7 +140,7 @@ export default {
       selectedCategory: null,
       select: '',
       quantity: null,
-      remarks: '',
+      remarks: '-',
       item_Name: '',
       itemselector: [],
       }
@@ -362,7 +384,11 @@ export default {
               console.log(docRef)
               this.fetchTransId()
               this.$emit("added")
-              alert("You (" + e + ") have requested for " + c.toString() + " units of " + b)
+              //alert("You (" + e + ") have requested for " + c.toString() + " units of " + b)
+
+              this.snackbar = true
+              this.text = "You (" + e + ") have requested for " + c.toString() + " units of " + b
+
               this.selectedCategory = null;
               this.itemselector =[]
               this.refreshComp +=1 //Refreshes OrderDisplay
@@ -420,16 +446,18 @@ export default {
     }
 
     #exactImg{
+      margin-top: 50px;
       width: 40%;
-      height: 40%;
-      max-height: 350px;
+      height: 80%;
+      max-height: 80%;
+      
     }
 
     .containerLeft{
         width:60%;
-        height:400 ;
+        height: 95%;
         float: left;
-        padding-top: 100px;
+        
         background-color: #ccc;
     }
 

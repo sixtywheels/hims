@@ -104,7 +104,7 @@
                                     sm="6"
                                     md="4"
                                 >
-                                    <v-text-field
+                                    <v-text-field 
                                     v-model="editedItem.Remarks"
                                     label="Remarks"
                                     ></v-text-field>
