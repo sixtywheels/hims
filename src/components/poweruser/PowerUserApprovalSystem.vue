@@ -1,13 +1,21 @@
 <template>
 
+
 <div>
   <h3>Power User Request Approval Page  for Yap Kai</h3>
+    <div><power-user-navigation></power-user-navigation></div>
+
 
     <div id="app">
     
-    <div class = "containerOrderItems">
+    <div class = "containerRequestItems">
     <RequestForm  @added="change"/>
     </div>
+
+    <div class = "containerOrderItems">
+    <PowerUserSupplyOrderForm  @added="change"/>
+    </div>
+
 
     <br>
     <br>
@@ -19,6 +27,11 @@
     <br>
     <br>
     <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
     
     <!-- <div class = "containerOrderDisplay">
         <h2> Your Transactions </h2>
@@ -38,12 +51,15 @@
 
 <script>
 import RequestForm from '../RequestForm.vue'
+import PowerUserSupplyOrderForm from './PowerUserSupplyOrderForm.vue'
+import PowerUserNavigation from './PowerUserNavigation'
+
 //import UserRequestDisplayComponent from '../user/UserRequestDisplayComponent.vue'
 import PowerUserApprovalComponent from './PowerUserApprovalComponent.vue'
 
   export default {  
     name:"PowerUserApprovalSystem",
-    components:{ RequestForm , PowerUserApprovalComponent }, //UserRequestDisplayComponent
+    components:{ PowerUserNavigation, RequestForm ,PowerUserSupplyOrderForm, PowerUserApprovalComponent }, //UserRequestDisplayComponent
 
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
@@ -79,12 +95,19 @@ import PowerUserApprovalComponent from './PowerUserApprovalComponent.vue'
         width: 60%;
     }
 
+    .containerRequestItems{
+      float: left;
+      height:650px ; 
+    }
+
     .containerOrderItems{
-      height:450px ;
+      float: right;
+      height:650px ;
+
     }
 
     .containerOrderDisplay{
-        float: bottom;
+      float: bottom;
     }
 
 </style>
