@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div><power-user-navigation></power-user-navigation></div>
+  <!-- <div><power-user-navigation></power-user-navigation></div> -->
   
    <div id="vcard">
             <v-card id="mycard" width="700">
@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import PowerUserNavigation from './PowerUserNavigation'
+//import PowerUserNavigation from './PowerUserNavigation'
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, doc , setDoc} from "firebase/firestore"
@@ -98,7 +98,7 @@ export default {
     },
 
       components: {
-        PowerUserNavigation: PowerUserNavigation,
+        //PowerUserNavigation: PowerUserNavigation,
     },
 
     mounted: function() {
