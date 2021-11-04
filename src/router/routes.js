@@ -43,9 +43,9 @@ const routes = [
     { path: '/poweruserdashboard', component: PowerUserDashboard,
         children: [
             { path: '/poweruserdme', component: PowerUserDME }, 
-            { path: '/poweruseracutecare', component: PowerUserAcuteCare, meta: {requiresAuth: true} },
-            { path: '/powerusersurgical', component: PowerUserSurgical, meta: {requiresAuth: true} },
-            { path: '/poweruserall', component: PowerUserALL, meta: {requiresAuth: true} }
+            { path: '/poweruseracutecare', component: PowerUserAcuteCare },
+            { path: '/powerusersurgical', component: PowerUserSurgical },
+            { path: '/poweruserall', component: PowerUserALL }
         ]
     },
     { path: '/poweruseradditems', component: PowerUserAddItems, meta: {requiresAuth: true} },

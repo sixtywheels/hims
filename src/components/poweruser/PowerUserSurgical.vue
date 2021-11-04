@@ -1,191 +1,372 @@
 <template>
 <div>
+    <v-data-table
+    :headers="headers"
+    :items="items"
+    :single-expand="singleExpand"
+    :expanded.sync="expanded"
+    :items-per-page="5"
+    show-expand
+    class="elevation-1">
 
-<h1> Inventory Table DME </h1>
+    <template v-slot:expanded-item="{ headers, item }">
+        <td :colspan="headers.length">
+            <spark-line v-bind:id = 'item.Item_Id'/>
+        </td>
+        
+    </template>
 
-<v-progress-linear value="15"></v-progress-linear>
+        <template v-slot:item.Order_Quantity = "props">
+            <div>
+                <b-progress
+                :max = "props.item.Threshold2" show-value>
+                    <b-progress-bar variant="primary" :value = "props.item.Order_Quantity"></b-progress-bar>
+                    <b-progress-bar variant="warning" :value = "props.item.pendingArrival"></b-progress-bar>
+                </b-progress>
+            </div>
+        </template>
+    
+        <template v-slot:item.options="{}">
+            <v-btn>Order</v-btn>
+            <v-btn>Request</v-btn>
 
-<table id= "table">
-    <tr>
-    <th>S.No</th>
-    <th>Name</th>
-    <th>Inventory Level</th>
-    <th>Options</th>
-    <th>Edit Threshold</th>
-    </tr>
-</table><br><br>
+        </template >
+        <template v-slot:item.Threshold1="props">
+            <v-edit-dialog
+            :return-value.sync="props.item.Threshold1"
+            large
+            persistent
+            @save = "save(props)"
+            @cancel = "cancel"
+            @open = "open"
+            @close = "close">
+            {{props.item.Threshold1}}
+                <template v-slot:input>
+                    <div class = "mt-4 text-h6">
+                        Update Threshold
+                    </div>
+                    <v-text-field
+                    v-model.number = "props.item.Threshold1"
+                    :rules = "[isInt]"
+                    label = "Edit"
+                    single-line
+                    autofocus>
+                    </v-text-field>
+                </template>
+            </v-edit-dialog>
+        </template>
+                <template v-slot:item.Threshold2="props">
+            <v-edit-dialog
+            :return-value.sync="props.item.Threshold2"
+            large
+            persistent
+            @save = "save(props)"
+            @cancel = "cancel"
+            @open = "open"
+            @close = "close">
+            {{props.item.Threshold2}}
+                <template v-slot:input>
+                    <div class = "mt-4 text-h6">
+                        Update Threshold
+                    </div>
+                    <v-text-field
+                    v-model.number = "props.item.Threshold2"
+                    :rules = "[isInt]"
+                    label = "Edit"
+                    single-line
+                    autofocus>
+                    </v-text-field>
+                </template>
+            </v-edit-dialog>
+        </template>
+    
+     
+    </v-data-table>
+    <v-snackbar
+    v-model="snack"
+    :timeout="3000"
+    :color="snackColor"
+    >
+        {{ snackText }}
+
+        <template v-slot:action="{ attrs }">
+            <v-btn
+            v-bind="attrs"
+            text
+            @click="snack = false"
+            >
+                Close
+            </v-btn>
+        </template>
+    </v-snackbar>
 
 </div>
+
 </template>
 
 <script>
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, doc, deleteDoc, setDoc} from "firebase/firestore"
+import { collection, getDocs , doc, setDoc} from "firebase/firestore"
+import SparkLine from "@/components/poweruser/SparkLine.vue"
+
 const db = getFirestore(firebaseApp);
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
 export default {
+    components: {
+        SparkLine
+    },
+    data () {
+        return {
+            expanded: [],
+            singleExpand: true,
+            labels: [],
+            value: [],
+            snack: false,
+            snackColor: '',
+            snackText: '',
+            isInt: v  => {
+                if (!isNaN(parseFloat(v)) && v >= 0) return true;
+                return 'Input has to be a Number!';
+            },
+            
+            headers: [
+                {
+                    text: 'S/N',
+                    align: 'start',
+                    sortable: false,
+                    value: 'Item_Id',
+                },
+                { text: 'Item Name', value: 'Item_Name' },
+                { text: 'Inventory Level', value: 'Order_Quantity' },
+                { text: 'Options', value: 'options' },
+                { text: 'Threshold1', value: 'Threshold1' },
+                { text: 'Threshold2', value: 'Threshold2' },
+            ],
+            items: [],
+            pending: [],
+            pending2: [],
+        }
+    },
+
     mounted(){
-    async function display(){
-        let z = await getDocs(collection(db,"ItemSupplies"))
-        let ind = 1
-        z.forEach((docs) => {
-            let yy = docs.data()
-            var table = document.getElementById("table")
-            var row = table.insertRow(ind)
-            var name = (yy.name)
-            var inventory_lvl = (yy.quantity)
-            var category = (yy.category)
+        this.display()
+    },
+
+    methods: {
+        async display(){
+            let z  = await getDocs(collection(db, "ItemSupplies"));
+
+            await this.getPending()
             
-            //pop-up-form div
-            var pop_up = document.createElement('div')
-            pop_up.class = "form-popup"
-            pop_up.id = "threshold_pop"
+            z.forEach((docs) => {
+                let yy = docs.data()
+                let x = {}
+
+                var category = yy.Category
+                var name = yy.Item_Name
+
+                if (category == "Surgery"){
+                    x.Item_Name = name
+                    x.Order_Quantity = yy.Order_Quantity
+                    x.Item_Id = yy.Item_Id
+                    x.Threshold1 = yy.Threshold1
+                    x.Threshold2 = yy.Threshold2
+                    x.ImgLink = yy.ImgLink
+                    x.Category = category
+                    if (this.findTotalPending(yy.Item_Id)) {
+                        x.pendingArrival = this.findTotalPending(yy.Item_Id)
+                    } else {
+                        x.pendingArrival = 0
+                    }
+
+                    if (x.pendingArrival + x.Order_Quantity < x.Threshold1) {
+                        console.log("TOO LOW")
+                    }
+
+                    this.items = this.items.concat(x)
+                }
+            })
+            return this.items
+        },
+
+        async save (props) {
+            this.snack = true
+            var a = (props.item.Item_Id).toString()
+            var b = (props.item.ImgLink)
+            var c = (props.item.Item_Name)
+            var d = (props.item.Threshold2)
+            var e = (props.item.Category)
+            var f = (props.item.Order_Quantity)
+            var g = (props.item.Threshold1)
+
+            var h = (props.item.pendingArrival)
+            var current_quant = f + h
+            var Trans_Id = await this.fetchTransId("PendingArrival")
+            console.log(current_quant)
+            if (g > d) {
+                console.log("ERROR THRESHOLD2 MUST BE HIGHER THAN THRESHOLD1")
+                this.snackColor = 'error'
+                this.snackText = 'Canceled'
+            }
+            else if (current_quant < g) {
+                console.log("LOOOOW")
+                var Topupper = d - current_quant
+                if (Topupper < 0) {
+                    console.log("ERROR THRESHOLD2 MUST BE HIGHER THAN THRESHOLD1")
+                    this.snackColor = 'error'
+                    this.snackText = 'Canceled'
+                }
+                else {
+                    setDoc(doc(db, "PendingArrival", a), {Item_Id: parseInt(a), Item_Name: c, Category: e, Topup_Quantity: Topupper, Trans_id: Trans_Id})
+                    setDoc(doc(db, "ItemSupplies", a), {Item_Id: parseInt(a), ImgLink: b, Item_Name: c, Threshold1: g, Threshold2: d, Category: e, Order_Quantity: f})
+                    this.snackColor = 'success'
+                    this.snackText = 'Data saved'
+                }
+            }
+            else {
+                setDoc(doc(db, "ItemSupplies", a), {Item_Id: parseInt(a), ImgLink: b, Item_Name: c, Threshold1: g, Threshold2: d, Category: e, Order_Quantity: f})
+                this.snackColor = 'success'
+                this.snackText = 'Data saved'
+            }
+        },
+
+        cancel () {
+            this.snack = true
+            this.snackColor = 'error'
+            this.snackText = 'Canceled'
+        },
+        open () {
+            this.snack = true
+            this.snackColor = 'info'
+            this.snackText = 'Dialog opened'
+        },
+
+        async close () {
+            console.log('Dialog closed')
+            await delay(1000);
+            location.reload()
+        },
+
+        async fetchTransId(nameDB) {
+        var transidList = []
+        var transloop = 1
+
+        console.log("FetchingId...")
+        const query = getDocs(collection(db, nameDB))
+            try {
+                const { docs } = await query
+                transidList = docs.map(doc => {
+                    const { id } = doc
+                    const data = doc.data()[0]
+                    return { id, ...data }
+                })
+
+                console.log('Loaded Ids', transidList)
+                if (transidList.length == 0) {
+                    transloop = 1
+                } else {
+                    //Literally Sort out 10 and 1
+                    var transIdsSorted = []
+                    for (let k = 0; k < transidList.length; k++) {
+                    transIdsSorted.push(parseInt(transidList[k]['id']))
+                    }
+                    transIdsSorted.sort(function(a, b){return a-b})
+                    console.log("TransId Sorted List")
+
+                    var checking = transIdsSorted[transIdsSorted.length - 1]
+                    console.log(checking)
+
+                    if ( isNaN(checking) ) {
+                    transloop = 1
+                    console.log(transloop)
+                    } else {
+                    transloop = parseInt(checking)+1
+                    console.log(transloop)
+                    }
+                }
+                
+                console.log("whats my Item Disburse id: " + transloop.toString())
+                return transloop
+
+            } catch (error) {
+                console.error("Error adding document: ", error)
+            }
+        },
+
+        async getPending() {
+            var z  = await getDocs(collection(db, "PendingArrival"));
             
-            pop_up.style.display = "none"
-            pop_up.style.position = "relative"
-            var form_pop_up = document.createElement('form')
-            form_pop_up.class = "form-container"
-            pop_up.appendChild(form_pop_up)
-            var pop_up_button_close = document.createElement("button")
-            pop_up_button_close.class = "btn cancel"
-            pop_up_button_close.innerHTML = "close-form"
-            pop_up_button_close.type = "button"
-            pop_up_button_close.onclick = function closeForm() {
-                pop_up.style.display = "none";
-                pop_up_button_open.style.display = "block"
+            z.forEach((docs) => {
+                let yy = docs.data()
+                let a = {}
+                var category = yy.Category
+
+                if (category == "Surgery") {
+                    a.Item_Id = yy.Item_Id
+                    a.Topup_Quantity = yy.Topup_Quantity
+                    
+                    this.pending = this.pending.concat(a)
+
+                }
+            })
+            this.pending2 = this.getPendingReduced(this.pending)
+            return this.pending2;
+        },
+
+        getPendingReduced(array) {
+            var reduced_array = array.reduce( (final,data) => {
+                let isAlready = final.find( ( value ) => { 
+                    value.Item_Id == data.Item_Id;
+                });
+                if(!isAlready){
+                    final.push( data );
+                } 
+                else {
+                    var index = final.indexOf(isAlready);
+                    final[index].Topup_Quantity = final[index].Topup_Quantity+ data.Topup_Quantity;
+                } return final; 
+            }, [] )
+            return reduced_array;
+        },
+
+        findTotalPending(id2) {
+            if (this.pending2.find(x => x.Item_Id === id2)) {
+                return this.pending2.find(x => x.Item_Id === id2).Topup_Quantity
             }
-            //button to open the pop-up
-            var pop_up_button_open = document.createElement("button")
-            pop_up_button_open.class = "open-button"
-            pop_up_button_open.innerHTML = "Open Form"
-            pop_up_button_open.style.display = "block"
-            pop_up_button_open.onclick = function openForm() {
-                pop_up.style.display = "block";
-                pop_up_button_open.style.display = "none"
+            else {
+                return 0
             }
-            if (category == "surgical") {
-            var cell1 = row.insertCell(0); var cell2 = row.insertCell(1); var cell3 = row.insertCell(2);
-            var cell4 = row.insertCell(3); var cell5 = row.insertCell(4);
-    
-            cell1.innerHTML = ind; cell2.innerHTML = name; cell3.innerHTML = inventory_lvl;
-            
-            var bu_request = document.createElement("button")
-            bu_request.className = "Request"
-            bu_request.innerHTML = "Request"
-            bu_request.onclick = function(){
-            }
-            cell4.appendChild(bu_request)
-            // Start of Inventory bar using v-progress
-            var bu_order = document.createElement("button")
-            bu_order.className = "Order"
-            bu_order.innerHTML = "Order"
-            bu_order.onclick = function(){
-            }
-            cell4.appendChild(bu_order)
-            //Start of pop-up
-            //Creating an input field for each pop-up form
-            var input_field = document.createElement("input")
-            input_field.id = "Threshold_input"
-            input_field.type = "number"
-            input_field.min = "0"
-            input_field.placeholder = "Enter Threshold"
-            input_field.required = true
-            form_pop_up.appendChild(input_field)
-            
-            var bu_edit_low = document.createElement("button")
-            bu_edit_low.className = "Edit_low"
-            bu_edit_low.innerHTML = "Edit_low"
-            bu_edit_low.type = "submit"
-            bu_edit_low.onclick = function(){
-                var threshold_input_1 = parseInt(input_field.value);
-                appendinstrument1(yy, threshold_input_1);
-                deleteinstrument(name);
-            }
-            form_pop_up.appendChild(bu_edit_low)
-            var bu_edit_high = document.createElement("button")
-            bu_edit_high.className = "Edit_high"
-            bu_edit_high.innerHTML = "Edit_high"
-            bu_edit_high.type = "submit"
-            bu_edit_high.onclick = function(){
-                var threshold_input_2 = parseInt(input_field.value);
-                appendinstrument2(yy, threshold_input_2)
-                deleteinstrument(name);
-            }
-            form_pop_up.appendChild(bu_edit_high)
-            form_pop_up.appendChild(pop_up_button_close)
-            //pop-up Appened into cell 6
-            cell5.appendChild(pop_up_button_open)
-            cell5.appendChild(pop_up)
-            ind += 1
         }
-        })
     }
+}
     
-    display()
-    function deleteinstrument(name){
-            var x = name
-            deleteDoc(doc(db, "ItemSupplies", x))
-            let tb = document.getElementById("table")
-            while(tb.rows.length > 1){
-                tb.deleteRow(1)
-            }
-            console.log("Document successfully deleted!", x);
-            display()
-        }
     
-    async function appendinstrument2(item, threshold){
-            var a = (item.id)
-            var b = (item.imgLink)
-            var c = (item.name)
-            var d = (item.threshold1)
-            var e = (item.category)
-            var f = (item.quantity)
-            console.log(b)
-            await setDoc(doc(db, "ItemSupplies", a), {id: a, imgLink: b, name: c, threshold1: d, threshold2: threshold, category: e, quantity: f})
-        }
-    
-    async function appendinstrument1(item, threshold){
-            var a = (item.id)
-            var b = (item.imgLink)
-            var c = (item.name)
-            var d = (item.threshold2)
-            var e = (item.category)
-            var f = (item.quantity)
-            await setDoc(doc(db, "ItemSupplies", a), {id: a, imgLink: b, name: c, threshold1: threshold, threshold2: d, category: e, quantity: f})
-        }
-    
-    /*function getClass(a, threshold1, threshold2) {
-        if (a < threshold1) {
-            this.class = "first"
-            return this.class
-        }
-        if (a > threshold2) {
-            this.class = "third"
-            return this.class
-        }
-        else {
-            this.class = "second"
-            return this.class
-        }
-    }*/   
-    }
-};
 </script>
 
 <style scoped>
+
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
     background-color: yellow;
 }
+
 th,td{
     border: 1px solid #dddddd;
     text-align: center;
     padding: 8px;
 }
+
 .bwt{
     color: whitesmoke;
     background-color: black;
+}
+
+.v-sheet--offset {
+top: -24px;
+position: relative;
 }
 </style>

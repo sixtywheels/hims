@@ -200,17 +200,35 @@ export default {
             var e = (props.item.Category)
             var f = (props.item.Order_Quantity)
             var g = (props.item.Threshold1)
-            setDoc(doc(db, "ItemSupplies", a), {Item_Id: parseInt(a), ImgLink: b, Item_Name: c, Threshold1: g, Threshold2: d, Category: e, Order_Quantity: f})
-            this.snackColor = 'success'
-            this.snackText = 'Data saved'
 
             var h = (props.item.pendingArrival)
             var current_quant = f + h
             var Trans_Id = await this.fetchTransId("PendingArrival")
-            if (current_quant < g) {
+            console.log(current_quant)
+            if (g > d) {
+                console.log("ERROR THRESHOLD2 MUST BE HIGHER THAN THRESHOLD1")
+                this.snackColor = 'error'
+                this.snackText = 'Canceled'
+            }
+            else if (current_quant < g) {
                 console.log("LOOOOW")
                 var Topupper = d - current_quant
-                setDoc(doc(db, "PendingArrival", a), {Item_Id: parseInt(a), Item_Name: c, Category: e, Topup_Quantity: Topupper, Trans_id: Trans_Id})
+                if (Topupper < 0) {
+                    console.log("ERROR THRESHOLD2 MUST BE HIGHER THAN THRESHOLD1")
+                    this.snackColor = 'error'
+                    this.snackText = 'Canceled'
+                }
+                else {
+                    setDoc(doc(db, "PendingArrival", a), {Item_Id: parseInt(a), Item_Name: c, Category: e, Topup_Quantity: Topupper, Trans_id: Trans_Id})
+                    setDoc(doc(db, "ItemSupplies", a), {Item_Id: parseInt(a), ImgLink: b, Item_Name: c, Threshold1: g, Threshold2: d, Category: e, Order_Quantity: f})
+                    this.snackColor = 'success'
+                    this.snackText = 'Data saved'
+                }
+            }
+            else {
+                setDoc(doc(db, "ItemSupplies", a), {Item_Id: parseInt(a), ImgLink: b, Item_Name: c, Threshold1: g, Threshold2: d, Category: e, Order_Quantity: f})
+                this.snackColor = 'success'
+                this.snackText = 'Data saved'
             }
         },
 
