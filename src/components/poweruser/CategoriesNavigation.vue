@@ -1,16 +1,16 @@
 <template>
     <div id='catNav'>
-        <v-btn v-on:click = "$router.push({ path:'/poweruserdme' })">
+        <v-btn v-on:click = "$router.push({ path:'/poweruserALL' })" color = "error">
+            <div>Low Stock</div>
+        </v-btn> &nbsp;
+        <v-btn v-on:click = "$router.push({ path:'/poweruserdme' })" color="primary">
             <div>DME</div>
-        </v-btn>
-        <v-btn v-on:click = "$router.push({ path:'/poweruseracutecare' })">
+        </v-btn> &nbsp;
+        <v-btn v-on:click = "$router.push({ path:'/poweruseracutecare' })" color="primary">
             <div>Acute Care</div>
-        </v-btn>
-        <v-btn v-on:click = "$router.push({ path:'/powerusersurgical' })">
+        </v-btn> &nbsp;
+        <v-btn v-on:click = "$router.push({ path:'/powerusersurgical' })" color="primary">
             <div>Surgical</div>
-        </v-btn>
-        <v-btn v-on:click = "$router.push({ path:'/poweruserALL' })">
-            <div>ALL</div>
         </v-btn>
     <router-view/>
     </div>

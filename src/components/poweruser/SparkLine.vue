@@ -54,7 +54,7 @@ methods: {
             var id = yy.Item_Id
             var quant = yy.Order_Quantity
             var month = yy.Timestamp.slice(3, 5)
-            var day = yy.Timestamp.slice(0,1)
+            var day = yy.Timestamp.slice(0,2)
 
             if (identifier == id) {
                 var str = this.getDateString(day, parseInt(month))
@@ -69,6 +69,7 @@ methods: {
     getDateString(day , month) {
         month = parseInt(month)
         var str = ""
+        console.log(day)
         if (month === 1) {
             let str2 = "Jan";
             str = str.concat(str2)
