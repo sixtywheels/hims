@@ -20,7 +20,7 @@ import PowerUserSurgical from '../components/poweruser/PowerUserSurgical';
 import PowerUserALL from '../components/poweruser/PowerUserALL';
 import PowerUserSupplyOrderForm from '../components/poweruser/PowerUserSupplyOrderForm';
 import RequestForm from '../components/RequestForm';
-
+import PowerUserTrackArrival from '../components/poweruser/PowerUserTrackArrival';
 
 // User pages
 import UserWIP from '../components/user/UserWIP';
@@ -50,6 +50,7 @@ const routes = [
     },
     { path: '/poweruseradditems', component: PowerUserAddItems, meta: {requiresAuth: true} },
     { path: '/powerusersupplyorder', component: PowerUserSupplyOrderForm, meta: {requiresAuth: false} },
+    { path: '/powerusertrackarrival', component: PowerUserTrackArrival, meta: {requiresAuth: false} },
 
 
     { path: '/userwip', component: UserWIP, meta: {requiresAuth: true} }, 
