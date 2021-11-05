@@ -27,7 +27,11 @@ import UserWIP from '../components/user/UserWIP';
 import UserLogin from '../components/user/UserLogin';
 import UserSignUp from '../components/user/UserSignUp';
 import UserRequestView from '../components/user/UserRequestView';
-import UserDashboard from '../components/user/UserDashboard'
+import UserDashboard from '../components/user/UserDashboard';
+import UserALL from '../components/user/UserALL';
+import UserCOVID19 from '../components/user/UserCOVID19';
+import UserDME from '../components/user/UserDME';
+import UserSurgical from '../components/user/UserSurgical';
 
 Vue.use(VueRouter);
 
@@ -60,10 +64,10 @@ const routes = [
     { path: '/userrequestview', component: UserRequestView },
     { path: '/userdashboard', component: UserDashboard,
         children: [
-            { path: '/poweruserdme', component: PowerUserDME }, 
-            { path: '/powerusercovid19', component: PowerUserCOVID19 },
-            { path: '/powerusersurgical', component: PowerUserSurgical },
-            { path: '/poweruserall', component: PowerUserALL }
+            { path: '/userdme', component: UserDME }, 
+            { path: '/usercovid19', component: UserCOVID19 },
+            { path: '/usersurgical', component: UserSurgical },
+            { path: '/userall', component: UserALL }
         ]
     },
 
