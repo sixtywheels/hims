@@ -15,7 +15,7 @@ import PowerUserApprovalSystem from '../components/poweruser/PowerUserApprovalSy
 import PowerUserDashboard from '../components/poweruser/PowerUserDashboard';
 import PowerUserDME from '../components/poweruser/PowerUserDME';
 import PowerUserAddItems from '../components/poweruser/PowerUserAddItems';
-import PowerUserAcuteCare from '../components/poweruser/PowerUserAcuteCare';
+import PowerUserCOVID19 from '../components/poweruser/PowerUserCOVID19';
 import PowerUserSurgical from '../components/poweruser/PowerUserSurgical';
 import PowerUserALL from '../components/poweruser/PowerUserALL';
 import PowerUserSupplyOrderForm from '../components/poweruser/PowerUserSupplyOrderForm';
@@ -43,7 +43,7 @@ const routes = [
     { path: '/poweruserdashboard', component: PowerUserDashboard,
         children: [
             { path: '/poweruserdme', component: PowerUserDME }, 
-            { path: '/poweruseracutecare', component: PowerUserAcuteCare },
+            { path: '/powerusercovid19', component: PowerUserCOVID19 },
             { path: '/powerusersurgical', component: PowerUserSurgical },
             { path: '/poweruserall', component: PowerUserALL }
         ]
