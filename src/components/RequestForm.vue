@@ -1,13 +1,14 @@
 <template>
 
 <div>
-  <div><power-user-navigation></power-user-navigation></div>
+   <!-- <div><power-user-navigation></power-user-navigation></div> -->
   <!-- <h2>Order Items </h2> -->
   <br>
 
+<!--:vertical="vertical" -->
   <v-snackbar
       v-model="snackbar"
-      :vertical="vertical"
+      
       :timeout="timeout"
     >
       {{ text }}
@@ -110,7 +111,7 @@
 
 
 <script>
-import PowerUserNavigation from '../components/poweruser/PowerUserNavigation'
+//import PowerUserNavigation from '../components/poweruser/PowerUserNavigation'
 import firebaseApp from '../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, doc , setDoc, query, where } from "firebase/firestore"
@@ -147,7 +148,7 @@ export default {
     },
 
     components: {
-        PowerUserNavigation: PowerUserNavigation,
+        //PowerUserNavigation: PowerUserNavigation,
     },
 
     mounted: function() {
@@ -454,17 +455,15 @@ export default {
     }
 
     .containerLeft{
-        width:60%;
-        height: 95%;
+        width:50%;
+        height: 400px;
         float: left;
-        
         background-color: #ccc;
     }
 
     .containerRight{
-        width:40% ;
-        height:400px ;
-        float: right;
+        width:50% ;
+        float: left;
         padding-right: 50px;
     }
 
