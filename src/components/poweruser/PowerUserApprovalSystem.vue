@@ -8,26 +8,16 @@
 
     <div id="app">
     
-    <div class = "containerRequestItems">
-    <RequestForm  @added="change"/>
+    <div class = "containertop">
+      <div id = "containerRequestItems">
+      <RequestForm  @added="change"/>
+      </div>
+
+      <div id = "containerOrderItems">
+      <PowerUserSupplyOrderForm  @added="change"/>
+      </div>
     </div>
 
-    <div class = "containerOrderItems">
-    <PowerUserSupplyOrderForm  @added="change"/>
-    </div>
-
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
     <br>
     <br>
     <br>
@@ -37,10 +27,11 @@
         <h2> Your Transactions </h2>
         <UserRequestDisplayComponent :key="refreshComp  "/>
     </div> -->
-    
-    <div class = "containerOrderApproval">
-        <h2> For Your Review </h2>
-        <PowerUserApprovalComponent :key="refreshComp" />
+    <div class = "containerbottom">
+      <div id = "containerOrderApproval">
+          <h2> For Your Review </h2>
+          <PowerUserApprovalComponent :key="refreshComp" />
+      </div>
     </div>
 
     </div>
@@ -95,19 +86,29 @@ import PowerUserApprovalComponent from './PowerUserApprovalComponent.vue'
         width: 60%;
     }
 
-    .containerRequestItems{
+    .containertop{
+      float: top
+    }
+
+    .containerbottom{
+      float: bottom;
+      padding-top: 800px;
+    }
+
+    #containerRequestItems{
       float: left;
       height:650px ; 
     }
 
-    .containerOrderItems{
+    #containerOrderItems{
       float: right;
       height:650px ;
 
     }
 
-    .containerOrderDisplay{
-      float: bottom;
+    #containerOrderDisplay{
     }
+
+    
 
 </style>

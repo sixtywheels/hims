@@ -415,6 +415,7 @@ export default {
                 await setDoc(doc(db, "ItemSupplies", itemSupply[0]['Item_Id'].toString() ), {Category: itemSupply[0]['Category'], Item_Id: itemSupply[0]['Item_Id'] , ImgLink: itemSupply[0]['ImgLink'], Item_Name: itemSupply[0]['Item_Name'], Order_Quantity: parseInt(newQty), Threshold1: itemSupply[0]['Threshold1'] , Threshold2: itemSupply[0]['Threshold2'] })
                 console.log("Done setDoc")
                 await deleteDoc(doc(db, "PendingArrival", pTransId.toString()))
+                console.log(pTransId.toString())
                 console.log("Done deleteDoc")
                 this.display()
 
