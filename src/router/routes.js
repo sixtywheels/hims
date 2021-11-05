@@ -27,6 +27,7 @@ import UserWIP from '../components/user/UserWIP';
 import UserLogin from '../components/user/UserLogin';
 import UserSignUp from '../components/user/UserSignUp';
 import UserRequestView from '../components/user/UserRequestView';
+import UserDashboard from '../components/user/UserDashboard'
 
 Vue.use(VueRouter);
 
@@ -56,7 +57,15 @@ const routes = [
     { path: '/userwip', component: UserWIP, meta: {requiresAuth: true} }, 
     { path: '/userlogin', component: UserLogin },
     { path: '/usersignup', component: UserSignUp },
-    { path: '/userrequestview', component: UserRequestView }
+    { path: '/userrequestview', component: UserRequestView },
+    { path: '/userdashboard', component: UserDashboard,
+        children: [
+            { path: '/poweruserdme', component: PowerUserDME }, 
+            { path: '/powerusercovid19', component: PowerUserCOVID19 },
+            { path: '/powerusersurgical', component: PowerUserSurgical },
+            { path: '/poweruserall', component: PowerUserALL }
+        ]
+    },
 
 ];
 
