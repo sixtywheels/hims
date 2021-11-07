@@ -30,6 +30,7 @@ import UserWIP from '../components/user/UserWIP';
 import UserLogin from '../components/user/UserLogin';
 import UserSignUp from '../components/user/UserSignUp';
 import UserRequestView from '../components/user/UserRequestView';
+import UserRequestForm from '../components/user/UserRequestForm';
 import UserDashboard from '../components/user/UserDashboard';
 import UserALL from '../components/user/UserALL';
 import UserCOVID19 from '../components/user/UserCOVID19';
@@ -67,6 +68,7 @@ const routes = [
     { path: '/userlogin', component: UserLogin },
     { path: '/usersignup', component: UserSignUp },
     { path: '/userrequestview', component: UserRequestView },
+    { path: '/userrequestform', component: UserRequestForm },
     { path: '/userdashboard', component: UserDashboard,
         children: [
             { path: '/userdme', component: UserDME }, 

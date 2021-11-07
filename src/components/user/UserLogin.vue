@@ -75,7 +75,7 @@ export default {
                         .signInWithEmailAndPassword(this.email, this.password)
                         .then(() => {
                             alert('Successfully logged in');
-                            this.$router.push({ path: '/userwip'});
+                            this.$router.push({ path: '/userdashboard'});
                         })
                         .catch(error => {
                             alert(error.message);

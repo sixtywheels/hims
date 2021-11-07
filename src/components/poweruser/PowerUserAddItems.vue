@@ -308,4 +308,9 @@ export default {
         text-align: center;
     }
 
+    #vcard{
+      text-align: center;
+      margin: auto;
+    }
+
 </style>

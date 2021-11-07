@@ -1,7 +1,8 @@
 <template>
     <div id="login">
+      <div id="trytry">
         <h1>Hospital Inventory Management System (HIMS)</h1>
-        <h2>Empower People to<br>Improve Other's Lives</h2>
+        <h2>Empower People to Improve Other's Lives</h2>
         <h3>Account Type</h3>
         <div style="text-align: center">
             <ul>
@@ -13,6 +14,8 @@
                 </li>
             </ul>
         </div>
+        <!-- <br> -->
+      </div>
     </div>
 </template>
 
@@ -21,7 +24,7 @@
 #login {
   position: relative;
   background-size: cover;
-  background-image: url("https://www.bain.com/globalassets/capabilities/hero-images---still/final_consultingservicesheaders_v20_operations_1440x810.png");
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c0/KRW_Facade2_final.jpg");
   background-position: center;
   background-repeat: no-repeat;
   height: 100%;
@@ -79,4 +82,12 @@ a {
 #contact {
   margin-top:10px;
 }
+
+#trytry {
+  background: rgba(245, 247, 245, 0.3); /* Green background with 30% opacity */
+  margin: auto;
+  width: 60%;
+  /* padding: 10%; */
+}
+
 </style>

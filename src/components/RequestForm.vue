@@ -540,9 +540,10 @@ export default {
 
     .containerLeft{
         width:50%;
-        height: 500px;
+        height: 550px;
         float: left;
-        background-color:green;
+        /* background-color:green; */
+        border: 1px solid black;
     }
 
     .containerRight{

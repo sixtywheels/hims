@@ -1,7 +1,7 @@
 <template>
 
 <div>
-    <div id="topnavbar"><power-user-navigation></power-user-navigation></div>
+    <div><power-user-navigation></power-user-navigation></div>
     <v-card>
         <v-card-title>
         <v-text-field
@@ -563,16 +563,7 @@ th,td{
     background-color: red;
 }
 
-#topnavbar{
-    /* margin: auto;
-    width: 50%;
-    padding: 10px; */
 
-  /* margin: auto;
-  width: 50%;
-  border: 3px solid green; */
-  /* padding: 10px; */
-}
 
 
 </style>
