@@ -60,9 +60,9 @@
 
     <div class = "containerRight">
 
-            <v-card id="test" width="700">
+            <v-card id="test" >
                 <div id="content">
-                    <v-card-title>Request items from Logistics & Procurement Department</v-card-title>
+                    <v-card-title>Request Form</v-card-title>
                     <v-card-text>
                       <v-form ref="form2">
                             <v-select
@@ -98,7 +98,7 @@
                         </v-form>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn color="#B2DFDB" class="mr-4" v-on:click="savetofs()">Submit Request</v-btn>
+                        <v-btn color="#B2DFDB" class="mr-4" v-on:click="savetofs()">Request</v-btn>
                         <v-btn color="#B2DFDB" class="mr-4" v-on:click="resetSearch()">Reset Search</v-btn>
                     </v-card-actions>
                 </div>
@@ -456,15 +456,15 @@ export default {
 
     .containerLeft{
         width:50%;
-        height: 400px;
+        height: 500px;
         float: left;
-        background-color: #ccc;
+        background-color:green;
     }
 
     .containerRight{
         width:50% ;
         float: left;
-        padding-right: 50px;
+        padding-right: 30px;
     }
 
     .containerOrderDisplay{
@@ -476,10 +476,11 @@ export default {
         text-align: right;
     }
 
-    form{
+    form2{
         text-align: left;
         align-items: center;
         margin-left: 30px;
+        
         
     }
 

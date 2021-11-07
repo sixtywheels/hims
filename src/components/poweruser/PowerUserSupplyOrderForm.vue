@@ -3,7 +3,7 @@
   <!-- <div><power-user-navigation></power-user-navigation></div> -->
   
    <div id="vcard">
-            <v-card id="mycard" width="700">
+            <v-card id="mycard" width="300">
                 <div id="content">
                     <v-card-title>Order Supply Form</v-card-title>
                     <v-card-text>
