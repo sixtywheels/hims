@@ -1,5 +1,18 @@
 <template>
 <div>
+    
+    <v-card-title>
+        Item:
+      <v-spacer></v-spacer>
+      <v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+      ></v-text-field>
+    </v-card-title>
+
     <v-data-table
     :headers="headers"
     :items="items"
@@ -100,7 +113,11 @@
         </template>
     </v-snackbar>
 
+<power-user-request-insights>
+    </power-user-request-insights>
+
 </div>
+
 
 </template>
 
@@ -109,13 +126,15 @@ import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs , doc, setDoc} from "firebase/firestore"
 import SparkLine from "@/components/poweruser/SparkLine.vue"
+import PowerUserRequestInsights from "@/components/poweruser/PowerUserRequestInsights.vue"
 
 const db = getFirestore(firebaseApp);
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export default {
     components: {
-        SparkLine
+        SparkLine,
+        PowerUserRequestInsights
     },
     data () {
         return {
@@ -245,7 +264,7 @@ export default {
 
         async close () {
             console.log('Dialog closed')
-            await delay(1000);
+            await delay(700);
             location.reload()
         },
 
