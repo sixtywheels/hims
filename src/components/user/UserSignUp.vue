@@ -27,7 +27,7 @@
                                 v-model="staffID" append-icon="mdi-account">
                             </v-text-field>
 
-                           <v-select
+                           <!-- <v-select
                                 v-model="select"
                                 :items="items"
                                 :error-messages="selectErrors"
@@ -35,9 +35,9 @@
                                 required
                                 @change="$v.select.$touch()"
                                 @blur="$v.select.$touch()"
-                            ></v-select>
+                            ></v-select> -->
 
-                            <v-expansion-panels>
+                            <!-- <v-expansion-panels>
                                 <v-expansion-panel>
                                 <v-expansion-panel-header v-slot="{ open }">
                                     <v-row no-gutters>
@@ -80,7 +80,7 @@
                                     </v-row>
                                 </v-expansion-panel-content>
                                 </v-expansion-panel>
-                            </v-expansion-panels>
+                            </v-expansion-panels> -->
                             <br>
                             <v-btn color="#B3E5FC" class="mr-4" type="submit">Register</v-btn>
                         </v-form>
@@ -117,13 +117,13 @@ export default {
             password: '',
             staffID:'',
             value:String,            
-            items: [
-                'Item 1',
-                'Item 2',
-                'Item 3',
-                'Item 4',
-            ],
-            departments: ['Australia', 'Barbados', 'Chile', 'Denmark', 'Ecuador', 'France'],
+            // items: [
+            //     'Item 1',
+            //     'Item 2',
+            //     'Item 3',
+            //     'Item 4',
+            // ],
+            // departments: ['Australia', 'Barbados', 'Chile', 'Denmark', 'Ecuador', 'France'],
         };
     },
     methods: {

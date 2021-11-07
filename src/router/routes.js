@@ -16,7 +16,7 @@ import PowerUserApprovalSystem from '../components/poweruser/PowerUserApprovalSy
 import PowerUserDashboard from '../components/poweruser/PowerUserDashboard';
 import PowerUserDME from '../components/poweruser/PowerUserDME';
 import PowerUserAddItems from '../components/poweruser/PowerUserAddItems';
-import PowerUserAcuteCare from '../components/poweruser/PowerUserAcuteCare';
+import PowerUserCOVID19 from '../components/poweruser/PowerUserCOVID19';
 import PowerUserSurgical from '../components/poweruser/PowerUserSurgical';
 import PowerUserALL from '../components/poweruser/PowerUserALL';
 import PowerUserSupplyOrderForm from '../components/poweruser/PowerUserSupplyOrderForm';
@@ -30,6 +30,11 @@ import UserWIP from '../components/user/UserWIP';
 import UserLogin from '../components/user/UserLogin';
 import UserSignUp from '../components/user/UserSignUp';
 import UserRequestView from '../components/user/UserRequestView';
+import UserDashboard from '../components/user/UserDashboard';
+import UserALL from '../components/user/UserALL';
+import UserCOVID19 from '../components/user/UserCOVID19';
+import UserDME from '../components/user/UserDME';
+import UserSurgical from '../components/user/UserSurgical';
 
 Vue.use(VueRouter);
 
@@ -46,7 +51,7 @@ const routes = [
     { path: '/poweruserdashboard', component: PowerUserDashboard,
         children: [
             { path: '/poweruserdme', component: PowerUserDME }, 
-            { path: '/poweruseracutecare', component: PowerUserAcuteCare },
+            { path: '/powerusercovid19', component: PowerUserCOVID19 },
             { path: '/powerusersurgical', component: PowerUserSurgical },
             { path: '/poweruserall', component: PowerUserALL }
         ]
@@ -61,9 +66,15 @@ const routes = [
     { path: '/userwip', component: UserWIP, meta: {requiresAuth: true} }, 
     { path: '/userlogin', component: UserLogin },
     { path: '/usersignup', component: UserSignUp },
-    { path: '/userrequestview', component: UserRequestView }
-    
-
+    { path: '/userrequestview', component: UserRequestView },
+    { path: '/userdashboard', component: UserDashboard,
+        children: [
+            { path: '/userdme', component: UserDME }, 
+            { path: '/usercovid19', component: UserCOVID19 },
+            { path: '/usersurgical', component: UserSurgical },
+            { path: '/userall', component: UserALL }
+        ]
+    },
 
 ];
 
