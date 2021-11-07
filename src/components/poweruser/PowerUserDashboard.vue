@@ -1,6 +1,7 @@
 <template>
     <div>
         <div><power-user-navigation></power-user-navigation></div>
+        <br>
         <h1>Dashboard Categories</h1>
         <div><categories-navigation></categories-navigation></div>
     </div>
@@ -17,3 +18,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+h1 {
+    text-align: center;
+}
+</style>

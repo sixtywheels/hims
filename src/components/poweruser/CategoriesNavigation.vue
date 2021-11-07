@@ -24,3 +24,9 @@ export default{
 }
 </script>
 
+<style scoped>
+#catNav{
+    text-align: center;
+}
+
+</style>

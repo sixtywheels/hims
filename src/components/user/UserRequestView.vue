@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div><user-navigation></user-navigation></div>
   <h3>User Request Form for Yap Kai</h3>
 
   <div id="app">
@@ -23,10 +24,11 @@
 
 import UserRequestComponent from './UserRequestComponent.vue'
 import UserRequestDisplayComponent from './UserRequestDisplayComponent.vue'
+import UserNavigation from './UserNavigation.vue'
 
   export default {  
     name:"UserRequestView",
-    components:{ UserRequestComponent, UserRequestDisplayComponent }, // , OrderDisplay },
+    components:{ UserRequestComponent, UserRequestDisplayComponent, UserNavigation }, // , OrderDisplay },
 
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
