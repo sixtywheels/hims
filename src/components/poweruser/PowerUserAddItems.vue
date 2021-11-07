@@ -51,8 +51,12 @@
 import PowerUserNavigation from './PowerUserNavigation'
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, doc , setDoc} from "firebase/firestore"
+import { collection, getDocs, doc , setDoc, query} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
+import {getAuth, onAuthStateChanged} from  "firebase/auth";
+
+
+
 
 export default {
   
@@ -70,6 +74,10 @@ export default {
       InputQuantity: null,
       InputThreshold1: null,
       InputThreshold2: null,
+      
+      authemail: '',
+      puverified: false,
+
 
 
       originalitemList: [],
@@ -87,9 +95,54 @@ export default {
       this.fetchItemsCategories()
       console.info('mounted, itemListCategories:', this.itemCategory)
       this.fetchLastItemId()
+
+            
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if(user) {
+          this.user = user;
+          //console.log(this.user)
+          this.authemail = user['email']
+        }
+      })
+      this.verifyPU()
+
+
     }, 
 
     methods: {
+
+      async verifyPU(){
+          console.log("VERIFYING PU....")
+            const pugetter =  getDocs(query(collection(db, "powerusers") ) );
+
+            var pufiltered = []
+            console.log(pufiltered)
+
+            try {
+                const querySnapshot = await pugetter;
+                querySnapshot.forEach((doc) => {
+                pufiltered.push(doc.data())
+                });
+                
+                for(let i =0; i < pufiltered.length ; i++){
+                  if(pufiltered[i]['email'] == this.authemail){
+                      console.log("WELCOME IN!")
+                      this.puverified = true
+                  } else {
+                    console.log("CHECK NEXT")
+                  }
+                }
+            }catch (error) {
+                console.error("Error checking document: ", error)
+            }
+
+            console.log(this.puverified)
+            if(this.puverified == false){
+                console.log("ROUTE THIS AWAY!!!")
+            }
+        },
+
 
         async fetchItemsCategories () {
         

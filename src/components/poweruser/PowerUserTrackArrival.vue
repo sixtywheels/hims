@@ -183,10 +183,28 @@ import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, setDoc, doc, deleteDoc, query, where} from "firebase/firestore"
 //import { collection, getDocs} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
+import {getAuth, onAuthStateChanged} from  "firebase/auth";
+
+
 
 export default {
 
     name:"PowerUserTrackArrival",
+
+    mounted(){
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if(user) {
+            this.user = user;
+            //console.log(this.user)
+            this.authemail = user['email']
+        }
+      })
+      this.verifyPU()
+
+
+
+    },
 
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
@@ -214,6 +232,11 @@ export default {
         transidList: [],
         transloop: 0,
         itemselector: [],
+
+        authemail: '',
+        puverified: false,
+
+
 
         editedIndex: -1,
         editedItem: {
@@ -260,6 +283,38 @@ export default {
         async initialize() {
             this.display()
         },
+
+         async verifyPU(){
+          console.log("VERIFYING PU....")
+            const pugetter =  getDocs(query(collection(db, "powerusers") ) );
+
+            var pufiltered = []
+            console.log(pufiltered)
+
+            try {
+                const querySnapshot = await pugetter;
+                querySnapshot.forEach((doc) => {
+                pufiltered.push(doc.data())
+                });
+                
+                for(let i =0; i < pufiltered.length ; i++){
+                  if(pufiltered[i]['email'] == this.authemail){
+                      console.log("WELCOME IN!")
+                      this.puverified = true
+                  } else {
+                    console.log("CHECK NEXT")
+                  }
+                }
+            }catch (error) {
+                console.error("Error checking document: ", error)
+            }
+
+            console.log(this.puverified)
+            if(this.puverified == false){
+                console.log("ROUTE THIS AWAY!!!")
+            }
+        },
+        
 
         editItem (item) {
         console.log("editItem")
