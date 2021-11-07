@@ -3,15 +3,11 @@
         <v-btn v-on:click = "$router.push({ path:'/PowerUserDashboard' })">
             <div>Dashboard</div>
         </v-btn>
+
         <v-btn v-on:click = "$router.push({ path:'/PowerUserAddItems' })">
             <div>Add new items</div>
         </v-btn>
-        <v-btn v-on:click = "$router.push({ path:'/requestform' })">
-            <div>Request Form</div>
-        </v-btn>
-        <v-btn v-on:click = "$router.push({ path:'/powerusersupplyorder' })">
-            <div>Order Inventories Form</div>
-        </v-btn>
+
         <v-btn v-on:click = "$router.push({ path:'/poweruserapprovalsystem' })">
             <div>Pending Approval</div>
         </v-btn>
@@ -20,16 +16,31 @@
             <div>Add Arrivals</div>
         </v-btn>
 
-        <v-btn v-on:click = "$router.push({ path:'/poweruserwip' })">
-            <div>Closed Requests</div>
+        <v-btn v-on:click="logout">
+            <div>Logout</div>
         </v-btn>
     </div>
 </template>
 
 <script>
+
+import firebase from '@/uifire.js'
+
 export default{
     data(){
         return{};
+    },
+
+    methods: {
+        logout() {
+            firebase
+            .auth()
+            .signOut()
+            .then(() => {
+                alert("You are logging out now.")
+                this.$router.replace({ path: "/" });
+            });
+        },
     }
 }
 </script>
