@@ -1,7 +1,7 @@
 <template>
   <v-card
     class="mt-4 mx-auto"
-    max-width="400"
+    max-width="500"
   >
     <v-sheet
       class="v-sheet--offset mx-auto"
@@ -17,6 +17,9 @@
         padding="16"
       ></v-sparkline>
     </v-sheet>
+
+    <v-card-title>5% Confidence Interval: {{this.confidence_range}} </v-card-title>
+
   </v-card>
 </template>
 
@@ -32,6 +35,11 @@ data() {
     return {
         labels: new Array(),
         value: new Array(),
+        sum: 0,
+        mean: 0,
+        sd: 0,
+        confidence_range: new Array(),
+        confidence_lvl: 0,
     }
 },
 
@@ -64,12 +72,18 @@ methods: {
         })
         this.labels = curr_labels
         this.value = curr_value
+
+        var total = this.getSumSq(curr_value)
+        this.total = total
+
+        var sd = this.getSD (total, curr_value.length)
+        this.sd = sd
+        this.getConfidenceInterval(total, curr_value.length, sd)
     },
 
     getDateString(day , month) {
         month = parseInt(month)
         var str = ""
-        console.log(day)
         if (month === 1) {
             let str2 = "Jan";
             str = str.concat(str2)
@@ -120,6 +134,42 @@ methods: {
         }
         str = str.concat(" " + day.toString())
         return str
+    },
+
+    getSumSq (dataset) {
+
+        var i,
+            total = 0;
+
+        for (i = 0; i < dataset.length; i++) {
+
+        total += parseInt(dataset[i]);
+        }
+        this.sum = total;
+        return total
+    },
+    
+    getSD (sum, sampleSize) {
+
+        var sd = Math.sqrt(sum / sampleSize).toFixed(2);
+    
+        this.sd = sd
+        return sd
+    },
+
+    getConfidenceInterval(sum, sampleSize, sd) {
+  
+        var formula = sd / Math.sqrt(sampleSize);
+
+        var mean = sum/sampleSize
+        
+        var confidence_range = [(mean - formula).toFixed(0), (mean + formula).toFixed(0)];
+        var confidence_lvl = (mean - confidence_range[0]).toFixed(0);
+
+        this.confidence_range = confidence_range
+        this.confidence_lvl = confidence_lvl
+
+        return confidence_lvl
     }
 
 }
