@@ -116,6 +116,8 @@ import firebaseApp from '../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, doc , setDoc, query, where } from "firebase/firestore"
 const db = getFirestore(firebaseApp);
+import {getAuth, onAuthStateChanged} from  "firebase/auth";
+
 
 export default {
     
@@ -144,6 +146,13 @@ export default {
       remarks: '-',
       item_Name: '',
       itemselector: [],
+
+      authemail: '',
+      uverified: false,
+      userId: '',
+
+
+
       }
     },
 
@@ -156,6 +165,18 @@ export default {
       console.info('mounted, itemList:', this.itemList) 
       this.fetchTransId()
       console.info('mounted, transidList:', this.transidList) 
+
+      const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if(user) {
+          this.user = user;
+          //console.log(this.user)
+          this.authemail = user['email']
+        }
+      })
+      this.verifyU()
+
+
     },
 
     computed: {
@@ -170,6 +191,69 @@ export default {
     },
 
     methods: {
+
+      async verifyU(){
+          console.log("VERIFYING PU....")
+            const ugetter =  getDocs(query(collection(db, "users") ) );
+
+            var ufiltered = []
+            console.log(ufiltered)
+
+            try {
+                const querySnapshot = await ugetter;
+                querySnapshot.forEach((doc) => {
+                ufiltered.push(doc.data())
+                });
+                
+                for(let i =0; i < ufiltered.length ; i++){
+                  if(ufiltered[i]['email'] == this.authemail){
+                      console.log("WELCOME IN!")
+                      this.uverified = true
+                      this.userId = ufiltered[i]['staffID']
+                  } else {
+                    console.log("CHECK NEXT")
+                  }
+                }
+            }catch (error) {
+                console.error("Error checking document: ", error)
+            }
+
+            if (this.userId == ''){
+              const pugetter =  getDocs(query(collection(db, "powerusers") ) );
+              var pufiltered = []
+              console.log(pufiltered)
+
+              try {
+                const querySnapshot = await pugetter;
+                querySnapshot.forEach((doc) => {
+                pufiltered.push(doc.data())
+                });
+                
+                for(let i =0; i < pufiltered.length ; i++){
+                  if(pufiltered[i]['email'] == this.authemail){
+                      console.log("WELCOME IN!")
+                      this.uverified = true
+                      this.userId = pufiltered[i]['staffID']
+                  } else {
+                    console.log("CHECK NEXT")
+                  }
+                }
+                 }catch (error) {
+                console.error("Error checking document: ", error)
+                }
+
+
+            }
+
+            console.log(this.uverified)
+            if(this.uverified == false){
+                console.log("ROUTE THIS AWAY!!!")
+            }
+        },
+
+        
+
+
 
     async fetchItems () {
       //https://stackoverflow.com/questions/59772759/uncaught-typeerror-db-collection-is-not-a-function-for-a-real-time-database-in
@@ -348,7 +432,7 @@ export default {
     
         var c = this.quantity
         var d = this.remarks
-        var e = "dummyUser1"
+        var e = this.userId
         var f = (parseInt(this.transloop) + 1).toString()
 
         var today = new Date();
