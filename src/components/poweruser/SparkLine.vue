@@ -163,8 +163,8 @@ methods: {
 
         var mean = sum/sampleSize
         
-        var confidence_range = [(mean - formula).toFixed(2), (mean + formula).toFixed(2)];
-        var confidence_lvl = (mean - confidence_range[0]).toFixed(2);
+        var confidence_range = [(mean - formula).toFixed(0), (mean + formula).toFixed(0)];
+        var confidence_lvl = (mean - confidence_range[0]).toFixed(0);
 
         this.confidence_range = confidence_range
         this.confidence_lvl = confidence_lvl
