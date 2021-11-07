@@ -1,26 +1,23 @@
 <template>
 <div>
-    
-    <v-card-title>
-        Item:
-      <v-spacer></v-spacer>
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-      ></v-text-field>
-    </v-card-title>
-
     <v-data-table
     :headers="headers"
     :items="items"
+    :search="search"
+    :custom-filter="filterOnlyCapsText"
     :single-expand="singleExpand"
     :expanded.sync="expanded"
     :items-per-page="5"
     show-expand
     class="elevation-1">
+    
+      <template v-slot:top>
+        <v-text-field
+          v-model="search"
+          label="Search by Item Name (UPPER CASE ONLY)"
+          class="mx-4"
+        ></v-text-field>
+      </template>
 
     <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
@@ -138,6 +135,7 @@ export default {
     },
     data () {
         return {
+            search: '',
             expanded: [],
             singleExpand: true,
             labels: [],
@@ -357,7 +355,14 @@ export default {
             else {
                 return 0
             }
-        }
+        },
+        
+        filterOnlyCapsText (value, search) {
+            return value != null &&
+            search != null &&
+            typeof value === 'string' &&
+            value.toString().toLocaleUpperCase().indexOf(search) !== -1
+      },
     }
 }
     
