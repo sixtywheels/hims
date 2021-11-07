@@ -1,6 +1,7 @@
 <template>
 
 <div>
+    <div id="topnavbar"><power-user-navigation></power-user-navigation></div>
     <v-card>
         <v-card-title>
         <v-text-field
@@ -183,6 +184,7 @@ import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, setDoc, doc, deleteDoc, query, where} from "firebase/firestore"
 //import { collection, getDocs} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
+import PowerUserNavigation from './PowerUserNavigation'
 
 export default {
 
@@ -233,6 +235,10 @@ export default {
         },
       }
      },
+
+     components: {
+        PowerUserNavigation: PowerUserNavigation,
+    },
 
      computed: {
       formTitle () {
@@ -502,6 +508,17 @@ th,td{
 .bwtReject{
     color: whitesmoke;
     background-color: red;
+}
+
+#topnavbar{
+    /* margin: auto;
+    width: 50%;
+    padding: 10px; */
+
+  /* margin: auto;
+  width: 50%;
+  border: 3px solid green; */
+  /* padding: 10px; */
 }
 
 
