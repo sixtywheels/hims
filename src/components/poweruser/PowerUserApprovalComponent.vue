@@ -261,10 +261,24 @@ import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, setDoc, doc, deleteDoc, query, where} from "firebase/firestore"
 //import { collection, getDocs} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
+import {getAuth, onAuthStateChanged} from  "firebase/auth";
+
 
 export default {
 
     name:"PowerUserApprovalComponent",
+
+    mounted(){
+        const auth = getAuth();
+      onAuthStateChanged(auth, (user) => {
+        if(user) {
+          this.user = user;
+          //console.log(this.user)
+          this.authemail = user['email']
+        }
+      })
+      this.verifyPU()
+    },
 
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
@@ -274,6 +288,9 @@ export default {
 
         decision: 'No Decision',
 
+        authemail: '',
+        puverified: false,
+        poweruserId: '',
 
         search: '',
         dialog: false,
@@ -293,6 +310,7 @@ export default {
           { text: 'Remarks', value: 'Remarks' },
           { text: 'Notes', value: 'Notes' },
           { text: 'Actions', value: 'actions', sortable: false },
+          
         ],
 
         requestedrecords: [],
@@ -350,6 +368,40 @@ export default {
         async initialize() {
             this.display()
         },
+
+        async verifyPU(){
+          console.log("VERIFYING PU....")
+            const pugetter =  getDocs(query(collection(db, "powerusers") ) );
+
+            var pufiltered = []
+            console.log(pufiltered)
+
+            try {
+                const querySnapshot = await pugetter;
+                querySnapshot.forEach((doc) => {
+                pufiltered.push(doc.data())
+                });
+                
+                for(let i =0; i < pufiltered.length ; i++){
+                  if(pufiltered[i]['email'] == this.authemail){
+                      console.log("WELCOME IN!")
+                      this.puverified = true
+                      this.poweruserId = pufiltered[i]['staffID']
+                      console.log("THIS IS MY AUTH STAFF ID: " + this.poweruserId)
+                  } else {
+                    console.log("CHECK NEXT")
+                  }
+                }
+            }catch (error) {
+                console.error("Error checking document: ", error)
+            }
+
+            console.log(this.puverified)
+            if(this.puverified == false){
+                console.log("ROUTE THIS AWAY!!!")
+            }
+        },
+
         
         assignDecision(){
             console.log(this.decision)
@@ -428,7 +480,9 @@ export default {
         var pOrderQuantity = this.editedItem['Quantity_Requested']
         var pItemName = this.editedItem['Item_Name']
         var pRemarks = this.editedItem['Remarks']
-        this.approveOrder(pTransId, pItemId, pOrderQuantity, pItemName,pRemarks, "TEMPNOSHOW", item)
+        var pUserId = this.editedItem['UserId']
+
+        this.approveOrder(pTransId, pItemId, pOrderQuantity, pItemName,pRemarks, pUserId, item)
         },
 
 
@@ -475,7 +529,8 @@ export default {
         var pItemName = this.editedItem['Item_Name']
         var pRemarks = this.editedItem['Remarks']
         var pTimestamp = this.editedItem['Timestamp']
-        this.updateOrder(pTransId, pItemId, pOrderQuantity, pItemName, pRemarks, pTimestamp)
+        var pUserId = this.editedItem['UserId']
+        this.updateOrder(pTransId, pItemId, pOrderQuantity, pItemName, pRemarks, pUserId, pTimestamp)
         this.close()
         },
 
@@ -503,6 +558,7 @@ export default {
             //var showNotes = making.toString() + " %"
 
             var showRequester = (yy.UserId) //console.log(showRequester)
+            console.log("LOGG NEW REQUESTER")
             console.log(showRequester)
 
             callData.Trans_Id = showTransId
@@ -511,6 +567,7 @@ export default {
             callData.Quantity_Requested = showOrderQuantity
             callData.Remarks = showRemarks
             callData.Timestamp = showTimestamp
+            callData.UserId = showRequester
             //callData.Notes = showNotes
 
             this.requestedrecords = this.requestedrecords.concat(callData)
@@ -552,12 +609,13 @@ export default {
 
         },
 
-        async updateOrder(pTransId, pItemId, pOrderQuantity, pItemName, pRemarks, pTimestamp){
+        async updateOrder(pTransId, pItemId, pOrderQuantity, pItemName, pRemarks, pUserId, pTimestamp){
             //await deleteDoc(doc(db, "Request", parseInt(pTransId.slice(8)) ))
             console.log("Setting Updates")
+            console.log(pUserId)
 
             try{ 
-                await setDoc(doc(db, "Request", pTransId.slice(8) ), {Trans_Id: "WD-2021-"+ pTransId.slice(8) , Timestamp: pTimestamp, UserId: "TEMP NO SHOW", Item_Id: parseInt(pItemId) , Item_Name: pItemName , Order_Quantity: parseInt(pOrderQuantity), Remarks: pRemarks, Status: "Pending Approval"})
+                await setDoc(doc(db, "Request", pTransId.slice(8) ), {Trans_Id: "WD-2021-"+ pTransId.slice(8) , Timestamp: pTimestamp, UserId: pUserId, Item_Id: parseInt(pItemId) , Item_Name: pItemName , Order_Quantity: parseInt(pOrderQuantity), Remarks: pRemarks, Status: "Pending Approval"})
                 console.log("Update Completed")
             } catch (error) {
                 console.log(error)
@@ -770,7 +828,7 @@ export default {
                 var x6 = showRemarks
                 var x7 = showRequester
                 
-                var x8 = "POWERUSERA" //this.approvingOfficer
+                var x8 = this.poweruserId //"POWERUSERA" //this.approvingOfficer
 
                 var today = new Date();
                 var date = this.addZero(today.getDate()) + '-' + this.addZero( (today.getMonth()+1) )+ '-' + today.getFullYear();
@@ -863,7 +921,7 @@ export default {
                         nameDB = "Request"
                         transloop = await this.fetchTransId(nameDB )
                         console.log(transloop)
-                        await setDoc(doc(db, "Request", x2), {Trans_Id: "WD-2021-"+ x2, Timestamp: dateTime, UserId: x7, Item_Id: parseInt(x3) , Item_Name: quantityStatus[4] ,   Order_Quantity: quantityStatus[6] - quantityStatus[5], Remarks: x6, Status: "Holding Inadequate Stock"})
+                        await setDoc(doc(db, "Request", x2), {Trans_Id: "WD-2021-"+ x2, Timestamp: dateTime, UserId: x7, Item_Id: parseInt(x3) , Item_Name: quantityStatus[4] ,   Order_Quantity: quantityStatus[6] - quantityStatus[5], Remarks: x6, Status: "HOLDING INADEQUATE STOCK"})
                         }
 
                         this.decision = 'No Decision'
@@ -914,6 +972,7 @@ export default {
                 //alert("You have rejected " + x1)
                 
                 await deleteDoc(doc(db, "Request", x2))
+           
                 console.log("order Request Rejected!", x1);
 
                 //Add notes into reject database.
