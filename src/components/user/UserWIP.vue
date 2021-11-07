@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h1 style="text-align: center">This is a User page. <br> You are at the right route! <br> Unfortunately, this page is still a work in progress.</h1>
+        <div><user-navigation></user-navigation></div>
+        <h1 style="text-align: center">This is a PowerUser page. <br> You are at the right route! <br> Unfortunately, this page is still a work in progress.</h1>
         <v-container fluid>
             <v-layout justify-center align-center>
                 <v-flex shrink>
@@ -16,3 +17,14 @@
         </v-container>
     </div>
 </template>
+
+<script>
+import UserNavigation from './UserNavigation'
+
+export default {
+
+    components: {
+        UserNavigation: UserNavigation,
+    }
+}
+</script>
