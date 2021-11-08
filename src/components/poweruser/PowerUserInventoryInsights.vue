@@ -20,6 +20,13 @@
         </div>
 
         <bar-chart class ="user" width=400px :data="chartdata2" @load="updateAll()"></bar-chart>
+        <br>
+
+        <div v-if="loaded">
+            <v-chart class="chart" :option="option" />
+        </div>
+
+
 
 
  
@@ -27,14 +34,51 @@
 
 </template>
 
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+<script src="https://cdn.jsdelivr.net/npm/@vue/composition-api@1.0.0-rc.3"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.1.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-echarts@6.0.0-rc.6"></script>
+
 <script>
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, query} from "firebase/firestore"
+import { collection, getDocs, query, where} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
 
 
+
+import { use } from "echarts/core";
+import { CanvasRenderer } from "echarts/renderers";
+import { PolarComponent } from 'echarts/components';
+import { PieChart } from "echarts/charts";
+import {
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent
+} from "echarts/components";
+import VChart, { THEME_KEY } from "vue-echarts";
+
+use([
+  CanvasRenderer,
+  PolarComponent,
+  PieChart,
+  TitleComponent,
+  TooltipComponent,
+  LegendComponent
+]);
+
+
 export default {
+
+      components: {
+    VChart
+  },
+
+    provide: {
+    [THEME_KEY]: "light"
+  },
+
+
 
     data(){
         return{
@@ -42,6 +86,56 @@ export default {
             dataToDisplay: [],
             chartdata: {'Monday':2,'Tuesday': 5, 'Wednesday': 2, 'Thursday': 5, 'Friday':6},
             chartdata2: [],
+
+                    loaded: false,
+        inventoryNames1: [],
+        dataToDisplay1: [],
+        dataToDisplay2: [],
+
+        
+       
+
+        option: {
+             angleAxis: {
+                type: 'category',
+                data: ['loading'],
+                
+            },
+            radiusAxis: {},
+            polar: {},
+            series: [
+                {
+                type: 'bar',
+                data: [0],
+                coordinateSystem: 'polar',
+                name: 'Current',
+                stack: 'a',
+                emphasis: {
+                    focus: 'series'
+                }
+                },
+                {
+                type: 'bar',
+                data: [0],
+                coordinateSystem: 'polar',
+                name: 'Pending',
+                stack: 'a',
+                emphasis: {
+                    focus: 'series'
+                }
+                },
+
+            ],
+            legend: {
+                show: true,
+                data: ['Current', 'Pending'],
+                textStyle: {
+                    fontSize: 12,
+                    fontStyle: 'italic'
+                }
+            }
+      
+        }, 
             
         }
     },
@@ -49,9 +143,98 @@ export default {
     mounted: function() {
         this.consolidateItemSupplies()
         this.updateAll()
+        this.suppliesOverview()
+      this.loaded = true
 
     },
     methods:{
+
+        async suppliesOverview(cat){
+
+            this.inventoryNames1 = []
+            this.dataToDisplay1 = []
+            this.dataToDisplay2 = []
+
+            console.log(cat)
+            var itemSuppliesgetter = null
+            if (cat == "None"){
+                itemSuppliesgetter =  getDocs(query(collection(db, "ItemSupplies")) );
+            } else {
+                itemSuppliesgetter =  getDocs(query(collection(db, "ItemSupplies"), where("Category" , "==", cat)) );
+            }
+            var itemfiltered = []
+
+            try {
+                const querySnapshot = await itemSuppliesgetter;
+                querySnapshot.forEach((doc) => {
+                itemfiltered.push(doc.data())
+                });
+            console.log("Item filter shoed")
+            console.log(itemfiltered)
+            //console.log(itemfiltered[3])
+        
+            }catch (error) {
+                console.error("Error checking document: ", error)
+            }
+            
+            for (let i =0; i < itemfiltered.length; i++ ){
+                this.inventoryNames1.push( itemfiltered[i]['Item_Name'])
+                var qty = itemfiltered[i]['Order_Quantity']
+                this.dataToDisplay1.push( qty)
+            }
+
+            console.log(this.inventoryNames1)
+            console.log(this.dataToDisplay1)
+            console.log(this.dataToDisplay2)
+
+            this.option.series[0].data = this.dataToDisplay1;
+            this.option.angleAxis.data = this.inventoryNames1;
+        
+
+            //#############################################################################//
+
+
+            var itemSuppliesgetter2 = null
+            if (cat == "None"){
+                 itemSuppliesgetter2 =  getDocs(query(collection(db, "PendingArrival")) );
+            } else {
+                itemSuppliesgetter2 =  getDocs(query(collection(db, "PendingArrival"), where("Category" , "==", cat)) );
+            }
+
+            itemfiltered = []
+
+            try {
+                const querySnapshot = await itemSuppliesgetter2;
+                querySnapshot.forEach((doc) => {
+                itemfiltered.push(doc.data())
+                });
+            console.log(itemfiltered)
+            //console.log(itemfiltered[3])
+        
+            }catch (error) {
+                console.error("Error checking document: ", error)
+            }
+            
+            for (let i =0; i < itemfiltered.length; i++ ){
+                this.inventoryNames.push( itemfiltered[i]['Item_Name'])
+                var qty = itemfiltered[i]['Topup_Quantity']
+                this.dataToDisplay2.push( qty)
+            }
+
+            this.option.series[1].data = this.dataToDisplay2;
+
+
+            console.log("OUTCOME")
+            console.log(this.inventoryNames1)
+            console.log(this.dataToDisplay1)
+            console.log(this.dataToDisplay2)
+            
+
+
+        },
+
+        
+
         updateMe: function() {
             this.chartdata = {'Monday':Math.random(),'Tuesday': 5, 'Wednesday': Math.random(), 'Thursday': 5, 'Friday':6}
         },
@@ -59,6 +242,7 @@ export default {
         updateAll: function() {
             var cat = "None"
             this.consolidateItemSupplies(cat)
+            this.suppliesOverview(cat)
             //console.log([JSON.parse(JSON.stringify(this.dataToDisplay))] )
             this.chartdata2 = this.dataToDisplay //[['Blueberry' ,Math.random ()*30], ['Strawberry' , 23],['Balckberry' , 23]]
         },
@@ -66,6 +250,7 @@ export default {
         updateDME: function() {
             var cat = "DME"
             this.consolidateItemSupplies(cat)
+            this.suppliesOverview(cat)
             //console.log([JSON.parse(JSON.stringify(this.dataToDisplay))] )
             this.chartdata2 = this.dataToDisplay //[['Blueberry' ,Math.random ()*30], ['Strawberry' , 23],['Balckberry' , 23]]
         },
@@ -73,6 +258,7 @@ export default {
         updateSurgery: function() {
             var cat = "Surgery"
             this.consolidateItemSupplies(cat)
+            this.suppliesOverview(cat)
             //console.log([JSON.parse(JSON.stringify(this.dataToDisplay))] )
             this.chartdata2 = this.dataToDisplay //[['Blueberry' ,Math.random ()*30], ['Strawberry' , 23],['Balckberry' , 23]]
         },
@@ -80,6 +266,7 @@ export default {
         updateCOVID: function() {
             var cat = "COVID19"
             this.consolidateItemSupplies(cat)
+            this.suppliesOverview(cat)
             //console.log([JSON.parse(JSON.stringify(this.dataToDisplay))] )
             this.chartdata2 = this.dataToDisplay //[['Blueberry' ,Math.random ()*30], ['Strawberry' , 23],['Balckberry' , 23]]
         },
@@ -133,6 +320,12 @@ export default {
 </script>
 
 <style scoped>
+
+    .chart {
+    height: 300px;
+    
+    }
+
     .user{
         margin: auto;
         border: 3px solid grey;

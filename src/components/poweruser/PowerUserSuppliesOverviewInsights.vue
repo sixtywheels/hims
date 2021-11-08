@@ -50,12 +50,9 @@ export default {
   data() {
     return {
         loaded: false,
-        inventoryNames: [],
-        dataToDisplay: [],
+        inventoryNames1: [],
+        dataToDisplay1: [],
         dataToDisplay2: [],
-
-        modifyDataDisplay: [],
-        modifyInventoryNames: [],
 
         
        
@@ -126,17 +123,17 @@ export default {
             }
             
             for (let i =0; i < itemfiltered.length; i++ ){
-                this.inventoryNames.push( itemfiltered[i]['Item_Name'])
+                this.inventoryNames1.push( itemfiltered[i]['Item_Name'])
                 var qty = itemfiltered[i]['Order_Quantity']
-                this.dataToDisplay.push( qty)
+                this.dataToDisplay1.push( qty)
             }
 
-            console.log(this.inventoryNames)
-            console.log(this.dataToDisplay)
+            console.log(this.inventoryNames1)
+            console.log(this.dataToDisplay1)
             console.log(this.dataToDisplay2)
 
-            this.option.series[0].data = this.dataToDisplay;
-            this.option.angleAxis.data = this.inventoryNames;
+            this.option.series[0].data = this.dataToDisplay1;
+            this.option.angleAxis.data = this.inventoryNames1;
 
             //#############################################################################//
 
@@ -164,8 +161,8 @@ export default {
             this.option.series[1].data = this.dataToDisplay2;
 
 
-            console.log(this.inventoryNames)
-            console.log(this.dataToDisplay)
+            console.log(this.inventoryNames1)
+            console.log(this.dataToDisplay1)
             console.log(this.dataToDisplay2)
             
 
@@ -184,6 +181,6 @@ export default {
 
 <style scoped>
 .chart {
-  height: 700px;
+  height: 400px;
 }
 </style>

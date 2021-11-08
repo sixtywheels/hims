@@ -104,6 +104,8 @@
                 </div>
             </v-card>
   </div>
+
+
 </div>
 
 </template>
@@ -120,7 +122,11 @@ import {getAuth, onAuthStateChanged} from  "firebase/auth";
 
 
 export default {
-    
+    props: [
+        'listdata'
+
+    ],
+
     name:"UserRequestComponent",
 
     data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
@@ -532,6 +538,7 @@ export default {
 
     #exactImg{
       margin-top: 50px;
+      margin-right: 40px;
       width: 40%;
       height: 80%;
       max-height: 80%;
@@ -539,15 +546,15 @@ export default {
     }
 
     .containerLeft{
-        width:50%;
-        height: 550px;
+        width:55%;
+        height: 520px;
         float: left;
         /* background-color:green; */
         border: 1px solid black;
     }
 
     .containerRight{
-        width:50% ;
+        width:45% ;
         float: left;
         padding-right: 30px;
     }
