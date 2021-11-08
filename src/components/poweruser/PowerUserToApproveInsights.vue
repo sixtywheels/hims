@@ -1,11 +1,9 @@
+<!-- UNDER CONSTRUCTION -->
+
 <template>
-    
+
     <div v-if="loaded">
-        <br>
-        <br>
         <v-chart class="chart" :option="option" />
-        <br>
-        <br>
     </div>
 
 </template>
@@ -17,6 +15,8 @@
 <script>
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
+import { PolarComponent } from 'echarts/components';
+
 import { PieChart } from "echarts/charts";
 import {
   TitleComponent,
@@ -33,6 +33,7 @@ const db = getFirestore(firebaseApp);
 
 use([
   CanvasRenderer,
+  PolarComponent,
   PieChart,
   TitleComponent,
   TooltipComponent,
@@ -55,42 +56,54 @@ export default {
         dataToDisplay: [],
         modifyDataDisplay: [],
         modifyInventoryNames: [],
+
+        
        
 
         option: {
-        title: {
-          text: "Amount of Supplies",
-          left: "center"
-        },
-        tooltip: {
-          trigger: "item",
-          formatter: "{a} <br/>{b} : {c} ({d}%)"
-        },
-        legend: {
-          orient: "vertical",
-          left: "left",
-          data: [
-            "Loading"
-          ]
-        },
-        series: [
-          {
-            name: "Amount of Supplies",
-            type: "pie",
-            radius: "75%",
-            center: ["50%", "60%"],
-            data: [
-              { value: 0, name: "Loading" },
+             angleAxis: {
+                type: 'category',
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            },
+            radiusAxis: {},
+            polar: {},
+            series: [
+                {
+                type: 'bar',
+                data: [1, 2, 3, 4, 3, 5, 1],
+                coordinateSystem: 'polar',
+                name: 'A',
+                stack: 'a',
+                emphasis: {
+                    focus: 'series'
+                }
+                },
+                {
+                type: 'bar',
+                data: [2, 4, 6, 1, 3, 2, 1],
+                coordinateSystem: 'polar',
+                name: 'B',
+                stack: 'a',
+                emphasis: {
+                    focus: 'series'
+                }
+                },
+                {
+                type: 'bar',
+                data: [1, 2, 3, 4, 1, 2, 5],
+                coordinateSystem: 'polar',
+                name: 'C',
+                stack: 'a',
+                emphasis: {
+                    focus: 'series'
+                }
+                }
             ],
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)"
-              }
+            legend: {
+                show: true,
+                data: ['A', 'B', 'C']
             }
-          }
-        ]
+      
         }, 
 
 
@@ -99,7 +112,7 @@ export default {
 
  
     mounted: function() {
-      this.consolidateItemDisbursed()
+      //this.consolidateItemDisbursed()
       this.loaded = true
     },
 
@@ -145,7 +158,6 @@ export default {
 
 
         async getInventoryNames(){
-
             const itemSuppliesgetter =  getDocs(query(collection(db, "ItemSupplies")) );
             var itemfiltered = []
             var consolidateNames = []
@@ -180,6 +192,6 @@ export default {
 
 <style scoped>
 .chart {
-  height: 400px;
+  height: 700px;
 }
 </style>
