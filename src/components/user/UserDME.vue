@@ -24,12 +24,12 @@
             </div>
         </template>
         
-        <template v-slot:item.options=""> <!-- item -->
+        <!-- <template v-slot:item.options=""> item -->
             <!-- <v-btn>Order</v-btn> -->
-            <v-btn @click="open()" >Request</v-btn> <!-- @click="createRequestForm(item)" -->
-        </template >
+            <!-- <v-btn @click="open()" >Request</v-btn> @click="createRequestForm(item)" -->
+        <!-- </template > --> 
         
-        <template v-slot:item.options="props">
+        <!-- <template v-slot:item.options="props">
             <v-edit-dialog
             :return-value.sync="props.item.Order_Quantity"
             large
@@ -54,7 +54,7 @@
                     </v-text-field>
                 </template>
             </v-edit-dialog>
-        </template> 
+        </template>  -->
     
      
     </v-data-table>
@@ -116,7 +116,7 @@ export default {
                 },
                 { text: 'Item Name', value: 'Item_Name' },
                 { text: 'Inventory Level', value: 'Order_Quantity' },
-                { text: 'Options', value: 'options' },
+                { text: '', value: 'options' },
                 // { text: 'Threshold1', value: 'Threshold1' },
                 // { text: 'Threshold2', value: 'Threshold2' },
             ],
