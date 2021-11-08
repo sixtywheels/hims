@@ -22,28 +22,30 @@
                 </b-progress>
             </div>
         </template>
-    
-        <template v-slot:item.options="{}">
+        
+        <template v-slot:item.options=""> <!-- item -->
             <!-- <v-btn>Order</v-btn> -->
-            <v-btn>Request</v-btn>
-
+            <v-btn @click="open()" >Request</v-btn> <!-- @click="createRequestForm(item)" -->
         </template >
-        <!-- <template v-slot:item.Threshold1="props">
+        
+        <template v-slot:item.options="props">
             <v-edit-dialog
-            :return-value.sync="props.item.Threshold1"
+            :return-value.sync="props.item.Order_Quantity"
             large
             persistent
-            @save = "save(props)"
+            @save = "createRequestForm(props)"
             @cancel = "cancel"
             @open = "open"
             @close = "close">
-            {{props.item.Threshold1}}
+
+            <v-btn >Request</v-btn>
+
                 <template v-slot:input>
                     <div class = "mt-4 text-h6">
-                        Update Threshold
+                        Key in Order Quantity
                     </div>
                     <v-text-field
-                    v-model.number = "props.item.Threshold1"
+                    v-model.number = "props.item.Order_Quantity"
                     :rules = "[isInt]"
                     label = "Edit"
                     single-line
@@ -51,31 +53,7 @@
                     </v-text-field>
                 </template>
             </v-edit-dialog>
-        </template> -->
-            <!-- <template v-slot:item.Threshold2="props">
-            <v-edit-dialog
-            :return-value.sync="props.item.Threshold2"
-            large
-            persistent
-            @save = "save(props)"
-            @cancel = "cancel"
-            @open = "open"
-            @close = "close">
-            {{props.item.Threshold2}}
-                <template v-slot:input>
-                    <div class = "mt-4 text-h6">
-                        Update Threshold
-                    </div>
-                    <v-text-field
-                    v-model.number = "props.item.Threshold2"
-                    :rules = "[isInt]"
-                    label = "Edit"
-                    single-line
-                    autofocus>
-                    </v-text-field>
-                </template>
-            </v-edit-dialog>
-        </template> -->
+        </template> 
     
      
     </v-data-table>
@@ -152,6 +130,24 @@ export default {
     },
 
     methods: {
+
+        createRequestForm(props){
+            console.log("Making now")
+            //console.log(this.items) //Array of all the items
+            var selectedItem = props['item']
+            console.log(selectedItem)
+
+            var a = ( selectedItem['Item_Id'] )
+            var b  = ( selectedItem['Item_Name']) 
+            var c = ( selectedItem['Remarks']) 
+
+            console.log(a)
+            console.log(b)
+            console.log(c)
+ 
+
+        },
+
         async display(){
             let z  = await getDocs(collection(db, "ItemSupplies"));
 
@@ -243,7 +239,7 @@ export default {
         async close () {
             console.log('Dialog closed')
             await delay(1000);
-            location.reload()
+            //location.reload()
         },
 
         async fetchTransId(nameDB) {
