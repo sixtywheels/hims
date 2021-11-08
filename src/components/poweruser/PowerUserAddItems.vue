@@ -1,8 +1,13 @@
 <template>
 <div>
   <div><power-user-navigation></power-user-navigation></div>
-   <div id="vcard">
-            <v-card id="mycard" width="700">
+  <div style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
+    <div class="vcard">
+            
+              <!-- <br> -->
+              <!-- <v-card> -->
+              <v-card id="mycard">
+              <!-- <v-flex xs12 md6> -->
                 <div id="content">
                     <v-card-title>Add New Items to Inventory</v-card-title>
                     <v-card-text>
@@ -14,7 +19,7 @@
                                 label="Serial Number"
                                 readonly
                             ></v-text-field>
-                            <v-text-field label="Item Name" v-model="InputItemName"></v-text-field>
+                            <v-text-field label="New Item Name" v-model="InputItemName"></v-text-field>
                             <v-select
                                 v-model="SelectedCategory"
                                 :items="itemCategory"
@@ -33,25 +38,54 @@
                             </span>
 
                             <v-text-field label="Image Link" v-model="InputImageLink"></v-text-field>
-                            <v-text-field label="Quantity of New Stock" v-model="InputQuantity"></v-text-field>
+                            <v-text-field label="Initial Quantity of New Item" v-model="InputQuantity"></v-text-field>
                             <v-text-field label="Min. Stock Level" v-model="InputThreshold1"></v-text-field>
                             <v-text-field label="Restock Level" v-model="InputThreshold2"></v-text-field>
                         </v-form>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn color="#B2DFDB" class="mr-4" v-on:click="savetofs()">Add Items</v-btn>
+                        <v-btn color="#B2DFDB" class="mr-4" v-on:click="savetofs()">Add Item</v-btn>
                     </v-card-actions>
                 </div>
             </v-card>
+      </div>
+
+      <div class="vcard">
+        <v-card>
+              <v-card-title>Add Departments</v-card-title>
+              <v-card-text>
+
+                      <v-form ref="myform">
+                          
+                            <v-select
+                                :items="DepartmentList"
+                                
+                                label="Current Departments in System"
+                                required
+
+                            ></v-select>
+
+                            <v-text-field label="New Department" v-model="NewDepartment"></v-text-field>
+                        </v-form>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn color="#B2DFDB" class="mr-4" v-on:click="savedepttofs()">Add Department</v-btn>
+                    </v-card-actions>
+
+        </v-card>
+      </div>
+</div>
+<div class="float-container">
+  
+</div>
   </div>
-    </div>
 </template>
 
 <script>
 import PowerUserNavigation from './PowerUserNavigation'
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, doc , setDoc, query} from "firebase/firestore"
+import { collection, getDocs, doc , setDoc, query, where } from "firebase/firestore"
 const db = getFirestore(firebaseApp);
 import {getAuth, onAuthStateChanged} from  "firebase/auth";
 
@@ -77,6 +111,8 @@ export default {
       
       authemail: '',
       puverified: false,
+      DepartmentList: [],
+      NewDepartment: '',
 
 
 
@@ -87,11 +123,12 @@ export default {
       }
     },
 
-      components: {
+    components: {
         PowerUserNavigation: PowerUserNavigation,
     },
 
     mounted: function() {
+      this.fetchDepartments()
       this.fetchItemsCategories()
       console.info('mounted, itemListCategories:', this.itemCategory)
       this.fetchLastItemId()
@@ -269,7 +306,54 @@ export default {
         }
         },
 
-    }
+        async fetchDepartments(){
+            console.log("Hello")
+            let z  = await getDocs(collection(db, "Departments"));
+            
+            z.forEach((docs) => {
+                let yy = docs.data()
+                var department = yy.Department
+                console.log("Pulled from db: ", department)
+                this.DepartmentList.push(department)
+                }
+            )
+        },
+
+        // async savedepttofs(){
+
+        //   await setDoc(doc(db, "Departments", this.NewDepartment + " Department"), {
+        //     Department: this.NewDepartment
+        //   })
+        //   .then(() => {
+        //       alert("New department (" + this.NewDepartment + " Department) added successfully!");
+        //   })
+        //    .catch(error => {
+        //       alert(error.message);
+        //   });
+        // },
+
+        async savedepttofs(){
+          if (this.NewDepartment == "") {
+                alert("Please fill up the fields!")
+          } else { 
+            console.log("field is: ", this.NewDepartment.empty)
+            var currentDepartment = await getDocs(query(collection(db, "Departments"), where("Department", "==", this.NewDepartment)));
+            if (currentDepartment.empty) {
+              await setDoc(doc(db, "Departments", this.NewDepartment + " Department"), {
+                Department: this.NewDepartment
+              })
+              .then(() => {
+                alert("New department (" + this.NewDepartment + " Department) added successfully!");
+              })
+              .catch(error => {
+                alert(error.message);
+              });
+            } else {
+              alert("An existing department already exists for: " + this.NewDepartment)
+            }
+          }
+        }
+    },
 }
 </script>
 
@@ -308,9 +392,21 @@ export default {
         text-align: center;
     }
 
-    #vcard{
-      text-align: center;
-      margin: auto;
-    }
+
+
+/* https://coder-coder.com/display-divs-side-by-side */
+    .float-container {
+    border: 3px solid #fff;
+    padding: 20px;
+}
+
+.v-card {
+    width: 50%;
+    float: left;
+    padding: 20px;
+    border: 2px solid black;
+}  
+
+
 
 </style>

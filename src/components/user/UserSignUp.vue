@@ -1,9 +1,9 @@
 <template>
    <div id="companysignuppage">
-       <h1>Hospital Inventory Management System (HIMS)</h1>
+       <h1>Hospital Inventory Management System <br> (HIMS)</h1>
        <router-link to="/" exact><v-icon dark right>mdi-home</v-icon></router-link>
        <h2>Hospital Staff Sign Up Page</h2>
-       <br/><br/>
+       <br>
        <div id="vcard">
            <v-card id="test" width="700">
                <div id="content">
@@ -27,15 +27,16 @@
                                 v-model="staffID" append-icon="mdi-account">
                             </v-text-field>
 
-                           <!-- <v-select
-                                v-model="select"
-                                :items="items"
-                                :error-messages="selectErrors"
-                                label="Item"
+                          
+
+                            <v-select
+                                v-model="SelectedDepartment"
+                                :items="DepartmentList"
+                                
+                                label="Department"
                                 required
-                                @change="$v.select.$touch()"
-                                @blur="$v.select.$touch()"
-                            ></v-select> -->
+
+                            ></v-select>
 
                             <!-- <v-expansion-panels>
                                 <v-expansion-panel>
@@ -98,11 +99,6 @@
 
 <script>
 
-// import firebase from 'firebase/compat/app';
-// import 'firebase/compat/auth';
-// import 'firebase/compat/firestore';
-// import db from "../../firebase.js";
-
 import firebase from '@/uifire.js'
 import 'firebase/compat/auth';
 import { getFirestore } from "firebase/firestore";
@@ -116,16 +112,15 @@ export default {
             email: '',
             password: '',
             staffID:'',
-            value:String,            
-            // items: [
-            //     'Item 1',
-            //     'Item 2',
-            //     'Item 3',
-            //     'Item 4',
-            // ],
-            // departments: ['Australia', 'Barbados', 'Chile', 'Denmark', 'Ecuador', 'France'],
+            value:String,        
+            SelectedDepartment: '',
+            DepartmentList: [],
         };
     },
+    mounted: function() {
+        this.fetchDepartments()
+    },
+
     methods: {
         register: async function() {
             if (this.email == null || this.password == null || this.staffID == null) {
@@ -145,7 +140,7 @@ export default {
                                 await setDoc(doc(db, "users", this.staffID), {
                                     email: this.email,
                                     staffID: this.staffID,
-                                    // department: this.department,
+                                    department: this.SelectedDepartment,
                                 });
                                 await firebase.auth().signOut().then(function() {
                                     console.log("Signed Up and Signed Out!");
@@ -167,6 +162,19 @@ export default {
                 }
             }
         },
+
+        async fetchDepartments(){
+            console.log("Hello")
+            let z  = await getDocs(collection(db, "Departments"));
+            
+            z.forEach((docs) => {
+                let yy = docs.data()
+                var department = yy.Department
+                console.log("Pulled from db: ", department)
+                this.DepartmentList.push(department)
+                }
+            )
+        },
     },
 };
 
@@ -177,7 +185,7 @@ export default {
 #companysignuppage {
     position: relative;
     background-size: cover;
-    background-image: url("https://www.bain.com/globalassets/capabilities/hero-images---still/final_consultingservicesheaders_v20_operations_1440x810.png");
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c0/KRW_Facade2_final.jpg");
     background-position: center;
     background-repeat: no-repeat;
     height: 100%;
@@ -200,7 +208,7 @@ text-align: center;
   font-size: 34px;
   font-family: Nunito;
   font-weight: bolder;
-  margin-top:75px;
+  margin-top:43px;
   color: rgb(255, 255, 255);
 }
 h3 {
