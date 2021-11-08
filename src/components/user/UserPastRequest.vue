@@ -37,7 +37,7 @@ export default {
                 {
                     text: 'Request ID',
                     align: 'start',
-                    sortable: false,
+                    sortable: true,
                     value: 'Disbursement_id',
                 },
                 { text: 'Date/Time', value: 'Date_Time' },
