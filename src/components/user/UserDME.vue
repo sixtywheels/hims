@@ -1,5 +1,6 @@
 <template>
 <div>
+    <request-form :listdata = "topass"/>
     <v-data-table
     :headers="headers"
     :items="items"
@@ -122,6 +123,8 @@ export default {
             items: [],
             pending: [],
             pending2: [],
+
+            topass: [],
         }
     },
 
@@ -139,11 +142,14 @@ export default {
 
             var a = ( selectedItem['Item_Id'] )
             var b  = ( selectedItem['Item_Name']) 
-            var c = ( selectedItem['Remarks']) 
+            var c  = ( selectedItem['Order_Quantity']) 
+            this.topass = [a,b,c]
 
             console.log(a)
             console.log(b)
             console.log(c)
+
+            //Rmb to enable refresh from close()
  
 
         },

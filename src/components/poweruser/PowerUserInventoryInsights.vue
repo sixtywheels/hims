@@ -21,6 +21,7 @@
 
         <bar-chart class ="user" width=400px :data="chartdata2" @load="updateAll()"></bar-chart>
         <br>
+
         <div v-if="loaded">
             <v-chart class="chart" :option="option" />
         </div>
@@ -97,7 +98,8 @@ export default {
         option: {
              angleAxis: {
                 type: 'category',
-                data: ['loading']
+                data: ['loading'],
+                
             },
             radiusAxis: {},
             polar: {},
@@ -126,7 +128,11 @@ export default {
             ],
             legend: {
                 show: true,
-                data: ['Current', 'Pending']
+                data: ['Current', 'Pending'],
+                textStyle: {
+                    fontSize: 12,
+                    fontStyle: 'italic'
+                }
             }
       
         }, 
@@ -183,6 +189,7 @@ export default {
 
             this.option.series[0].data = this.dataToDisplay1;
             this.option.angleAxis.data = this.inventoryNames1;
+        
 
             //#############################################################################//
 
@@ -315,7 +322,8 @@ export default {
 <style scoped>
 
     .chart {
-    height: 400px;
+    height: 300px;
+    
     }
 
     .user{
