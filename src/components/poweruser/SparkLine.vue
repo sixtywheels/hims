@@ -18,7 +18,7 @@
       ></v-sparkline>
     </v-sheet>
 
-    <v-card-title>5% Confidence Interval: {{this.confidence_range}} </v-card-title>
+    <v-card-title>95% Confidence Interval: {{this.confidence_range}} </v-card-title>
 
   </v-card>
 </template>
