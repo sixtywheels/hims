@@ -6,6 +6,9 @@
         <v-btn v-on:click = "$router.push({ path:'/userrequestform' })">
             <div>Request Form</div>
         </v-btn> &nbsp;
+        <v-btn v-on:click = "$router.push({ path:'/userpastrequest' })">
+            <div>View Past Requests</div>
+        </v-btn> &nbsp;
         <v-btn v-on:click="logout">
             <div>Logout</div>
         </v-btn> &nbsp;

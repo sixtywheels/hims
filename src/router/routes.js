@@ -36,6 +36,7 @@ import UserALL from '../components/user/UserALL';
 import UserCOVID19 from '../components/user/UserCOVID19';
 import UserDME from '../components/user/UserDME';
 import UserSurgical from '../components/user/UserSurgical';
+import UserPastRequest from '../components/user/UserPastRequest';
 
 Vue.use(VueRouter);
 
@@ -69,6 +70,7 @@ const routes = [
     { path: '/usersignup', component: UserSignUp },
     { path: '/userrequestview', component: UserRequestView },
     { path: '/userrequestform', component: UserRequestForm },
+    { path: '/userpastrequest', component: UserPastRequest},
     { path: '/userdashboard', component: UserDashboard,
         children: [
             { path: '/userdme', component: UserDME }, 
