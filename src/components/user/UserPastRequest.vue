@@ -1,6 +1,9 @@
 <template>
     <div>
         <user-navigation></user-navigation>
+        <br>
+        <h3 style="text-align: center;">Viewing past requests made by Staff {{userId}}</h3>
+        <br>
         <v-data-table
         :headers="headers"
         :items="items"
@@ -32,14 +35,15 @@ export default {
             userId: '',
             headers: [
                 {
-                    text: 'S/N',
+                    text: 'Request ID',
                     align: 'start',
                     sortable: false,
                     value: 'Disbursement_id',
                 },
+                { text: 'Date/Time', value: 'Date_Time' },
                 { text: 'Item Name', value: 'Item_Name' },
                 { text: 'Order Quantity', value: 'Order_Quantity' },
-                { text: 'Remarks', value: 'Remarks' },
+                { text: 'Status', value: 'Status' },
             ],
             items: []
         }
@@ -117,24 +121,51 @@ export default {
             }
         },
 
+        // async display(){
+        //     await this.verifyU()
+
+        //     console.log(this.userId)
+        //     let z  = await getDocs(collection(db, "ItemDisbursed"));
+            
+        //     z.forEach((docs) => {
+        //         let yy = docs.data()
+        //         let x = {}
+
+        //         var name = yy.Item_Name
+        //         var requester = yy.Requester
+
+        //         if (parseInt(this.userId) == requester){
+        //             x.Date_Time = yy.Timestamp
+        //             x.Item_Name = name
+        //             x.Order_Quantity = yy.Order_Quantity
+        //             x.Disbursement_id = yy.Disbursement_id
+        //             x.Remarks = yy.Remarks
+        //             this.items = this.items.concat(x)
+        //         }
+        //     })
+        //     return this.items
+        // },
+
         async display(){
             await this.verifyU()
 
             console.log(this.userId)
-            let z  = await getDocs(collection(db, "ItemDisbursed"));
+            let z  = await getDocs(collection(db, "Request"));
             
             z.forEach((docs) => {
                 let yy = docs.data()
                 let x = {}
 
                 var name = yy.Item_Name
-                var requester = yy.Requester
+                var requester = yy.UserId
 
                 if (parseInt(this.userId) == requester){
+                    x.Date_Time = yy.Timestamp
                     x.Item_Name = name
                     x.Order_Quantity = yy.Order_Quantity
-                    x.Disbursement_id = yy.Disbursement_id
+                    x.Disbursement_id = yy.Trans_Id
                     x.Remarks = yy.Remarks
+                    x.Status = yy.Status
                     this.items = this.items.concat(x)
                 }
             })
