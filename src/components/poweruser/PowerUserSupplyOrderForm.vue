@@ -448,6 +448,7 @@ export default {
     form{
         text-align: center;
         margin: auto;
+        
     }
 
     input:hover {

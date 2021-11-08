@@ -1,4 +1,3 @@
-<!-- UNDER CONSTRUCTION -->
 
 <template>
 

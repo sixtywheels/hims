@@ -176,7 +176,7 @@ import {getAuth, onAuthStateChanged} from  "firebase/auth";
 
     #containerInsights{
       float: left;
-      margin-left: 30px;
+      margin-left: 50px;
 
     }
 
