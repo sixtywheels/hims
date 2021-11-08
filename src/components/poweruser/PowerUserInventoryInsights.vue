@@ -22,9 +22,10 @@
         <bar-chart class ="user" width=400px :data="chartdata2" @load="updateAll()"></bar-chart>
         <br>
 
+        <!--
         <div v-if="loaded">
             <v-chart class="chart" :option="option" />
-        </div>
+        </div> -->
 
 
 

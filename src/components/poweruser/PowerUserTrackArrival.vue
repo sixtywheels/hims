@@ -137,13 +137,15 @@
                     </v-toolbar>
                     </template>
                     <template v-slot:item.actions="{ item }">
-
+                    
+                    <!-- 
                     <v-icon
                         
                         @click="deleteItem(item)"
                     >
                         mdi-delete
                     </v-icon>
+                    
                     
 
                     <v-icon
@@ -153,6 +155,7 @@
                     >
                         mdi-pencil
                     </v-icon>
+                    -->
       
                     <v-icon
                         
@@ -164,12 +167,13 @@
 
                     </template>
                     <template v-slot:no-data>
-                    <v-btn
+                    
+                    <!-- <v-btn
                         color="primary"
                         @click="initialize"
                     >
                         Reset
-                    </v-btn>
+                    </v-btn> -->
                     </template>
             </v-data-table>
 
@@ -220,7 +224,7 @@ export default {
           },
           { text: 'Timestamp', value: 'Timestamp' },
           { text: 'Category', value: 'Category' },
-          { text: 'Item_Id', value: 'Item_Id' },
+          //{ text: 'Item_Id', value: 'Item_Id' },
           { text: 'Item_Name', value: 'Item_Name' },
           { text: 'Topup_Quantity', value: 'Topup_Quantity' },
           //{ text: 'Trans_id', value: 'Trans_id' },
@@ -445,7 +449,7 @@ export default {
             console.log("here order has arrived")
             console.log(pItemName + " " + pItemId)
             const pendingArrivalgetter =  getDocs(query(collection(db, "PendingArrival"), where("Trans_id", "==", pTransId), where("Item_Name", "==", pItemName) ) );
-            const itemSuppliesgetter =  getDocs(query(collection(db, "ItemSupplies"), where("Item_Id", "==", pItemId), where("Item_Name", "==", pItemName) ) );
+            const itemSuppliesgetter =  getDocs(query(collection(db, "ItemSupplies"),  where("Item_Name", "==", pItemName) ) ); //where("Item_Id", "==", pItemId),
            
             
             var itemArrived = []
@@ -465,11 +469,12 @@ export default {
                 itemArrived.push(doc.data())
                 });
             
-                //console.log(itemSupply[0])
+                console.log(itemSupply[0])
                 console.log(itemArrived[0])
                 newQty += parseInt(itemSupply[0]['Order_Quantity']) 
                 newQty += parseInt(itemArrived[0]['Topup_Quantity'])
-                
+                console.log("THis is my new Qty")
+                console.log(newQty)
 
                 await setDoc(doc(db, "ItemSupplies", itemSupply[0]['Item_Id'].toString() ), {Category: itemSupply[0]['Category'], Item_Id: itemSupply[0]['Item_Id'] , ImgLink: itemSupply[0]['ImgLink'], Item_Name: itemSupply[0]['Item_Name'], Order_Quantity: parseInt(newQty), Threshold1: itemSupply[0]['Threshold1'] , Threshold2: itemSupply[0]['Threshold2'] })
                 console.log("Done setDoc")

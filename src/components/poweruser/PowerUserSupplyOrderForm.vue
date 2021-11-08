@@ -50,10 +50,10 @@
                               </span>
                             </span>
 
-                            <v-text-field label="Image Link" v-model="InputImageLink"></v-text-field>
+                            <!-- <v-text-field label="Image Link" v-model="InputImageLink"></v-text-field> -->
                             <v-text-field label="Quantity of New Stock" v-model="InputQuantity"></v-text-field>
-                            <v-text-field label="Min. Stock Level" v-model="InputThreshold1"></v-text-field>
-                            <v-text-field label="Restock Level" v-model="InputThreshold2"></v-text-field>
+                            <!-- <v-text-field label="Min. Stock Level" v-model="InputThreshold1"></v-text-field>
+                            <v-text-field label="Restock Level" v-model="InputThreshold2"></v-text-field> -->
                         </v-form>
                     </v-card-text>
                     <v-card-actions>
@@ -365,7 +365,7 @@ export default {
                 await this.fetchTransId("PendingArrival")
                 h = this.idLoop.toString();
                 console.log(h)
-                const docRef = await setDoc(doc(db, "PendingArrival", h), {Category: catConfirm, Timestamp: dateTime, Item_Id: parseInt(h),  Item_Name: a, Order_Quantity: parseInt(e), Threshold1: parseInt(f), Threshold2: parseInt(g), Officer: x8})
+                const docRef = await setDoc(doc(db, "PendingArrival", h), {Trans_id: parseInt(h), Category: catConfirm, Timestamp: dateTime, Item_Id: parseInt(h),  Item_Name: a, Topup_Quantity: parseInt(e), Officer: x8})
                 console.log(docRef)
 
                 this.$refs.form3.reset()
@@ -394,7 +394,7 @@ export default {
                   await this.fetchTransId("PendingArrival")
                   h = this.idLoop.toString();
                   console.log(h)
-                  const docRef = await setDoc(doc(db, "PendingArrival", h), {Category: catConfirm, Timestamp: dateTime, Item_Id: parseInt(h),  Item_Name: a, Order_Quantity: parseInt(e), Threshold1: parseInt(f), Threshold2: parseInt(g), Officer: x8})
+                  const docRef = await setDoc(doc(db, "PendingArrival", h), {Trans_id: parseInt(h), Category: catConfirm, Timestamp: dateTime, Item_Id: parseInt(h),  Item_Name: a, Topup_Quantity: parseInt(e), Officer: x8})
                   console.log(docRef)
 
                   this.$refs.form3.reset()
