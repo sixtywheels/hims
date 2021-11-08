@@ -3,11 +3,21 @@
     <v-data-table
     :headers="headers"
     :items="items"
+    :search="search"
+    :custom-filter="filterOnlyCapsText"
     :single-expand="singleExpand"
     :expanded.sync="expanded"
     :items-per-page="5"
     show-expand
     class="elevation-1">
+    
+      <template v-slot:top>
+        <v-text-field
+          v-model="search"
+          label="Search by Item Name (UPPER CASE ONLY)"
+          class="mx-4"
+        ></v-text-field>
+      </template>
 
     <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
@@ -100,6 +110,8 @@
         </template>
     </v-snackbar>
 
+    <power-user-request-insights>
+    </power-user-request-insights>
 </div>
 
 </template>
@@ -109,16 +121,19 @@ import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs , doc, setDoc} from "firebase/firestore"
 import SparkLine from "@/components/poweruser/SparkLine.vue"
+import PowerUserRequestInsights from "@/components/poweruser/PowerUserRequestInsights.vue"
 
 const db = getFirestore(firebaseApp);
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export default {
     components: {
-        SparkLine
+        SparkLine,
+        PowerUserRequestInsights
     },
     data () {
         return {
+            search: '',
             expanded: [],
             singleExpand: true,
             labels: [],
@@ -336,7 +351,13 @@ export default {
             else {
                 return 0
             }
-        }
+        },
+        filterOnlyCapsText (value, search) {
+            return value != null &&
+            search != null &&
+            typeof value === 'string' &&
+            value.toString().toLocaleUpperCase().indexOf(search) !== -1
+      },
     }
 }
     
