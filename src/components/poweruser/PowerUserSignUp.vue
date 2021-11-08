@@ -1,6 +1,6 @@
 <template>
    <div id="companysignuppage">
-       <h1>Hospital Inventory Management System (HIMS)</h1>
+       <h1>Hospital Inventory Management System <br> (HIMS)</h1>
        <router-link to="/" exact><v-icon dark right>mdi-home</v-icon></router-link>
        <h2>Logistics & Procurement Staff Sign Up Page</h2>
        <br/><br/>
@@ -168,7 +168,7 @@ export default {
 #companysignuppage {
     position: relative;
     background-size: cover;
-    background-image: url("https://www.bain.com/globalassets/capabilities/hero-images---still/final_consultingservicesheaders_v20_operations_1440x810.png");
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c0/KRW_Facade2_final.jpg");
     background-position: center;
     background-repeat: no-repeat;
     height: 100%;
@@ -191,7 +191,7 @@ text-align: center;
   font-size: 34px;
   font-family: Nunito;
   font-weight: bolder;
-  margin-top:75px;
+  margin-top:43px;
   color: rgb(255, 255, 255);
 }
 h3 {
