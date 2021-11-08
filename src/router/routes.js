@@ -50,12 +50,12 @@ const routes = [
     { path: '/poweruserlogin', component: PowerUserLogin },
     { path: '/powerusersignup', component: PowerUserSignUp },
     { path: '/poweruserapprovalsystem', component: PowerUserApprovalSystem , meta: {requiresAuth: true} }, 
-    { path: '/poweruserdashboard', component: PowerUserDashboard,
+    { path: '/poweruserdashboard', component: PowerUserDashboard, meta: {requiresAuth: true},
         children: [
-            { path: '/poweruserdme', component: PowerUserDME }, 
-            { path: '/powerusercovid19', component: PowerUserCOVID19 },
-            { path: '/powerusersurgical', component: PowerUserSurgical },
-            { path: '/poweruserall', component: PowerUserALL }
+            { path: '/poweruserdme', component: PowerUserDME, meta: {requiresAuth: true} }, 
+            { path: '/powerusercovid19', component: PowerUserCOVID19, meta: {requiresAuth: true} },
+            { path: '/powerusersurgical', component: PowerUserSurgical, meta: {requiresAuth: true} },
+            { path: '/poweruserall', component: PowerUserALL, meta: {requiresAuth: true} }
         ]
     },
     { path: '/poweruseradditems', component: PowerUserAddItems, meta: {requiresAuth: true} },

@@ -124,7 +124,7 @@ import SparkLine from "@/components/poweruser/SparkLine.vue"
 import PowerUserRequestInsights from "@/components/poweruser/PowerUserRequestInsights.vue"
 
 const db = getFirestore(firebaseApp);
-const delay = ms => new Promise(res => setTimeout(res, ms));
+//const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export default {
     components: {
@@ -175,6 +175,8 @@ export default {
 
             await this.getPending()
             
+            var items = []
+            
             z.forEach((docs) => {
                 let yy = docs.data()
                 let x = {}
@@ -202,9 +204,10 @@ export default {
                         console.log("TOO LOW")
                     }
 
-                    this.items = this.items.concat(x)
+                    items = items.concat(x)
                 }
             })
+            this.items = items
             return this.items
         },
 
@@ -236,17 +239,18 @@ export default {
                     this.snackText = 'Canceled'
                 }
                 else {
-                    setDoc(doc(db, "PendingArrival", a), {Item_Id: parseInt(a), Item_Name: c, Category: e, Topup_Quantity: Topupper, Trans_id: Trans_Id})
-                    setDoc(doc(db, "ItemSupplies", a), {Item_Id: parseInt(a), ImgLink: b, Item_Name: c, Threshold1: g, Threshold2: d, Category: e, Order_Quantity: f})
+                    await setDoc(doc(db, "PendingArrival", a), {Item_Id: parseInt(a), Item_Name: c, Category: e, Topup_Quantity: Topupper, Trans_id: Trans_Id})
+                    await setDoc(doc(db, "ItemSupplies", a), {Item_Id: parseInt(a), ImgLink: b, Item_Name: c, Threshold1: g, Threshold2: d, Category: e, Order_Quantity: f})
                     this.snackColor = 'success'
                     this.snackText = 'Data saved'
                 }
             }
             else {
-                setDoc(doc(db, "ItemSupplies", a), {Item_Id: parseInt(a), ImgLink: b, Item_Name: c, Threshold1: g, Threshold2: d, Category: e, Order_Quantity: f})
+                await setDoc(doc(db, "ItemSupplies", a), {Item_Id: parseInt(a), ImgLink: b, Item_Name: c, Threshold1: g, Threshold2: d, Category: e, Order_Quantity: f})
                 this.snackColor = 'success'
                 this.snackText = 'Data saved'
             }
+            await this.display()
         },
 
         cancel () {
@@ -262,8 +266,8 @@ export default {
 
         async close () {
             console.log('Dialog closed')
-            await delay(1000);
-            location.reload()
+            //await delay(1000);
+            //location.reload()
         },
 
         async fetchTransId(nameDB) {
@@ -314,16 +318,17 @@ export default {
 
         async getPending() {
             var z  = await getDocs(collection(db, "PendingArrival"));
-            
+            var pending = []
             z.forEach((docs) => {
                 let yy = docs.data()
                 let a = {}
                 a.Item_Id = yy.Item_Id
                 a.Topup_Quantity = yy.Topup_Quantity
                 
-                this.pending = this.pending.concat(a)
+                pending = pending.concat(a)
 
             })
+            this.pending = pending
             this.pending2 = this.getPendingReduced(this.pending)
             return this.pending2;
         },
@@ -346,12 +351,19 @@ export default {
 
         findTotalPending(id2) {
             if (this.pending2.find(x => x.Item_Id === id2)) {
-                return this.pending2.find(x => x.Item_Id === id2).Topup_Quantity
+                var total = 0
+                for (var i = 0; i < this.pending2.length; i++) {
+                    if (this.pending2[i].Item_Id === id2) {
+                        total += this.pending2[i].Topup_Quantity
+                    }
+                }
+                return total //this.pending2.find(x => x.Item_Id === id2).Topup_Quantity
             }
             else {
                 return 0
             }
         },
+        
         filterOnlyCapsText (value, search) {
             return value != null &&
             search != null &&
