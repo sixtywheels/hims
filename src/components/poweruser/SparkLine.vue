@@ -35,9 +35,8 @@ data() {
     return {
         labels: new Array(),
         value: new Array(),
-        sum: 0,
         mean: 0,
-        sd: 0,
+        ss: 0,
         confidence_range: new Array(),
         confidence_lvl: 0,
     }
@@ -73,12 +72,12 @@ methods: {
         this.labels = curr_labels
         this.value = curr_value
 
-        var total = this.getSumSq(curr_value)
-        this.total = total
+        var mean = this.getMean(curr_value)
+        this.mean = mean
 
-        var sd = this.getSD (total, curr_value.length)
-        this.sd = sd
-        this.getConfidenceInterval(total, curr_value.length, sd)
+        var ss = this.getSS(curr_value, mean)
+        this.ss = ss
+        this.getConfidenceInterval(curr_value, ss, mean)
     },
 
     getDateString(day , month) {
@@ -136,7 +135,7 @@ methods: {
         return str
     },
 
-    getSumSq (dataset) {
+    getMean (dataset) {
 
         var i,
             total = 0;
@@ -145,25 +144,26 @@ methods: {
 
         total += parseInt(dataset[i]);
         }
-        this.sum = total;
-        return total
+        return total/dataset.length
     },
     
-    getSD (sum, sampleSize) {
+    getSS (dataset, mean) {
 
-        var sd = Math.sqrt(sum / sampleSize).toFixed(2);
-    
-        this.sd = sd
-        return sd
+        var i,
+            ss = 0;
+
+        for (i = 0; i < dataset.length; i++) {
+
+        ss += ((parseInt(dataset[i])-mean))**2;
+        }
+        return ss
     },
 
-    getConfidenceInterval(sum, sampleSize, sd) {
-  
-        var formula = sd / Math.sqrt(sampleSize);
-
-        var mean = sum/sampleSize
+    getConfidenceInterval(dataset, ss, mean) {
+        var variance = ss/dataset.length
+        var sd = Math.sqrt(variance)
         
-        var confidence_range = [(mean - formula).toFixed(0), (mean + formula).toFixed(0)];
+        var confidence_range = [(mean - 1.96*sd/Math.sqrt(dataset.length)).toFixed(0), (mean + 1.96*sd/Math.sqrt(dataset.length)).toFixed(0)];
         var confidence_lvl = (mean - confidence_range[0]).toFixed(0);
 
         this.confidence_range = confidence_range
