@@ -209,8 +209,23 @@ export default {
             this.items = items
             return this.items
         },
+
+                
+        addZero(dtinput){
+            var result = dtinput.toString()
+            if (dtinput < 10) { 
+            result = "0" + dtinput.toString() 
+            }
+            return result
+        },
         
         async save (props) {
+            var today = new Date();
+            var date = this.addZero(today.getDate()) + '-' + this.addZero( (today.getMonth()+1) )+ '-' + today.getFullYear();
+            var time = this.addZero(today.getHours()) + ":" + this.addZero(today.getMinutes()) + ":" + this.addZero(today.getSeconds());
+            var dateTime = date+' '+time;
+            
+
             this.snack = true
             var a = (props.item.Item_Id).toString()
             var b = (props.item.ImgLink)
@@ -238,7 +253,7 @@ export default {
                     this.snackText = 'Canceled'
                 }
                 else {
-                    await setDoc(doc(db, "PendingArrival", a), {Item_Id: parseInt(a), Item_Name: c, Category: e, Topup_Quantity: Topupper, Trans_id: Trans_Id})
+                    await setDoc(doc(db, "PendingArrival", Trans_Id.toString()), {Item_Id: parseInt(a), Timestamp: dateTime, Item_Name: c, Category: e, Topup_Quantity: Topupper, Trans_id: Trans_Id})
                     await setDoc(doc(db, "ItemSupplies", a), {Item_Id: parseInt(a), ImgLink: b, Item_Name: c, Threshold1: g, Threshold2: d, Category: e, Order_Quantity: f})
                     this.snackColor = 'success'
                     this.snackText = 'Data saved'
