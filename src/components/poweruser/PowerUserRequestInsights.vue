@@ -138,14 +138,10 @@ export default {
 
             console.log(this.inventoryNames)
             console.log(this.dataToDisplay)
-            
-
-
+          
         },
 
-
         async getInventoryNames(){
-
             const itemSuppliesgetter =  getDocs(query(collection(db, "ItemSupplies")) );
             var itemfiltered = []
             var consolidateNames = []
@@ -163,17 +159,10 @@ export default {
             for (let i =0; i < itemfiltered.length; i++ ){
                 consolidateNames.push( itemfiltered[i]['Item_Name'])
             }
-    
             return JSON.parse(JSON.stringify(consolidateNames))
-
         },
 
-        
-
     },
-
-
-
 
 };
 </script>

@@ -10,7 +10,6 @@
 
     <h2> Your Transactions </h2>
 
-    
     <div class = "containerOrderDisplay">
         <UserRequestDisplayComponent :key="refreshComp"/>
     </div>

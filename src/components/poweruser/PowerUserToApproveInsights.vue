@@ -56,9 +56,6 @@ export default {
         modifyDataDisplay: [],
         modifyInventoryNames: [],
 
-        
-       
-
         option: {
              angleAxis: {
                 type: 'category',
@@ -111,7 +108,6 @@ export default {
 
  
     mounted: function() {
-      //this.consolidateItemDisbursed()
       this.loaded = true
     },
 
@@ -127,8 +123,6 @@ export default {
                 querySnapshot.forEach((doc) => {
                 itemfiltered.push(doc.data())
                 });
-            console.log(itemfiltered)
-            //console.log(itemfiltered[3])
         
             }catch (error) {
                 console.error("Error checking document: ", error)
@@ -140,9 +134,6 @@ export default {
                 var name = itemfiltered[i]['Item_Name']
                 var maker = {value: qty  , name: name}
                 this.dataToDisplay.push( maker)
-
-                //this.option.legend.data.push(itemfiltered[i]['Item_Name'])
-                //this.option.series.data.push( maker)
             }
 
             this.option.series[0].data = this.dataToDisplay;
@@ -150,11 +141,7 @@ export default {
 
             console.log(this.inventoryNames)
             console.log(this.dataToDisplay)
-            
-
-
         },
-
 
         async getInventoryNames(){
             const itemSuppliesgetter =  getDocs(query(collection(db, "ItemSupplies")) );
@@ -182,9 +169,6 @@ export default {
         
 
     },
-
-
-
 
 };
 </script>
