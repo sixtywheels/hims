@@ -166,15 +166,7 @@
 
 
                     </template>
-                    <template v-slot:no-data>
-                    
-                    <!-- <v-btn
-                        color="primary"
-                        @click="initialize"
-                    >
-                        Reset
-                    </v-btn> -->
-                    </template>
+     
             </v-data-table>
 
     </v-card>
@@ -186,7 +178,6 @@
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, setDoc, doc, deleteDoc, query, where} from "firebase/firestore"
-//import { collection, getDocs} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
 import PowerUserNavigation from './PowerUserNavigation'
 import {getAuth, onAuthStateChanged} from  "firebase/auth";
@@ -200,7 +191,6 @@ export default {
         onAuthStateChanged(auth, (user) => {
             if(user) {
             this.user = user;
-            //console.log(this.user)
             this.authemail = user['email']
         }
       })
@@ -223,11 +213,9 @@ export default {
             value: 'Trans_id',
           },
           { text: 'Timestamp', value: 'Timestamp' },
-          { text: 'Category', value: 'Category' },
-          //{ text: 'Item_Id', value: 'Item_Id' },
+          { text: 'Category', value: 'Category' }, //{ text: 'Item_Id', value: 'Item_Id' },
           { text: 'Item_Name', value: 'Item_Name' },
-          { text: 'Topup_Quantity', value: 'Topup_Quantity' },
-          //{ text: 'Trans_id', value: 'Trans_id' },
+          { text: 'Topup_Quantity', value: 'Topup_Quantity' }, //{ text: 'Trans_id', value: 'Trans_id' },
           { text: 'Actions', value: 'actions', sortable: false },
         ],
 
@@ -240,16 +228,12 @@ export default {
         authemail: '',
         puverified: false,
 
-
-
         editedIndex: -1,
         editedItem: {
             Trans_id: 0,
             Item_Name: '',
             Item_Id: 0,
             Topup_Quantity: 0,
-
-
         },
         defaultItem: {
             Trans_id: 0,
@@ -284,8 +268,6 @@ export default {
       this.initialize()
     },
 
-
-    
     methods:{
 
         async initialize() {
@@ -325,14 +307,14 @@ export default {
         
 
         editItem (item) {
-        console.log("editItem")
+        console.log("EDIT ITEM")
         this.editedIndex = this.requestedrecords.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
         },
 
         deleteItem (item) {
-        console.log("deleteItem")
+        console.log("DELETE ITEM")
         this.editedIndex = this.requestedrecords.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
@@ -342,31 +324,20 @@ export default {
         orderArrived (item) {
         this.editedIndex = this.requestedrecords.indexOf(item)
         this.editedItem = Object.assign({}, item)
-        //this.dialogDelete = true
-
-        console.log("Approving is here")
-        console.log(this.editedItem)
-
         var pTransId = this.editedItem['Trans_id']
-        //var pCategory = this.editedItem['Category']
         var pItemId = this.editedItem['Item_Id']
         var pItemName = this.editedItem['Item_Name']
         var pTopupQuantity = this.editedItem['Topup_Quantity']
-        //var pTimestamp = this.editedItem['Timestamp']
-
         this.addQuantityToMain(pTransId, pTopupQuantity, pItemName, pItemId)
         },
 
 
         deleteItemConfirm () {
-            console.log("deleteItemConfirm")
+            console.log("DELETE ITEM CONFIRMED")
             var rejectedItem = this.requestedrecords.splice(this.editedIndex, 1)
-            console.log(rejectedItem)
             var pTransId = rejectedItem[0]['Trans_id']
             this.cancelledOrder(pTransId)
-
             this.requestedrecords.splice(this.requestedrecords, 1)
-
             this.closeDelete()
         },
 
@@ -393,10 +364,7 @@ export default {
           this.requestedrecords.push(this.editedItem)
         }
 
-        console.log("Saving Here")
-        console.log(this.editedItem)
-
-        
+        console.log("SAVING")
         var pTransId = this.editedItem['Trans_id']
         var pCategory = this.editedItem['Category']
         var pItemId = this.editedItem['Item_Id']
@@ -406,8 +374,6 @@ export default {
         this.updateOrder(pTransId, pItemId, pTopupQuantity, pItemName, pCategory, pTimestamp)
         this.close()
         },
-
-
 
         //##################################################//
 
@@ -428,9 +394,6 @@ export default {
             var showCategory = (yy.Category)
             var showTimestamp = (yy.Timestamp)
 
-            //var showRequester = (yy.UserId) //console.log(showRequester)
-            //console.log(showRequester)
-
             callData.Trans_id = showTransId
             callData.Item_Name = showItemName
             callData.Item_Id = showItemId
@@ -446,17 +409,15 @@ export default {
 
 
         async addQuantityToMain(pTransId, pTopupQuantity, pItemName, pItemId){
-            console.log("here order has arrived")
+            console.log("ORDER HAS ARRIVED")
             console.log(pItemName + " " + pItemId)
             const pendingArrivalgetter =  getDocs(query(collection(db, "PendingArrival"), where("Trans_id", "==", pTransId), where("Item_Name", "==", pItemName) ) );
             const itemSuppliesgetter =  getDocs(query(collection(db, "ItemSupplies"),  where("Item_Name", "==", pItemName) ) ); //where("Item_Id", "==", pItemId),
            
-            
             var itemArrived = []
             var itemSupply = []
 
             try {
-
                 var newQty = 0
 
                 const findItemSupply = await itemSuppliesgetter;
@@ -473,14 +434,10 @@ export default {
                 console.log(itemArrived[0])
                 newQty += parseInt(itemSupply[0]['Order_Quantity']) 
                 newQty += parseInt(itemArrived[0]['Topup_Quantity'])
-                console.log("THis is my new Qty")
-                console.log(newQty)
 
                 await setDoc(doc(db, "ItemSupplies", itemSupply[0]['Item_Id'].toString() ), {Category: itemSupply[0]['Category'], Item_Id: itemSupply[0]['Item_Id'] , ImgLink: itemSupply[0]['ImgLink'], Item_Name: itemSupply[0]['Item_Name'], Order_Quantity: parseInt(newQty), Threshold1: itemSupply[0]['Threshold1'] , Threshold2: itemSupply[0]['Threshold2'] })
-                console.log("Done setDoc")
                 await deleteDoc(doc(db, "PendingArrival", pTransId.toString()))
                 console.log(pTransId.toString())
-                console.log("Done deleteDoc")
                 this.display()
 
             } catch(error){
@@ -490,11 +447,10 @@ export default {
 
  
         async updateOrder(pTransId, pItemId, pTopupQuantity, pItemName, pCategory, pTimestamp){
-            console.log("Setting Updates")
-
+            console.log("UPDATING...")
             try{ 
                 await setDoc(doc(db, "PendingArrival", pTransId.toString() ), {Trans_id: pTransId , Timestamp: pTimestamp, Item_Id: parseInt(pItemId) , Item_Name: pItemName , Topup_Quantity: parseInt(pTopupQuantity),  Category: pCategory})
-                console.log("Update Completed")
+                console.log("UPDATED")
             } catch (error) {
                 console.log(error)
             }
@@ -505,20 +461,18 @@ export default {
             try{
    
                 await deleteDoc(doc(db, "PendingArrival", pTransId.toString()))
-   
+
+                //FOR FUTURE DEVELOPMENT
                 //Add notes into reject database.
                 //Email and tell the person why rejected?
 
                 alert("Successfully Cancelled")
-                //Emit to call for table 1 to change
                 this.display()
 
             } catch (error) {
             console.error("Error cancelling pending Orders: ", error)
             }
         },
-
-
 
     }
 }
@@ -567,9 +521,6 @@ th,td{
     color: whitesmoke;
     background-color: red;
 }
-
-
-
 
 </style>
 

@@ -2,9 +2,7 @@
 
 
 <div>
-  <!-- <h3>Power User Request Approval Page  for Yap Kai</h3> -->
     <div><power-user-navigation></power-user-navigation></div>
-
 
     <div id="approvalPage">
     
@@ -21,19 +19,12 @@
           <PowerUserInventoryInsights/>
       </div>
 
-
-
     </div>
 
     <br>
     <br>
     <br>
 
-    
-    <!-- <div class = "containerOrderDisplay">
-        <h2> Your Transactions </h2>
-        <UserRequestDisplayComponent :key="refreshComp  "/>
-    </div> -->
     <div class = "containerbottom">
       <div id = "containerOrderApproval">
           <h2> For Your Review </h2>
@@ -52,18 +43,13 @@ import RequestForm from '../RequestForm.vue'
 import PowerUserSupplyOrderForm from './PowerUserSupplyOrderForm.vue'
 import PowerUserNavigation from './PowerUserNavigation'
 import PowerUserInventoryInsights from './PowerUserInventoryInsights'
-
-//import UserRequestDisplayComponent from '../user/UserRequestDisplayComponent.vue'
 import PowerUserApprovalComponent from './PowerUserApprovalComponent.vue'
-
-
 
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs, query} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
 import {getAuth, onAuthStateChanged} from  "firebase/auth";
-
 
   export default {  
     name:"PowerUserApprovalSystem",
@@ -75,14 +61,14 @@ import {getAuth, onAuthStateChanged} from  "firebase/auth";
       onAuthStateChanged(auth, (user) => {
         if(user) {
           this.user = user;
-          //console.log(this.user)
           this.authemail = user['email']
         }
       })
       this.verifyPU()
 
     },
-    data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
+    data: () =>  { 
+      //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
       refreshComp:0,
       authemail: '',
@@ -97,10 +83,7 @@ import {getAuth, onAuthStateChanged} from  "firebase/auth";
         async verifyPU(){
           console.log("VERIFYING PU....")
             const pugetter =  getDocs(query(collection(db, "powerusers") ) );
-
             var pufiltered = []
-            console.log(pufiltered)
-
             try {
                 const querySnapshot = await pugetter;
                 querySnapshot.forEach((doc) => {
@@ -111,31 +94,22 @@ import {getAuth, onAuthStateChanged} from  "firebase/auth";
                   if(pufiltered[i]['email'] == this.authemail){
                       console.log("WELCOME IN!")
                       this.puverified = true
-                  } else {
-                    console.log("CHECK NEXT")
                   }
                 }
             }catch (error) {
                 console.error("Error checking document: ", error)
             }
-
-            console.log(this.puverified)
             if(this.puverified == false){
                 console.log("ROUTE THIS AWAY!!!")
             }
         },
-
-
     },
-
-    
 
   }
 
 </script>
 
 <style scoped>
-
     #approvalPage{
         font-family: Avenir, Arial, Helvetica, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -143,7 +117,6 @@ import {getAuth, onAuthStateChanged} from  "firebase/auth";
         text-align: center;
         color: #2c3e50;
         margin-top:60px
-
     }
 
     #bg{
@@ -172,13 +145,11 @@ import {getAuth, onAuthStateChanged} from  "firebase/auth";
       float: left;
       margin-top: 20px;
       height:650px ;
-
     }
 
     #containerInsights{
       float: left;
       margin-left: 50px;
-
     }
 
     #containerOrderDisplay{

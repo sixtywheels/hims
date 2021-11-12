@@ -67,17 +67,37 @@
 </template>
 
 <script>
-//import PowerUserNavigation from './PowerUserNavigation'
+
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs, doc , setDoc} from "firebase/firestore"
+import { collection, getDocs, doc , setDoc, query} from "firebase/firestore"
 const db = getFirestore(firebaseApp);
+import {getAuth, onAuthStateChanged} from  "firebase/auth";
+
 
 export default {
   
     name:"PowerUserSupplyOrderForm",
 
-    data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
+    mounted(){
+
+      this.fetchItems () 
+      this.fetchItemsCategories()
+      //console.info('mounted, itemListCategories:', this.itemCategory)
+      this.fetchTransId("PendingArrival")
+
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+        if(user) {
+          this.user = user;
+          this.authemail = user['email']
+        }
+      })
+      this.verifyPU()
+    },
+    
+    data: () =>  { 
+      //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
       categorySelection: '',
 
@@ -95,32 +115,48 @@ export default {
       originalitemList: [],
       itemIds: [],
       idLoop: null,
+
+      authemail: '',
+      puverified: false,
+      poweruserId: '',
+
       }
     },
 
-      components: {
-        //PowerUserNavigation: PowerUserNavigation,
-    },
-
-    mounted: function() {
-      this.fetchItems () 
-      this.fetchItemsCategories()
-      console.info('mounted, itemListCategories:', this.itemCategory)
-      this.fetchTransId("PendingArrival")
-    }, 
-
     methods: {
-
         resetSearch(){
         this.$refs.form3.reset()
         this.weblinkhere = null
-        console.log("reset works")
+        console.log("SEARCH HAS BEEN RESET")
         },
 
+        async verifyPU(){
+            console.log("VERIFYING POWER USER....")
+            const pugetter =  getDocs(query(collection(db, "powerusers") ) );
+            var pufiltered = [] //console.log(pufiltered)
+            try {
+                const querySnapshot = await pugetter;
+                querySnapshot.forEach((doc) => {
+                pufiltered.push(doc.data())
+                });
+                for(let i =0; i < pufiltered.length ; i++){
+                  if(pufiltered[i]['email'] == this.authemail){
+                      this.puverified = true
+                      this.poweruserId = pufiltered[i]['staffID']
+                      console.log("WELCOME IN! THIS IS MY AUTH STAFF ID: " + this.poweruserId)
+                  } 
+                }
+            }catch (error) {
+                console.error("Error checking document: ", error)
+            }
+            //console.log(this.puverified)
+            if(this.puverified == false){
+                console.log("ROUTE THIS AWAY!!!")
+            }
+        },
 
         async fetchItems () {
         const query = getDocs(collection(db,"ItemSupplies"))
-    
             try {
                 const { docs } = await query
                 this.originalitemList = docs.map(doc => {
@@ -130,27 +166,21 @@ export default {
                 })
 
                 this.itemList = this.originalitemList
-                console.log("Now i am looking at:")
-                console.log(this.itemList['id'])
 
                 //Add Item Categories
-                this.itemCategory = [...new Set(this.originalitemList.map( x => x['Category']))];
-                console.log('Loaded Items', this.originalitemList)
-                console.log('Loaded Categories', this.itemCategory)
-  
+                this.itemCategory = [...new Set(this.originalitemList.map( x => x['Category']))];  
 
             } catch (error) {
               console.error("Error adding document: ", error)
             }
         },
 
-
         async fetchItemsCategories () {
         
         this.itemCategory = []
         this.originalitemList = []
 
-        console.log("FetchItemCategories")
+        console.log("Fetching Item Categories...")
         const query = getDocs(collection(db,"ItemSupplies"))
   
           try {
@@ -164,9 +194,7 @@ export default {
               //Add Item Categories
               this.itemCategory = [...new Set(this.originalitemList.map( x => x['Category']))];
               this.itemCategory.push("Add new Category")
-              console.log('Loaded Categories', this.itemCategory)
  
-
           } catch (error) {
             console.error("Error adding document: ", error)
           }
@@ -176,7 +204,7 @@ export default {
             var transidList = []
             var transloop = 0
 
-            console.log("FetchingId...")
+            console.log("Fetching Transaction ID...")
             const query = getDocs(collection(db, nameDB))
                 try {
                     const { docs } = await query
@@ -186,214 +214,151 @@ export default {
                         return { id, ...data }
                     })
 
-                    console.log('Loaded Ids', transidList)
                     if (transidList.length == 0) {
                         transloop = 0
                         this.idLoop = transloop
                     } else {
-                        //Literally Sort out 10 and 1
+                        //Literally Sort out 10 and 1 to keep array in increasing order
                         var transIdsSorted = []
                         for (let k = 0; k < transidList.length; k++) {
                         transIdsSorted.push(parseInt(transidList[k]['id']))
                         }
                         transIdsSorted.sort(function(a, b){return a-b})
-                        console.log("TransId Sorted List")
-
                         var checking = transIdsSorted[transIdsSorted.length - 1]
-                        console.log(checking)
+                        //console.log(checking)
 
                         if ( isNaN(checking) ) {
                         transloop = 0
                         this.idLoop = transloop
-                        console.log(transloop)
+                        //console.log(transloop)
                         } else {
                         transloop = parseInt(checking)+1
                         this.idLoop = transloop
-                        console.log(transloop)
+                        //console.log(transloop)
                         }
                     }
-                    
-                    console.log("whats my Item Disburse id: " + transloop.toString())
+                    //console.log("whats my Item Disburse id: " + transloop.toString())
                     return transloop
 
                 } catch (error) {
                     console.error("Error adding document: ", error)
                 }
         },
-
-        
-      
-      changeCategory(){
-        this.fetchTransId("PendingArrival")
-        let itemListupdate = []
-        for (let i in this.originalitemList) {
-          var theItem = this.originalitemList[i]
-          if ( theItem['Category'] == this.SelectedCategory ) {
-              console.log("check here")
-              itemListupdate.push(theItem['Item_Name'])
-             }
-          }
-        
-        console.log("Here is my Item List Updated")
-        console.log(itemListupdate)
-        this.itemList = itemListupdate
-        this.weblinkhere = null;
-        this.InputItemName = null;
-      },
-
-  
-      clickItems(){
-        this.fetchTransId("PendingArrival")
-        let itemListupdate = []
-
-        if (this.SelectedCategory == null){
-           console.log("yes is null")
-
+ 
+        changeCategory(){
+          this.fetchTransId("PendingArrival")
+          let itemListupdate = []
           for (let i in this.originalitemList) {
-          var theItem = this.originalitemList[i]
-          itemListupdate.push(theItem['Item_Name'])
-        }
-
-        console.log("Here is my Item List Updated")
-        console.log(itemListupdate)
-        this.itemList = itemListupdate
-        this.weblinkhere = null;
-        }
-
-
-       },
-
-       changeItems(){
-        this.fetchTransId("PendingArrival")
-        for (let i in this.originalitemList) {
-          var theItem = this.originalitemList[i]
-          if ( theItem['Item_Name'] == this.InputItemName ) {
-              this.SelectedCategory = theItem['Category'] 
-              this.weblinkhere = theItem['ImgLink'] ;
-             }
-          }
-    
-       },
-
-      addZero(dtinput){
-            var result = dtinput.toString()
-            if (dtinput < 10) { 
-            result = "0" + dtinput.toString() 
+            var theItem = this.originalitemList[i]
+            if ( theItem['Category'] == this.SelectedCategory ) {
+                itemListupdate.push(theItem['Item_Name'])
+              }
             }
-            return result
+          this.itemList = itemListupdate
+          this.weblinkhere = null;
+          this.InputItemName = null;
         },
 
+        clickItems(){
+          this.fetchTransId("PendingArrival")
+          let itemListupdate = []
 
-      async savetofs(){
-          this.itemNamelist = []
-          this.originalitemList = []
-          const query = getDocs(collection(db,"ItemSupplies"))
-  
-          try {
-              const { docs } = await query
-              this.originalitemList = docs.map(doc => {
-                const { id } = doc
-                const data = doc.data()
-                return { id, ...data }
-              })
-
-              this.itemNamelist = [...new Set(this.originalitemList.map( x => x['Item_Name']))];
-              console.log('Loaded Namelist', this.itemNamelist)
- 
-
-          } catch (error) {
-            console.error("Error adding document: ", error)
+          if (this.SelectedCategory == null){
+            for (let i in this.originalitemList) {
+            var theItem = this.originalitemList[i]
+            itemListupdate.push(theItem['Item_Name'])
+          }
+          this.itemList = itemListupdate
+          this.weblinkhere = null;
           }
 
-          console.log("Saving")
-          this.fetchTransId ("PendingArrival")
 
-          var h = this.idLoop.toString();
-          var a = this.InputItemName;
-          var b = this.SelectedCategory;
-          console.log(h)
-          console.log(a)
-          console.log(b)
+        },
 
-          var c = this.InputNewCategory
-          console.log(c)
+        changeItems(){
+          this.fetchTransId("PendingArrival")
+          for (let i in this.originalitemList) {
+            var theItem = this.originalitemList[i]
+            if ( theItem['Item_Name'] == this.InputItemName ) {
+                this.SelectedCategory = theItem['Category'] 
+                this.weblinkhere = theItem['ImgLink'] ;
+              }
+            }
+      
+        },
 
-          var d = this.InputImageLink;
-          var e = this.InputQuantity;
-          var f = this.InputThreshold1;
-          var g = this.InputThreshold2;
-        
-          console.log(d)
-          console.log(e)
-          console.log(f)
-          console.log(g)
-
-          //Empty Image Link
-          if (d == ""){
-            d = "-"
+        addZero(dtinput){
+          //For Datetime configuration
+          var result = dtinput.toString()
+          if (dtinput < 10) { 
+            result = "0" + dtinput.toString() 
           }
-                      
-          var x8 = "POWERUSERA" //this.approvingOfficer
-          var today = new Date();
-          var date = this.addZero(today.getDate()) + '-' + this.addZero( (today.getMonth()+1) )+ '-' + today.getFullYear();
-          var time = this.addZero(today.getHours()) + ":" + this.addZero(today.getMinutes()) + ":" + this.addZero(today.getSeconds());
-          var dateTime = date+' '+time;
-                          
-          try{
-              var catConfirm = c
-              if (c == '' ){
-                  catConfirm = b
-              }    
-              console.log(catConfirm)
+          return result
+        },
 
-              if ( this.itemNamelist.includes(a) ){
-                console.log("TRUE")
-                if ( d == null ) {
-                  d = this.originalitemList[0]['ImgLink']
-                }
+        async savetofs(){
+            this.itemNamelist = []
+            this.originalitemList = []
+            const query = getDocs(collection(db,"ItemSupplies"))
+    
+            try {
+                const { docs } = await query
+                this.originalitemList = docs.map(doc => {
+                  const { id } = doc
+                  const data = doc.data()
+                  return { id, ...data }
+                })
 
-                if ( isNaN(f) || f == null ) {
-                  f = this.originalitemList[0]['Threshold1']
-                }
+                this.itemNamelist = [...new Set(this.originalitemList.map( x => x['Item_Name']))];
 
-                if ( isNaN(g)  || g == null ) {
-                  g = this.originalitemList[0]['Threshold2']
-                }
+            } catch (error) {
+              console.error("Error adding document: ", error)
+            }
 
-                //##REPEAT//
-                this.itemIds = []
-                await this.fetchTransId("PendingArrival")
-                h = this.idLoop.toString();
-                console.log(h)
-                const docRef = await setDoc(doc(db, "PendingArrival", h), {Trans_id: parseInt(h), Category: catConfirm, Timestamp: dateTime, Item_Id: parseInt(h),  Item_Name: a, Topup_Quantity: parseInt(e), Officer: x8})
-                console.log(docRef)
+            console.log("SAVING RECORDS...")
+            this.fetchTransId ("PendingArrival")
+            var h = this.idLoop.toString();
+            var a = this.InputItemName;
+            var b = this.SelectedCategory;
+            var c = this.InputNewCategory
+            var d = this.InputImageLink;
+            var e = this.InputQuantity;
+            var f = this.InputThreshold1;
+            var g = this.InputThreshold2;
 
-                this.$refs.form3.reset()
-                this.$emit("added")
-                this.fetchItemsCategories()
-                this.fetchTransId ("PendingArrival")
-                alert("You have Ordered: " + a)
+            //For Empty Image Link
+            if (d == ""){
+              d = "-"
+            }
+                        
+            var x8 = this.poweruserId
+            var today = new Date();
+            var date = this.addZero(today.getDate()) + '-' + this.addZero( (today.getMonth()+1) )+ '-' + today.getFullYear();
+            var time = this.addZero(today.getHours()) + ":" + this.addZero(today.getMinutes()) + ":" + this.addZero(today.getSeconds());
+            var dateTime = date+' '+time;
+                            
+            try{
+                var catConfirm = c
+                if (c == '' ){
+                    catConfirm = b
+                }    
 
-                this.itemNamelist = []
-                this.originalitemList = []
-                
+                if ( this.itemNamelist.includes(a) ){
+                  if ( d == null ) {
+                    d = this.originalitemList[0]['ImgLink']
+                  }
 
-              } else {
-                
-                if (a != null && c != null && e != null && f != null && g != null ){
-                  //Check if the input are not empty before adding into the order account.
-                  console.log("coming here")
-                  this.itemIds = []
-                  await this.fetchTransId("ItemSupplies")
-                  h = this.idLoop.toString();
-                  console.log(h)
-                  await setDoc(doc(db, "ItemSupplies", h), {Category: catConfirm, ImgLink: d, Item_Id: parseInt(h),  Item_Name: a, Order_Quantity: parseInt(e), Threshold1: parseInt(f), Threshold2: parseInt(g)})
-              
-                  //##REPEAT//
+                  if ( isNaN(f) || f == null ) {
+                    f = this.originalitemList[0]['Threshold1']
+                  }
+
+                  if ( isNaN(g)  || g == null ) {
+                    g = this.originalitemList[0]['Threshold2']
+                  }
+
                   this.itemIds = []
                   await this.fetchTransId("PendingArrival")
                   h = this.idLoop.toString();
-                  console.log(h)
                   const docRef = await setDoc(doc(db, "PendingArrival", h), {Trans_id: parseInt(h), Category: catConfirm, Timestamp: dateTime, Item_Id: parseInt(h),  Item_Name: a, Topup_Quantity: parseInt(e), Officer: x8})
                   console.log(docRef)
 
@@ -401,29 +366,52 @@ export default {
                   this.$emit("added")
                   this.fetchItemsCategories()
                   this.fetchTransId ("PendingArrival")
-                  alert("You have Ordered: " + a)
+                  alert("You have Ordered: " + e.toString() + " " + a)
 
                   this.itemNamelist = []
                   this.originalitemList = []
-              
+                  
+
                 } else {
-                  alert("Got empty inputs " )
+                  
+                  if (a != null && c != null && e != null && f != null && g != null ){
+                    //Check if the input are not empty before adding into the order account.
+                    this.itemIds = []
+                    await this.fetchTransId("ItemSupplies")
+                    h = this.idLoop.toString();
+                    await setDoc(doc(db, "ItemSupplies", h), {Category: catConfirm, ImgLink: d, Item_Id: parseInt(h),  Item_Name: a, Order_Quantity: parseInt(e), Threshold1: parseInt(f), Threshold2: parseInt(g)})
+                
+                    //##REPEAT//
+                    this.itemIds = []
+                    await this.fetchTransId("PendingArrival")
+                    h = this.idLoop.toString();
+                    const docRef = await setDoc(doc(db, "PendingArrival", h), {Trans_id: parseInt(h), Category: catConfirm, Timestamp: dateTime, Item_Id: parseInt(h),  Item_Name: a, Topup_Quantity: parseInt(e), Officer: x8})
+                    console.log(docRef)
+
+                    this.$refs.form3.reset()
+                    this.$emit("added")
+                    this.fetchItemsCategories()
+                    this.fetchTransId ("PendingArrival")
+                    alert("You have Ordered: " + e.toString() + " " + a)
+
+                    this.itemNamelist = []
+                    this.originalitemList = []
+                
+                  } else {
+                    alert("Please make sure there are no Empty Inputs" )
+                  }
+
                 }
 
-              }
+            } catch (error) {
+                console.error("Error adding document: ", error)
+            }
 
+            this.$refs.form3.reset()
+            this.weblinkhere = null
+            console.log("RESETTING FORM OUTLOOK")
 
-
-
-          } catch (error) {
-              console.error("Error adding document: ", error)
-          }
-
-          this.$refs.form3.reset()
-          this.weblinkhere = null
-          console.log("reset works")
-
-          },
+        },
 
     }
 }
@@ -459,7 +447,6 @@ export default {
     #id{
       text-align: right;
     }
-
 
     .save{
         text-align: center;
