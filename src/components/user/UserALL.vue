@@ -1,10 +1,21 @@
 <template>
 <div>
+    <request-form :listdata = "topass"/>
     <v-data-table
     :headers="headers"
     :items="items"
+    :search="search"
+    :custom-filter="filterOnlyCapsText"
     :items-per-page="5"
     class="elevation-1">
+    
+      <template v-slot:top>
+        <v-text-field
+          v-model="search"
+          label="Search by Item Name (UPPER CASE ONLY)"
+          class="mx-4"
+        ></v-text-field>
+      </template>
 
     <!-- <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
@@ -23,11 +34,11 @@
             </div>
         </template>
     
-        <template v-slot:item.options="{}">
-            <!-- <v-btn>Order</v-btn> -->
+        <!-- <template v-slot:item.options="{}">
+            <v-btn>Order</v-btn>
             <v-btn>Request</v-btn>
 
-        </template >
+        </template > -->
         <!-- <template v-slot:item.Threshold1="props">
             <v-edit-dialog
             :return-value.sync="props.item.Threshold1"
@@ -137,7 +148,7 @@ export default {
                 },
                 { text: 'Item Name', value: 'Item_Name' },
                 { text: 'Inventory Level', value: 'Order_Quantity' },
-                { text: 'Options', value: 'options' },
+                //{ text: 'Options', value: 'options' },
                 // { text: 'Threshold1', value: 'Threshold1' },
                 // { text: 'Threshold2', value: 'Threshold2' },
             ],
@@ -333,7 +344,14 @@ export default {
             else {
                 return 0
             }
-        }
+        },
+        
+        filterOnlyCapsText (value, search) {
+            return value != null &&
+            search != null &&
+            typeof value === 'string' &&
+            value.toString().toLocaleUpperCase().indexOf(search) !== -1
+        },
     }
 }
     
