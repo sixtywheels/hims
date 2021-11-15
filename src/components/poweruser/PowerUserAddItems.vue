@@ -3,11 +3,8 @@
   <div><power-user-navigation></power-user-navigation></div>
   <div style="padding-left: 10px; padding-right: 10px; padding-top: 10px;">
     <div class="vcard">
-            
-              <!-- <br> -->
-              <!-- <v-card> -->
+
               <v-card id="mycard">
-              <!-- <v-flex xs12 md6> -->
                 <div id="content">
                     <v-card-title>Add New Items to Inventory</v-card-title>
                     <v-card-text>
@@ -28,8 +25,6 @@
                                 required
 
                             ></v-select>
-
-                            <!-- <br v-if = "this.SelectedCategory == 'None of these'"> -->
 
                             <span>
                               <span v-if="this.SelectedCategory == 'Add new Category'">
@@ -90,13 +85,12 @@ const db = getFirestore(firebaseApp);
 import {getAuth, onAuthStateChanged} from  "firebase/auth";
 
 
-
-
 export default {
   
     name:"PowerUserAddItems",
 
-    data: () =>  { //https://renatello.com/dynamic-drop-down-list-in-vue-js/
+    data: () =>  { 
+      //https://renatello.com/dynamic-drop-down-list-in-vue-js/
       return{
       categorySelection: '',
 
@@ -114,10 +108,7 @@ export default {
       DepartmentList: [],
       NewDepartment: '',
 
-
-
       originalitemList: [],
-      //selectedCategory: null,
       itemIds: [],
       idLoop: null,
       }
@@ -129,8 +120,7 @@ export default {
 
     mounted: function() {
       this.fetchDepartments()
-      this.fetchItemsCategories()
-      console.info('mounted, itemListCategories:', this.itemCategory)
+      this.fetchItemsCategories() //console.info('mounted, itemListCategories:', this.itemCategory)
       this.fetchLastItemId()
 
             
@@ -138,7 +128,6 @@ export default {
       onAuthStateChanged(auth, (user) => {
         if(user) {
           this.user = user;
-          //console.log(this.user)
           this.authemail = user['email']
         }
       })
@@ -166,9 +155,7 @@ export default {
                   if(pufiltered[i]['email'] == this.authemail){
                       console.log("WELCOME IN!")
                       this.puverified = true
-                  } else {
-                    console.log("CHECK NEXT")
-                  }
+                  } 
                 }
             }catch (error) {
                 console.error("Error checking document: ", error)
@@ -181,12 +168,11 @@ export default {
         },
 
 
-        async fetchItemsCategories () {
-        
+    async fetchItemsCategories () {
         this.itemCategory = []
         this.originalitemList = []
 
-        console.log("FetchItemCategories")
+        console.log("FETCHING ITEM CATEGORY")
         const query = getDocs(collection(db,"ItemSupplies"))
   
           try {
@@ -200,16 +186,14 @@ export default {
               //Add Item Categories
               this.itemCategory = [...new Set(this.originalitemList.map( x => x['Category']))];
               this.itemCategory.push("Add new Category")
-              console.log('Loaded Categories', this.itemCategory)
- 
 
           } catch (error) {
             console.error("Error adding document: ", error)
           }
         },
 
-        async fetchLastItemId () {
-        console.log("FetchLastItemId")
+      async fetchLastItemId () {
+        console.log("FETCH TRANSACTION ID")
         const query = getDocs(collection(db,"ItemSupplies"))
           try {
               const { docs } = await query
@@ -218,8 +202,6 @@ export default {
                 const data = doc.data()[0]
                 return { id, ...data }
               })
-
-              console.log('Loaded Ids', this.itemIds)
               
               if (this.itemIds.length == 0) {
                 this.idLoop = 0
@@ -231,56 +213,31 @@ export default {
                   itemIdsSorted.push(parseInt(this.itemIds[k]['id']))
                 }
                 itemIdsSorted.sort(function(a, b){return a-b})
-                console.log("Item Sorted List")
-                console.log(itemIdsSorted)
-                //
-
                 var checking = itemIdsSorted[itemIdsSorted.length - 1]
                 
                 if ( isNaN(checking) ) {
                   this.idLoop = 0
-                  console.log(this.idLoop)
                 } 
                 else {
                   this.idLoop = parseInt(checking) + 1
-                  console.log(this.idLoop)
                 }
               }
-              
-              //console.log("whats my latest itemList: ")
-              //console.log(this.itemIds);
-              console.log("whats my saving itemid: " + this.idLoop.toString())
-
           } catch (error) {
             console.error("Error adding document: ", error)
           }
         },
 
-
-
-        async savetofs(){
-        console.log("Saving")
+      async savetofs(){
+        console.log("SAVING")
         var h = this.idLoop.toString();
         var a = this.InputItemName;
         var b = this.SelectedCategory;
-        console.log(h)
-        console.log(a)
-        console.log(b)
-
-
         var c = this.InputNewCategory
-        console.log(c)
-
         var d = this.InputImageLink;
         var e = this.InputQuantity;
         var f = this.InputThreshold1;
         var g = this.InputThreshold2;
       
-        console.log(d)
-        console.log(e)
-        console.log(f)
-        console.log(g)
-
         //Empty Image Link
         if (d == ""){
           d = "-"
@@ -291,7 +248,6 @@ export default {
             if (c == '' ){
                 catConfirm = b
         } 
-        console.log(catConfirm)
 
             const docRef = await setDoc(doc(db, "ItemSupplies", h), {Category: catConfirm, Item_Id: parseInt(h), ImgLink: d, Item_Name: a, Order_Quantity: parseInt(e), Threshold1: parseInt(f), Threshold2: parseInt(g)})
             console.log(docRef)
@@ -307,7 +263,7 @@ export default {
         },
 
         async fetchDepartments(){
-            console.log("Hello")
+            console.log("FETCH DEPARTMENTS")
             let z  = await getDocs(collection(db, "Departments"));
             
             z.forEach((docs) => {
@@ -319,24 +275,11 @@ export default {
             )
         },
 
-        // async savedepttofs(){
-
-        //   await setDoc(doc(db, "Departments", this.NewDepartment + " Department"), {
-        //     Department: this.NewDepartment
-        //   })
-        //   .then(() => {
-        //       alert("New department (" + this.NewDepartment + " Department) added successfully!");
-        //   })
-        //    .catch(error => {
-        //       alert(error.message);
-        //   });
-        // },
-
         async savedepttofs(){
           if (this.NewDepartment == "") {
                 alert("Please fill up the fields!")
           } else { 
-            console.log("field is: ", this.NewDepartment.empty)
+            console.log("Field is: ", this.NewDepartment.empty)
             var currentDepartment = await getDocs(query(collection(db, "Departments"), where("Department", "==", this.NewDepartment)));
             if (currentDepartment.empty) {
               await setDoc(doc(db, "Departments", this.NewDepartment + " Department"), {
@@ -392,8 +335,6 @@ export default {
         text-align: center;
     }
 
-
-
 /* https://coder-coder.com/display-divs-side-by-side */
     .float-container {
     border: 3px solid #fff;
@@ -406,7 +347,6 @@ export default {
     padding: 20px;
     border: 2px solid black;
 }  
-
 
 
 </style>

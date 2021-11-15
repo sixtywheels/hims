@@ -155,9 +155,9 @@ export default {
                 },
                 { text: 'Item Name', value: 'Item_Name' },
                 { text: 'Inventory Level', value: 'Order_Quantity' },
-                { text: 'Options', value: 'options' },
-                { text: 'Threshold1', value: 'Threshold1' },
-                { text: 'Threshold2', value: 'Threshold2' },
+                //{ text: 'Options', value: 'options' },
+                { text: 'Min Threshold', value: 'Threshold1' },
+                { text: 'Restock Threshold', value: 'Threshold2' },
             ],
             items: [],
             pending: [],
@@ -212,6 +212,7 @@ export default {
         },
         
         async save (props) {
+
             this.snack = true
             var a = (props.item.Item_Id).toString()
             var b = (props.item.ImgLink)
@@ -375,6 +376,14 @@ export default {
             typeof value === 'string' &&
             value.toString().toLocaleUpperCase().indexOf(search) !== -1
       },
+        
+        addZero(dtinput){
+            var result = dtinput.toString()
+            if (dtinput < 10) { 
+            result = "0" + dtinput.toString() 
+            }
+            return result
+        },
     }
 }
     
