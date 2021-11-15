@@ -26,7 +26,7 @@
 <script>
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
-import { collection, getDocs} from "firebase/firestore"
+import {getDocs, query, orderBy, collection} from "firebase/firestore";
 
 const db = getFirestore(firebaseApp);
 
@@ -51,7 +51,8 @@ mounted() {
 
 methods: {
     async display(identifier) {
-        var z  = await getDocs(collection(db, "ItemDisbursed"));
+        var order = query(collection(db, "ItemDisbursed"), orderBy("Disbursement_id"));
+        var z  = await getDocs(order);
         var curr_labels = new Array()
         var curr_value = new Array()
             
