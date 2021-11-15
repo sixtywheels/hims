@@ -17,13 +17,6 @@
         ></v-text-field>
       </template>
 
-    <!-- <template v-slot:expanded-item="{ headers, item }">
-        <td :colspan="headers.length">
-            <spark-line v-bind:id = 'item.Item_Id'/>
-        </td>
-        
-    </template> -->
-
         <template v-slot:item.Order_Quantity = "props">
             <div>
                 <b-progress
@@ -33,38 +26,6 @@
                 </b-progress>
             </div>
         </template>
-        
-        <!-- <template v-slot:item.options=""> item -->
-            <!-- <v-btn>Order</v-btn> -->
-            <!-- <v-btn @click="open()" >Request</v-btn> @click="createRequestForm(item)" -->
-        <!-- </template > --> 
-        
-        <!-- <template v-slot:item.options="props">
-            <v-edit-dialog
-            :return-value.sync="props.item.Order_Quantity"
-            large
-            persistent
-            @save = "createRequestForm(props)"
-            @cancel = "cancel"
-            @open = "open"
-            @close = "close">
-
-            <v-btn >Request</v-btn>
-
-                <template v-slot:input>
-                    <div class = "mt-4 text-h6">
-                        Key in Order Quantity
-                    </div>
-                    <v-text-field
-                    v-model.number = "props.item.Order_Quantity"
-                    :rules = "[isInt]"
-                    label = "Edit"
-                    single-line
-                    autofocus>
-                    </v-text-field>
-                </template>
-            </v-edit-dialog>
-        </template>  -->
     
      
     </v-data-table>
@@ -94,19 +55,14 @@
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs , doc, setDoc} from "firebase/firestore"
-// import SparkLine from "@/components/poweruser/SparkLine.vue"
 
 const db = getFirestore(firebaseApp);
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export default {
-    // components: {
-    //     SparkLine
-    // },
     data () {
         return {
             expanded: [],
-            // singleExpand: true,
             labels: [],
             value: [],
             snack: false,
@@ -126,9 +82,6 @@ export default {
                 },
                 { text: 'Item Name', value: 'Item_Name' },
                 { text: 'Inventory Level', value: 'Order_Quantity' },
-                //{ text: '', value: 'options' },
-                // { text: 'Threshold1', value: 'Threshold1' },
-                // { text: 'Threshold2', value: 'Threshold2' },
             ],
             items: [],
             pending: [],
@@ -158,9 +111,6 @@ export default {
             console.log(a)
             console.log(b)
             console.log(c)
-
-            //Rmb to enable refresh from close()
- 
 
         },
 

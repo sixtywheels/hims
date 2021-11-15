@@ -8,7 +8,7 @@ import Login from '../components/Login';
 import ResetPassword from '../components/ResetPassword';
 
 // PowerUser pages
-import PowerUserWIP from '../components/poweruser/PowerUserWIP';
+// import PowerUserWIP from '../components/poweruser/PowerUserWIP';
 import PowerUserLogin from '../components/poweruser/PowerUserLogin';
 import PowerUserSignUp from '../components/poweruser/PowerUserSignUp';
 import PowerUserApprovalSystem from '../components/poweruser/PowerUserApprovalSystem';
@@ -26,7 +26,7 @@ import PowerUserInventoryInsights from '../components/poweruser/PowerUserInvento
 import PowerUserRequestInsights from '../components/poweruser/PowerUserRequestInsights';
 
 // User pages
-import UserWIP from '../components/user/UserWIP';
+// import UserWIP from '../components/user/UserWIP';
 import UserLogin from '../components/user/UserLogin';
 import UserSignUp from '../components/user/UserSignUp';
 import UserRequestView from '../components/user/UserRequestView';
@@ -46,7 +46,7 @@ const routes = [
     { path: '/requestform', component: RequestForm},  
     
     
-    { path: '/poweruserwip', component: PowerUserWIP}, 
+    // { path: '/poweruserwip', component: PowerUserWIP}, 
     { path: '/poweruserlogin', component: PowerUserLogin },
     { path: '/powerusersignup', component: PowerUserSignUp },
     { path: '/poweruserapprovalsystem', component: PowerUserApprovalSystem , meta: {requiresAuth: true} }, 
@@ -59,24 +59,24 @@ const routes = [
         ]
     },
     { path: '/poweruseradditems', component: PowerUserAddItems, meta: {requiresAuth: true} },
-    { path: '/powerusersupplyorder', component: PowerUserSupplyOrderForm, meta: {requiresAuth: false} },
-    { path: '/powerusertrackarrival', component: PowerUserTrackArrival, meta: {requiresAuth: false} },
-    { path: '/poweruserinventoryinsights', component: PowerUserInventoryInsights, meta: {requiresAuth: false} },
-    { path: '/poweruserrequestinsights', component: PowerUserRequestInsights, meta: {requiresAuth: false} },    
+    { path: '/powerusersupplyorder', component: PowerUserSupplyOrderForm, meta: {requiresAuth: true} },
+    { path: '/powerusertrackarrival', component: PowerUserTrackArrival, meta: {requiresAuth: true} },
+    { path: '/poweruserinventoryinsights', component: PowerUserInventoryInsights, meta: {requiresAuth: true} },
+    { path: '/poweruserrequestinsights', component: PowerUserRequestInsights, meta: {requiresAuth: true} },    
     
 
-    { path: '/userwip', component: UserWIP, meta: {requiresAuth: true} }, 
+    // { path: '/userwip', component: UserWIP, meta: {requiresAuth: true} }, 
     { path: '/userlogin', component: UserLogin },
     { path: '/usersignup', component: UserSignUp },
-    { path: '/userrequestview', component: UserRequestView },
-    { path: '/userrequestform', component: UserRequestForm },
-    { path: '/userpastrequest', component: UserPastRequest},
-    { path: '/userdashboard', component: UserDashboard,
+    { path: '/userrequestview', component: UserRequestView, meta: {requiresAuth: true} },
+    { path: '/userrequestform', component: UserRequestForm, meta: {requiresAuth: true} },
+    { path: '/userpastrequest', component: UserPastRequest, meta: {requiresAuth: true} },
+    { path: '/userdashboard', component: UserDashboard, meta: {requiresAuth: true}, 
         children: [
-            { path: '/userdme', component: UserDME }, 
-            { path: '/usercovid19', component: UserCOVID19 },
-            { path: '/usersurgical', component: UserSurgical },
-            { path: '/userall', component: UserALL }
+            { path: '/userdme', component: UserDME, meta: {requiresAuth: true}  }, 
+            { path: '/usercovid19', component: UserCOVID19, meta: {requiresAuth: true}  },
+            { path: '/usersurgical', component: UserSurgical, meta: {requiresAuth: true}  },
+            { path: '/userall', component: UserALL, meta: {requiresAuth: true}  }
         ]
     },
 

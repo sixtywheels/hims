@@ -1,5 +1,5 @@
 <template>
-    <div id="companyloginpage">
+    <div id="poweruserloginpage">
         <h1>Hospital Inventory Management System <br> (HIMS)</h1>
         <router-link to="/" exact><v-icon dark right>mdi-home</v-icon></router-link>
         <h2>Logistics & Procurement Login Page</h2>
@@ -33,11 +33,6 @@
 </template>
 
 <script>
-
-// import firebase from 'firebase/compat/app';
-// import 'firebase/compat/auth';
-// import 'firebase/compat/firestore';
-// import db from "../../firebase.js";
 
 import firebase from '@/uifire.js'
 import 'firebase/compat/auth';
@@ -90,8 +85,7 @@ export default {
 </script>
 
 <style scoped>
-/* @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;800;900&display=swap'); */
-#companyloginpage {
+#poweruserloginpage {
     position: relative;
     background-size: cover;
     background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c0/KRW_Facade2_final.jpg");
@@ -120,19 +114,9 @@ h2 {
   margin-top:43px;
   color: rgb(255, 255, 255);
 }
-h3 {
-  font-size: 34px;
-  font-family: Nunito;
-  font-weight: bolder;
-  margin-top:50px;
-  color: rgb(4, 9, 53);
-}
 #test {
     padding-left:20px;
     text-align: center;   
-}
-.router-link-active {
-  color:white
 }
 #content {
     padding: 3%

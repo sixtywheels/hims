@@ -17,13 +17,6 @@
         ></v-text-field>
       </template>
 
-    <!-- <template v-slot:expanded-item="{ headers, item }">
-        <td :colspan="headers.length">
-            <spark-line v-bind:id = 'item.Item_Id'/>
-        </td>
-        
-    </template> -->
-
         <template v-slot:item.Order_Quantity = "props">
             <div>
                 <b-progress
@@ -33,60 +26,6 @@
                 </b-progress>
             </div>
         </template>
-    
-        <!-- <template v-slot:item.options="{}">
-            <v-btn>Order</v-btn>
-            <v-btn>Request</v-btn>
-
-        </template > -->
-        <!-- <template v-slot:item.Threshold1="props">
-            <v-edit-dialog
-            :return-value.sync="props.item.Threshold1"
-            large
-            persistent
-            @save = "save(props)"
-            @cancel = "cancel"
-            @open = "open"
-            @close = "close">
-            {{props.item.Threshold1}}
-                <template v-slot:input>
-                    <div class = "mt-4 text-h6">
-                        Update Threshold
-                    </div>
-                    <v-text-field
-                    v-model.number = "props.item.Threshold1"
-                    :rules = "[isInt]"
-                    label = "Edit"
-                    single-line
-                    autofocus>
-                    </v-text-field>
-                </template>
-            </v-edit-dialog>
-        </template>
-                <template v-slot:item.Threshold2="props">
-            <v-edit-dialog
-            :return-value.sync="props.item.Threshold2"
-            large
-            persistent
-            @save = "save(props)"
-            @cancel = "cancel"
-            @open = "open"
-            @close = "close">
-            {{props.item.Threshold2}}
-                <template v-slot:input>
-                    <div class = "mt-4 text-h6">
-                        Update Threshold
-                    </div>
-                    <v-text-field
-                    v-model.number = "props.item.Threshold2"
-                    :rules = "[isInt]"
-                    label = "Edit"
-                    single-line
-                    autofocus>
-                    </v-text-field>
-                </template>
-            </v-edit-dialog>
-        </template> -->
     
      
     </v-data-table>
@@ -116,19 +55,15 @@
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs , doc, setDoc} from "firebase/firestore"
-// import SparkLine from "@/components/poweruser/SparkLine.vue"
 
 const db = getFirestore(firebaseApp);
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export default {
-    // components: {
-    //     SparkLine
-    // },
+
     data () {
         return {
             expanded: [],
-            // singleExpand: true,
             labels: [],
             value: [],
             snack: false,
@@ -148,9 +83,6 @@ export default {
                 },
                 { text: 'Item Name', value: 'Item_Name' },
                 { text: 'Inventory Level', value: 'Order_Quantity' },
-                //{ text: 'Options', value: 'options' },
-                // { text: 'Threshold1', value: 'Threshold1' },
-                // { text: 'Threshold2', value: 'Threshold2' },
             ],
             items: [],
             pending: [],

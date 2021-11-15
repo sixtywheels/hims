@@ -1,5 +1,5 @@
 <template>
-   <div id="companysignuppage">
+   <div id="powerusersignuppage">
        <h1>Hospital Inventory Management System <br> (HIMS)</h1>
        <router-link to="/" exact><v-icon dark right>mdi-home</v-icon></router-link>
        <h2>Logistics & Procurement Staff Sign Up Page</h2>
@@ -48,11 +48,6 @@
 </template>
 
 <script>
-// import firebase from 'firebase/compat/app';
-// import 'firebase/compat/auth';
-// import 'firebase/compat/firestore';
-// import db from "../../firebase.js";
-
 import firebase from '@/uifire.js'
 import 'firebase/compat/auth';
 import { getFirestore } from "firebase/firestore";
@@ -114,58 +109,10 @@ export default {
     },
     
 };
-// export default {
-//     data() {
-//         return {
-//             email: '',
-//             password: '',
-//             staffID:'',
-//             value:String,
-//         };
-//     },
-//     methods: {
-//         register: async function()  {
-//             if (this.email == null || this.password == null || this.staffID == null) {
-//                 alert("Please fill up the fields!")
-//             } else {
-//                 await firebase
-//                     .auth()
-//                     .createUserWithEmailAndPassword(this.email, this.password)
-//                     .then( async () => {
-//                         const user = firebase.auth().currentUser;
-//                         user.updateProfile({
-//                             displayName: this.fullName
-//                         }).then( async () => {
-//                             await db.collection('powerusers').doc(user.uid).set({
-//                                 email: this.email,
-//                                 staffID: this.staffID,
-//                             });
-//                             await firebase.auth().signOut().then(function() {
-//                                 console.log("Signed Up and Signed Out!");
-//                             }, function(error) {
-//                                 console.log(error);
-//                             })
-//                             .then(() => {
-//                                 alert("Account Created Successfully!");
-//                                 this.$router.push("poweruserwip");
-//                             })  
-//                         }).catch(error => {
-//                             alert(error.message);
-//                         });
-//                     })
-//                     .catch(error => {
-//                         alert(error.message);
-//                     });
-//             }
-      
-//         },
-//     },
-// };
 </script>
 
 <style scoped>
-/* @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;800;900&display=swap'); */
-#companysignuppage {
+#powerusersignuppage {
     position: relative;
     background-size: cover;
     background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c0/KRW_Facade2_final.jpg");
@@ -194,13 +141,6 @@ text-align: center;
   margin-top:43px;
   color: rgb(255, 255, 255);
 }
-h3 {
-  font-size: 34px;
-  font-family: Nunito;
-  font-weight: bolder;
-  margin-top:50px;
-  color: rgb(4, 9, 53);
-}
 #test {
     padding-left:20px;
     text-align: center;   
@@ -210,8 +150,5 @@ h3 {
 }
 #content {
     padding: 3%
-}
-p {
-    margin-top:-15px;
 }
 </style>
