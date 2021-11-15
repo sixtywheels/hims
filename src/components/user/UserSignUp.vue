@@ -1,5 +1,5 @@
 <template>
-   <div id="companysignuppage">
+   <div id="usersignuppage">
        <h1>Hospital Inventory Management System <br> (HIMS)</h1>
        <router-link to="/" exact><v-icon dark right>mdi-home</v-icon></router-link>
        <h2>Hospital Staff Sign Up Page</h2>
@@ -27,8 +27,6 @@
                                 v-model="staffID" append-icon="mdi-account">
                             </v-text-field>
 
-                          
-
                             <v-select
                                 v-model="SelectedDepartment"
                                 :items="DepartmentList"
@@ -38,50 +36,6 @@
 
                             ></v-select>
 
-                            <!-- <v-expansion-panels>
-                                <v-expansion-panel>
-                                <v-expansion-panel-header v-slot="{ open }">
-                                    <v-row no-gutters>
-                                    <v-col cols="4">
-                                        Department
-                                    </v-col>
-                                    <v-col
-                                        cols="8"
-                                        class="text--secondary"
-                                    >
-                                        <v-fade-transition leave-absolute>
-                                        <span
-                                            v-if="open"
-                                            key="0"
-                                        >
-                                            Select department
-                                        </span>
-                                        <span
-                                            v-else
-                                            key="1"
-                                        >
-                                            {{ department }}
-                                        </span>
-                                        </v-fade-transition>
-                                    </v-col>
-                                    </v-row>
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-row no-gutters>
-                                    <v-spacer></v-spacer>
-                                    <v-col cols="5">
-                                        <v-select
-                                        v-model="department"
-                                        :items="departments"
-                                        chips
-                                        flat
-                                        solo
-                                        ></v-select>
-                                    </v-col>
-                                    </v-row>
-                                </v-expansion-panel-content>
-                                </v-expansion-panel>
-                            </v-expansion-panels> -->
                             <br>
                             <v-btn color="#B3E5FC" class="mr-4" type="submit">Register</v-btn>
                         </v-form>
@@ -181,8 +135,7 @@ export default {
 </script>
 
 <style scoped>
-/* @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;800;900&display=swap'); */
-#companysignuppage {
+#usersignuppage {
     position: relative;
     background-size: cover;
     background-image: url("https://upload.wikimedia.org/wikipedia/commons/c/c0/KRW_Facade2_final.jpg");
@@ -211,13 +164,6 @@ text-align: center;
   margin-top:43px;
   color: rgb(255, 255, 255);
 }
-h3 {
-  font-size: 34px;
-  font-family: Nunito;
-  font-weight: bolder;
-  margin-top:50px;
-  color: rgb(4, 9, 53);
-}
 #test {
     padding-left:20px;
     text-align: center;   
@@ -227,8 +173,5 @@ h3 {
 }
 #content {
     padding: 3%
-}
-p {
-    margin-top:-15px;
 }
 </style>

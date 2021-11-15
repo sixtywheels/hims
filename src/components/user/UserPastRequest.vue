@@ -121,31 +121,6 @@ export default {
             }
         },
 
-        // async display(){
-        //     await this.verifyU()
-
-        //     console.log(this.userId)
-        //     let z  = await getDocs(collection(db, "ItemDisbursed"));
-            
-        //     z.forEach((docs) => {
-        //         let yy = docs.data()
-        //         let x = {}
-
-        //         var name = yy.Item_Name
-        //         var requester = yy.Requester
-
-        //         if (parseInt(this.userId) == requester){
-        //             x.Date_Time = yy.Timestamp
-        //             x.Item_Name = name
-        //             x.Order_Quantity = yy.Order_Quantity
-        //             x.Disbursement_id = yy.Disbursement_id
-        //             x.Remarks = yy.Remarks
-        //             this.items = this.items.concat(x)
-        //         }
-        //     })
-        //     return this.items
-        // },
-
         async display(){
             await this.verifyU()
 

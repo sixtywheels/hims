@@ -12,9 +12,6 @@
         <v-btn v-on:click="logout">
             <div>Logout</div>
         </v-btn> &nbsp;
-        <!-- <v-btn v-on:click = "$router.push({ path:'/userwip' })">
-            <div>Pending Approval</div>
-        </v-btn> -->
     </div>
 </template>
 

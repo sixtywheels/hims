@@ -34,11 +34,6 @@
 
 <script>
 
-// import firebase from 'firebase/compat/app';
-// import 'firebase/compat/auth';
-// import 'firebase/compat/firestore';
-// import db from "../../firebase.js";
-
 import firebase from '@/uifire.js'
 import 'firebase/compat/auth';
 import { getFirestore } from "firebase/firestore";
@@ -90,7 +85,6 @@ export default {
 </script>
 
 <style scoped>
-/* @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;800;900&display=swap'); */
 #userloginpage {
     position: relative;
     background-size: cover;
@@ -120,20 +114,20 @@ h2 {
   margin-top:43px;
   color: rgb(255, 255, 255);
 }
-h3 {
+/* h3 {
   font-size: 34px;
   font-family: Nunito;
   font-weight: bolder;
   margin-top:50px;
   color: rgb(4, 9, 53);
-}
+} */
 #test {
     padding-left:20px;
     text-align: center;   
 }
-.router-link-active {
+/* .router-link-active {
   color:white
-}
+} */
 #content {
     padding: 3%
 }
