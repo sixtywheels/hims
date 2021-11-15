@@ -4,8 +4,18 @@
     <v-data-table
     :headers="headers"
     :items="items"
+    :search="search"
+    :custom-filter="filterOnlyCapsText"
     :items-per-page="5"
     class="elevation-1">
+    
+      <template v-slot:top>
+        <v-text-field
+          v-model="search"
+          label="Search by Item Name (UPPER CASE ONLY)"
+          class="mx-4"
+        ></v-text-field>
+      </template>
 
     <!-- <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
@@ -116,7 +126,7 @@ export default {
                 },
                 { text: 'Item Name', value: 'Item_Name' },
                 { text: 'Inventory Level', value: 'Order_Quantity' },
-                { text: '', value: 'options' },
+                //{ text: '', value: 'options' },
                 // { text: 'Threshold1', value: 'Threshold1' },
                 // { text: 'Threshold2', value: 'Threshold2' },
             ],
@@ -337,7 +347,15 @@ export default {
             else {
                 return 0
             }
-        }
+        },
+        
+        
+        filterOnlyCapsText (value, search) {
+            return value != null &&
+            search != null &&
+            typeof value === 'string' &&
+            value.toString().toLocaleUpperCase().indexOf(search) !== -1
+        },
     }
 }
     
