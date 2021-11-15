@@ -55,7 +55,6 @@
 import firebaseApp from '../../firebase.js';
 import { getFirestore } from "firebase/firestore";
 import { collection, getDocs , doc, setDoc} from "firebase/firestore"
-
 const db = getFirestore(firebaseApp);
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
